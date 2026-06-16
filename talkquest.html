@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TalkQuest 💬 — Practice tricky conversations</title>
+  <meta name="description" content="A free game for kids: practice handling tough, real-life conversations and choose your words wisely." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js" crossorigin></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <script src="seeds.js"></script>
+  <style>body { margin: 0; }</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+const { useState, useMemo } = React;
+const awardSeeds = (n, why) => {
+  try {
+    if (window.Seeds) {
+      window.Seeds.award(n, why);
+      showSeedToast(n);
+    }
+  } catch (e) {}
+};
+// visible seeds celebration + corner counter (shared, framework-free)
+function showSeedToast(n) {
+  var t = document.getElementById("seed-toast");
+  if (!t) {
+    t = document.createElement("div");
+    t.id = "seed-toast";
+    t.style.cssText = "position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(120px);background:#1D2B4F;color:#fff;font-family:ui-rounded,'Nunito',sans-serif;font-weight:700;padding:13px 22px;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.2);transition:transform .4s cubic-bezier(.22,1,.36,1);z-index:9999;font-size:16px;";
+    document.body.appendChild(t);
+  }
+  t.textContent = "🌱 +" + n + " seeds!";
+  requestAnimationFrame(function () { t.style.transform = "translateX(-50%) translateY(0)"; });
+  clearTimeout(t._h);
+  t._h = setTimeout(function () { t.style.transform = "translateX(-50%) translateY(120px)"; }, 2200);
+  updateSeedCounter();
+}
+function updateSeedCounter() {
+  var c = document.getElementById("seed-counter");
+  if (!c) {
+    c = document.createElement("div");
+    c.id = "seed-counter";
+    c.style.cssText = "position:fixed;top:10px;right:10px;background:#E4EFE3;color:#3C5A45;border:1px solid #CFE3D0;font-family:ui-rounded,'Nunito',sans-serif;font-weight:700;padding:6px 13px;border-radius:999px;font-size:14px;z-index:9998;";
+    document.body.appendChild(c);
+  }
+  try { c.textContent = "🌱 " + (window.Seeds ? window.Seeds.get() : 0); } catch (e) {}
+}
+window.addEventListener("load", function () {
+  try { if (window.Seeds && window.Seeds.get() > 0) updateSeedCounter(); } catch (e) {}
+});
+
+// ----------------------- THEME -----------------------
+const C = {
+  paper: "#EEF3F8",     // cool paper blue
+  ink: "#1D2B4F",       // deep navy ink
+  inkSoft: "#5A6B8C",
+  coral: "#FF6B5E",     // action / accent
+  mint: "#2FA97C",      // great choice
+  amber: "#E8A33D",     // okay choice
+  rose: "#D95F76",      // tricky choice
+  card: "#FFFFFF",
+  bubbleNPC: "#FFFFFF",
+  bubbleYou: "#1D2B4F",
+};
+
+const ROUNDED = {
+  fontFamily:
+    'ui-rounded, "SF Pro Rounded", "Hiragino Maru Gothic ProN", "Arial Rounded MT Bold", "Trebuchet MS", sans-serif',
+};
+
+// ----------------------- DATA -----------------------
+// quality: 2 = great, 1 = okay, 0 = tricky
+const SCENARIOS = [
+  {
+    id: "grade",
+    title: "The Math Test",
+    adult: "Mom",
+    emoji: "🧑‍🦱",
+    setup:
+      "You failed Friday's math test. The graded paper is in your backpack, and Mom just asked how school went.",
+    goal: "Be honest before she finds out another way — and ask for help.",
+    turns: [
+      {
+        npc: "Hey! How was school today? Anything happen?",
+        choices: [
+          {
+            text: "Fine. Nothing really. (change the subject)",
+            quality: 0,
+            delta: -8,
+            skill: "Honesty first",
+            feedback:
+              "Hiding it buys a few quiet hours, but the test will surface eventually — and then the conversation is about the hiding, not the grade.",
+          },
+          {
+            text: "Mostly okay... math was rough, though.",
+            quality: 1,
+            delta: 5,
+            skill: "Honesty first",
+            feedback:
+              "A soft opening! You cracked the door open, which makes the hard part easier to say next.",
+          },
+          {
+            text: "Actually, I need to tell you something. I failed the math test.",
+            quality: 2,
+            delta: 12,
+            skill: "Honesty first",
+            feedback:
+              "Leading with the truth takes guts. Adults almost always respond better when the news comes from you, not from a surprise.",
+          },
+        ],
+      },
+      {
+        npc: "A fail? What happened? You said you studied.",
+        choices: [
+          {
+            text: "The test was unfair! Everyone failed it.",
+            quality: 0,
+            delta: -8,
+            skill: "Taking responsibility",
+            feedback:
+              "Even if the test was hard, leading with blame makes it sound like an excuse — and invites an argument instead of help.",
+          },
+          {
+            text: "I did study, but I think I studied the wrong stuff.",
+            quality: 1,
+            delta: 6,
+            skill: "Taking responsibility",
+            feedback:
+              "Honest and specific. Explaining what went wrong (without excuses) shows you've actually thought about it.",
+          },
+          {
+            text: "I studied, but not enough — I kept putting it off. That's on me.",
+            quality: 2,
+            delta: 12,
+            skill: "Taking responsibility",
+            feedback:
+              "Owning your part is powerful. It tells her she doesn't have to lecture you — you already get it.",
+          },
+        ],
+      },
+      {
+        npc: "Okay. I appreciate you telling me. So what now?",
+        choices: [
+          {
+            text: "I don't know. Can we just drop it?",
+            quality: 0,
+            delta: -6,
+            skill: "Asking for help",
+            feedback:
+              "Shutting the conversation down leaves the problem (and her worry) unsolved. A plan would end this on a high note.",
+          },
+          {
+            text: "I'll try harder next time, I promise.",
+            quality: 1,
+            delta: 5,
+            skill: "Asking for help",
+            feedback:
+              "Good intent — but 'try harder' is vague. Adults relax when they hear a concrete plan.",
+          },
+          {
+            text: "Can the teacher or a tutor help me? And maybe you could quiz me before the retake?",
+            quality: 2,
+            delta: 12,
+            skill: "Asking for help",
+            feedback:
+              "A real plan plus asking for help — that turns a bad grade into a team project. This is exactly how trust gets rebuilt.",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "extension",
+    title: "Behind on the Project",
+    adult: "Ms. Rivera",
+    emoji: "👩‍🏫",
+    setup:
+      "Your science project is due Friday and you're way behind. It's Tuesday after class, and Ms. Rivera is at her desk.",
+    goal: "Ask for help early — before the deadline becomes an emergency.",
+    turns: [
+      {
+        npc: "Hi! Did you need something?",
+        choices: [
+          {
+            text: "Uh... no, never mind. (walk out)",
+            quality: 0,
+            delta: -6,
+            skill: "Timing",
+            feedback:
+              "Walking away feels safer, but every day you wait, the problem grows and your options shrink. Asking early is a superpower.",
+          },
+          {
+            text: "Is the project really due Friday?",
+            quality: 1,
+            delta: 4,
+            skill: "Timing",
+            feedback:
+              "You started the conversation — good! But hinting makes her guess. Saying the real situation gets you real help.",
+          },
+          {
+            text: "Yes — I'm behind on the project and I wanted to talk to you before Friday.",
+            quality: 2,
+            delta: 12,
+            skill: "Timing",
+            feedback:
+              "Coming in early and saying it straight is exactly what teachers hope students will do. You just made her your ally.",
+          },
+        ],
+      },
+      {
+        npc: "Thanks for telling me now instead of Friday. How far along are you?",
+        choices: [
+          {
+            text: "Pretty far. Almost done, basically. (not true)",
+            quality: 0,
+            delta: -10,
+            skill: "Honesty first",
+            feedback:
+              "A small fib here means her advice won't fit your real situation — and if it unravels, the trust you just earned goes with it.",
+          },
+          {
+            text: "I've done some research but haven't started building anything.",
+            quality: 1,
+            delta: 6,
+            skill: "Honesty first",
+            feedback:
+              "Truthful and clear. Now she can actually help with the real problem.",
+          },
+          {
+            text: "Honestly? I've barely started. I picked a topic that's too complicated and got stuck.",
+            quality: 2,
+            delta: 12,
+            skill: "Honesty first",
+            feedback:
+              "Full honesty plus naming why you got stuck. Teachers can fix 'stuck' — they can't fix what they don't know about.",
+          },
+        ],
+      },
+      {
+        npc: "Okay. What would help you most right now?",
+        choices: [
+          {
+            text: "Can you just give me an A for effort?",
+            quality: 0,
+            delta: -8,
+            skill: "Asking, not demanding",
+            feedback:
+              "Asking her to erase the problem (instead of helping you solve it) puts her in an unfair spot.",
+          },
+          {
+            text: "Maybe... more time?",
+            quality: 1,
+            delta: 5,
+            skill: "Asking, not demanding",
+            feedback:
+              "A reasonable ask! Pairing it with what YOU will do makes it even stronger.",
+          },
+          {
+            text: "Could I switch to a simpler topic and show you my progress Thursday? I can work on it tonight and tomorrow.",
+            quality: 2,
+            delta: 12,
+            skill: "Asking, not demanding",
+            feedback:
+              "A specific request plus your own commitment — that's a proposal, not a rescue. Adults say yes to proposals.",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "coach",
+    title: "Running on Empty",
+    adult: "Coach D",
+    emoji: "🧢",
+    setup:
+      "Between school, homework, and four practices a week, you're exhausted. You've decided to talk to Coach after practice.",
+    goal: "Say how you really feel — respectfully — and find a workable change.",
+    turns: [
+      {
+        npc: "Good hustle out there. You wanted to talk?",
+        choices: [
+          {
+            text: "I quit. I'm done with this team.",
+            quality: 0,
+            delta: -8,
+            skill: "Staying calm",
+            feedback:
+              "Dropping a bomb closes the conversation before it starts. You can always quit later — but start by talking.",
+          },
+          {
+            text: "Practices have been feeling like... a lot lately.",
+            quality: 1,
+            delta: 5,
+            skill: "Staying calm",
+            feedback:
+              "Honest, calm opener. Adding how it's affecting you would make it land even more clearly.",
+          },
+          {
+            text: "Yeah. I've been feeling really worn out — practices plus school is getting to be too much for me.",
+            quality: 2,
+            delta: 12,
+            skill: "I-statements",
+            feedback:
+              "An 'I' statement — 'I've been feeling worn out' — describes your experience without blaming anyone. That keeps Coach listening instead of defending.",
+          },
+        ],
+      },
+      {
+        npc: "I hear you. The schedule is intense. Is it the sport, or everything together?",
+        choices: [
+          {
+            text: "It's your practices. They're too hard and too long.",
+            quality: 0,
+            delta: -7,
+            skill: "I-statements",
+            feedback:
+              "'You' statements ('your practices are too hard') sound like an attack. The same idea as an 'I' statement — 'I'm struggling to recover between practices' — gets a totally different response.",
+          },
+          {
+            text: "Everything together, I think. I still like the sport.",
+            quality: 1,
+            delta: 6,
+            skill: "I-statements",
+            feedback:
+              "Good — you separated the sport from the schedule. That gives Coach something to work with.",
+          },
+          {
+            text: "Everything together. I love playing, but I'm getting home at 7 and still have homework. I'm tired all the time.",
+            quality: 2,
+            delta: 12,
+            skill: "I-statements",
+            feedback:
+              "Specific details about YOUR experience. Now Coach understands the real problem instead of guessing.",
+          },
+        ],
+      },
+      {
+        npc: "Thanks for being straight with me. What do you think would help?",
+        choices: [
+          {
+            text: "I don't know. You're the coach, you figure it out.",
+            quality: 0,
+            delta: -7,
+            skill: "Asking, not demanding",
+            feedback:
+              "Coach offered you a seat at the table — pushing the whole problem back across it wastes the chance.",
+          },
+          {
+            text: "Maybe fewer practices for a while?",
+            quality: 1,
+            delta: 6,
+            skill: "Asking, not demanding",
+            feedback:
+              "A real suggestion! Making it specific ('two practices a week this month') would make it easy to say yes to.",
+          },
+          {
+            text: "Could I drop to two practices a week until exams end? Then I'll see how I feel.",
+            quality: 2,
+            delta: 12,
+            skill: "Asking, not demanding",
+            feedback:
+              "Specific, temporary, and reasonable — a request like this is almost impossible to refuse. And you kept the door open.",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "window",
+    title: "The Backyard Ball",
+    adult: "Mr. Okafor",
+    emoji: "🧔",
+    setup:
+      "Your soccer ball just sailed over the fence and knocked over your neighbor's big ceramic planter. It's cracked. Nobody saw... yet.",
+    goal: "Own up to the mistake before being asked — and make it right.",
+    turns: [
+      {
+        npc: "(You knock. Mr. Okafor opens the door.) Oh, hello! What can I do for you?",
+        choices: [
+          {
+            text: "Um... have you seen a soccer ball anywhere?",
+            quality: 0,
+            delta: -6,
+            skill: "Taking responsibility",
+            feedback:
+              "Fishing for the ball without mentioning the planter is a half-truth. He'll connect the dots — better if YOU connect them first.",
+          },
+          {
+            text: "Hi... I think my ball might have knocked something over in your yard.",
+            quality: 1,
+            delta: 6,
+            skill: "Taking responsibility",
+            feedback:
+              "You brought it up — that's the hard part. 'Might have' softens it a bit much when you know it happened.",
+          },
+          {
+            text: "Hi Mr. Okafor. I kicked my ball over your fence and it broke your planter. I'm really sorry.",
+            quality: 2,
+            delta: 12,
+            skill: "Taking responsibility",
+            feedback:
+              "Direct, honest, and first to say it. Owning a mistake before being confronted flips the whole mood — now you're the kid with integrity, not the kid who broke something.",
+          },
+        ],
+      },
+      {
+        npc: "Ah — that planter was a gift from my sister. That's disappointing.",
+        choices: [
+          {
+            text: "It was an accident! It's not like I did it on purpose.",
+            quality: 0,
+            delta: -7,
+            skill: "Listening",
+            feedback:
+              "He didn't say you did it on purpose — he said he's disappointed. Defending yourself over feelings nobody attacked makes it worse.",
+          },
+          {
+            text: "I'm sorry. I didn't mean for it to happen.",
+            quality: 1,
+            delta: 6,
+            skill: "Listening",
+            feedback:
+              "A sincere apology. Acknowledging what the planter meant to him would show you really heard him.",
+          },
+          {
+            text: "I'm really sorry — especially since it was from your sister. I should've been more careful playing that close to the fence.",
+            quality: 2,
+            delta: 12,
+            skill: "Listening",
+            feedback:
+              "You repeated back what mattered to HIM. That's real listening, and it's what makes an apology feel genuine instead of automatic.",
+          },
+        ],
+      },
+      {
+        npc: "Well... I appreciate you coming over and telling me yourself.",
+        choices: [
+          {
+            text: "Cool. Can I get my ball back now?",
+            quality: 0,
+            delta: -8,
+            skill: "Making it right",
+            feedback:
+              "Yikes — jumping straight to the ball makes the apology look like it was just the price of admission.",
+          },
+          {
+            text: "Again, I'm really sorry. I'll be more careful.",
+            quality: 1,
+            delta: 5,
+            skill: "Making it right",
+            feedback:
+              "Kind and polite. Offering to actually fix the damage would complete the repair.",
+          },
+          {
+            text: "I'd like to make it right. I can pay for a new planter from my allowance, or help with yard work to cover it.",
+            quality: 2,
+            delta: 12,
+            skill: "Making it right",
+            feedback:
+              "Apology + action = full repair. Offering to make it right (even in small ways) is what turns 'sorry' into something an adult never forgets.",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "curfew",
+    title: "The Curfew Talk",
+    adult: "Dad",
+    emoji: "🧔🏽",
+    setup:
+      "Your friends can stay out until 9:30 on weekends. Your curfew is 8:00. You want to renegotiate — Dad is relaxed and reading on the couch.",
+    goal: "Ask for more freedom like someone who can handle it.",
+    turns: [
+      {
+        npc: "(Dad looks up from his book.) Hey kiddo. What's up?",
+        choices: [
+          {
+            text: "My curfew is so unfair. Literally everyone stays out later than me.",
+            quality: 0,
+            delta: -7,
+            skill: "Staying calm",
+            feedback:
+              "Opening with 'unfair' and 'everyone' starts a debate, not a negotiation. Dads have a reflex response to 'everyone else does it.'",
+          },
+          {
+            text: "Can we talk about my curfew sometime?",
+            quality: 1,
+            delta: 6,
+            skill: "Timing",
+            feedback:
+              "Calm and respectful — and you picked a relaxed moment, which matters more than people think.",
+          },
+          {
+            text: "Hey Dad, is now a good time? I wanted to talk about maybe adjusting my weekend curfew.",
+            quality: 2,
+            delta: 12,
+            skill: "Timing",
+            feedback:
+              "Asking 'is now a good time?' is a pro move. It shows respect and gets his full attention instead of half of it.",
+          },
+        ],
+      },
+      {
+        npc: "Alright, I'm listening. Why should it change?",
+        choices: [
+          {
+            text: "Because 8:00 is for little kids. You're treating me like a baby.",
+            quality: 0,
+            delta: -8,
+            skill: "I-statements",
+            feedback:
+              "Accusations ('you're treating me like...') put him on defense. Your case is stronger when it's about what you've earned, not what he's doing wrong.",
+          },
+          {
+            text: "I feel like I've been pretty responsible lately and I'd like a chance to show it.",
+            quality: 1,
+            delta: 6,
+            skill: "I-statements",
+            feedback:
+              "Good framing! Adding specific evidence would make it even more convincing.",
+          },
+          {
+            text: "I've kept my grades up, I always text where I am, and I've never missed curfew. I think I've earned a later one — maybe 9:30 on weekends.",
+            quality: 2,
+            delta: 12,
+            skill: "Making your case",
+            feedback:
+              "Evidence plus a specific ask. You sound like someone who can handle more freedom — which is exactly the question he's weighing.",
+          },
+        ],
+      },
+      {
+        npc: "Hmm. I'll think about 9:00. Not 9:30 — not yet.",
+        choices: [
+          {
+            text: "9:00?! That's barely anything. Forget it then.",
+            quality: 0,
+            delta: -10,
+            skill: "Staying calm",
+            feedback:
+              "He just moved an hour in your direction and got 'forget it' back. Storming off can undo a win that was already on the table.",
+          },
+          {
+            text: "Okay... I guess 9:00 is better than 8:00.",
+            quality: 1,
+            delta: 6,
+            skill: "Staying calm",
+            feedback:
+              "You took the win, even if grudgingly. A little grace here sets up the NEXT negotiation.",
+          },
+          {
+            text: "Deal — 9:00 it is. And if I handle it well for a month, can we revisit 9:30?",
+            quality: 2,
+            delta: 12,
+            skill: "Making your case",
+            feedback:
+              "Accepting the compromise AND scheduling round two — that's expert-level negotiation. He'll remember how maturely you handled this.",
+          },
+        ],
+      },
+    ],
+  },
+];
+
+// ----------------------- HELPERS -----------------------
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function moodFor(trust) {
+  if (trust >= 75) return { face: "😊", label: "Connected" };
+  if (trust >= 55) return { face: "🙂", label: "Open" };
+  if (trust >= 40) return { face: "😐", label: "Listening" };
+  if (trust >= 25) return { face: "😕", label: "Tense" };
+  return { face: "😞", label: "Hurt" };
+}
+
+function ratingFor(trust, greats) {
+  if (trust >= 80 && greats >= 2)
+    return {
+      stars: 3,
+      title: "Conversation Champion",
+      note: "You said the hard thing, said it well, and left the relationship stronger than you found it.",
+    };
+  if (trust >= 60)
+    return {
+      stars: 2,
+      title: "Solid Talker",
+      note: "You got through it honestly. A few choices could land softer — replay and try the other paths!",
+    };
+  return {
+    stars: 1,
+    title: "Brave Beginner",
+    note: "Hard talks take practice — and you showed up, which is step one. Try again and watch the meter climb.",
+  };
+}
+
+// ----------------------- UI PIECES -----------------------
+function TrustMeter({ trust, adult }) {
+  const mood = moodFor(trust);
+  const color = trust >= 55 ? C.mint : trust >= 40 ? C.amber : C.rose;
+  return (
+    <div
+      className="flex items-center gap-3 rounded-2xl px-4 py-3"
+      style={{ background: C.card, border: `2px solid ${C.ink}` }}
+    >
+      <div
+        className="flex h-12 w-12 items-center justify-center rounded-full text-2xl"
+        style={{ background: C.paper, border: `2px solid ${C.ink}` }}
+        aria-hidden="true"
+      >
+        {mood.face}
+      </div>
+      <div className="flex-1">
+        <div className="flex items-baseline justify-between">
+          <span className="text-xs font-bold uppercase tracking-wider" style={{ color: C.inkSoft }}>
+            {adult} feels
+          </span>
+          <span className="text-sm font-extrabold" style={{ color }}>
+            {mood.label}
+          </span>
+        </div>
+        <div
+          className="mt-1 h-3 w-full overflow-hidden rounded-full"
+          style={{ background: C.paper, border: `1.5px solid ${C.ink}` }}
+          role="meter"
+          aria-valuenow={trust}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label="Trust meter"
+        >
+          <div
+            className="h-full rounded-full transition-all duration-500"
+            style={{ width: `${trust}%`, background: color }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Bubble({ who, emoji, children }) {
+  const isYou = who === "you";
+  return (
+    <div className={`flex items-end gap-2 ${isYou ? "flex-row-reverse" : ""}`}>
+      <div
+        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xl"
+        style={{ background: C.card, border: `2px solid ${C.ink}` }}
+        aria-hidden="true"
+      >
+        {isYou ? "🧒" : emoji}
+      </div>
+      <div
+        className="relative max-w-[85%] rounded-2xl px-4 py-3 text-[15px] leading-snug"
+        style={{
+          background: isYou ? C.bubbleYou : C.bubbleNPC,
+          color: isYou ? "#FFFFFF" : C.ink,
+          border: `2px solid ${C.ink}`,
+          borderBottomLeftRadius: isYou ? 16 : 4,
+          borderBottomRightRadius: isYou ? 4 : 16,
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
+const QUALITY_STYLE = {
+  2: { tag: "Great move", color: C.mint, icon: "★" },
+  1: { tag: "Not bad", color: C.amber, icon: "◐" },
+  0: { tag: "Tricky path", color: C.rose, icon: "↺" },
+};
+
+// ----------------------- SCREENS -----------------------
+function HomeScreen({ onPick, completed }) {
+  return (
+    <div className="flex flex-col gap-5">
+      <div className="text-center">
+        <div
+          className="mx-auto mb-3 inline-block rotate-1 rounded-2xl px-5 py-2 text-3xl font-extrabold tracking-tight"
+          style={{ background: C.coral, color: "#fff", border: `3px solid ${C.ink}`, boxShadow: `4px 4px 0 ${C.ink}` }}
+        >
+          TalkQuest
+        </div>
+        <p className="mx-auto max-w-sm text-[15px]" style={{ color: C.inkSoft }}>
+          Practice saying the hard thing. Pick a scenario, choose your words, and
+          watch how the conversation turns.
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        {SCENARIOS.map((s) => (
+          <button
+            key={s.id}
+            onClick={() => onPick(s.id)}
+            className="group flex items-center gap-4 rounded-2xl px-4 py-4 text-left transition-transform hover:-translate-y-0.5 focus:outline-none focus-visible:ring-4"
+            style={{
+              background: C.card,
+              border: `2px solid ${C.ink}`,
+              boxShadow: `3px 3px 0 ${C.ink}`,
+            }}
+          >
+            <span className="text-3xl" aria-hidden="true">
+              {s.emoji}
+            </span>
+            <span className="flex-1">
+              <span className="block text-base font-extrabold" style={{ color: C.ink }}>
+                {s.title}
+              </span>
+              <span className="block text-sm" style={{ color: C.inkSoft }}>
+                Talking to {s.adult} · {s.goal}
+              </span>
+            </span>
+            {completed[s.id] ? (
+              <span className="text-lg" title={`Best: ${completed[s.id]} star(s)`}>
+                {"⭐".repeat(completed[s.id])}
+              </span>
+            ) : (
+              <span
+                className="rounded-full px-3 py-1 text-xs font-bold"
+                style={{ background: C.paper, color: C.ink, border: `1.5px solid ${C.ink}` }}
+              >
+                Play
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
+
+      <p className="text-center text-xs" style={{ color: C.inkSoft }}>
+        Tip from the dojo: there's no "losing" a hard conversation — every replay
+        teaches you a new path through it.
+      </p>
+    </div>
+  );
+}
+
+function EndScreen({ scenario, trust, greats, skills, onReplay, onHome }) {
+  const r = ratingFor(trust, greats);
+  return (
+    <div className="flex flex-col items-center gap-4 text-center">
+      <div className="text-5xl" aria-hidden="true">
+        {"⭐".repeat(r.stars)}
+        <span style={{ opacity: 0.2 }}>{"⭐".repeat(3 - r.stars)}</span>
+      </div>
+      <h2 className="text-2xl font-extrabold" style={{ color: C.ink }}>
+        {r.title}
+      </h2>
+      <p className="max-w-sm text-[15px]" style={{ color: C.inkSoft }}>
+        {r.note}
+      </p>
+
+      <TrustMeter trust={trust} adult={scenario.adult} />
+
+      {skills.length > 0 && (
+        <div className="w-full rounded-2xl p-4" style={{ background: C.card, border: `2px solid ${C.ink}` }}>
+          <div className="mb-2 text-xs font-bold uppercase tracking-wider" style={{ color: C.inkSoft }}>
+            Skills you used
+          </div>
+          <div className="flex flex-wrap justify-center gap-2">
+            {skills.map((s) => (
+              <span
+                key={s}
+                className="rounded-full px-3 py-1 text-xs font-bold"
+                style={{ background: C.mint, color: "#fff", border: `1.5px solid ${C.ink}` }}
+              >
+                {s}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="flex gap-3">
+        <button
+          onClick={onReplay}
+          className="rounded-xl px-5 py-2.5 text-sm font-extrabold focus:outline-none focus-visible:ring-4"
+          style={{ background: C.coral, color: "#fff", border: `2px solid ${C.ink}`, boxShadow: `3px 3px 0 ${C.ink}` }}
+        >
+          Replay scenario
+        </button>
+        <button
+          onClick={onHome}
+          className="rounded-xl px-5 py-2.5 text-sm font-extrabold focus:outline-none focus-visible:ring-4"
+          style={{ background: C.card, color: C.ink, border: `2px solid ${C.ink}`, boxShadow: `3px 3px 0 ${C.ink}` }}
+        >
+          All scenarios
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ----------------------- MAIN APP -----------------------
+function TalkQuest() {
+  const [screen, setScreen] = useState("home"); // home | intro | play | end
+  const [scenarioId, setScenarioId] = useState(null);
+  const [turnIdx, setTurnIdx] = useState(0);
+  const [trust, setTrust] = useState(50);
+  const [picked, setPicked] = useState(null); // the choice just made
+  const [history, setHistory] = useState([]); // { npc, you }
+  const [greats, setGreats] = useState(0);
+  const [skills, setSkills] = useState([]);
+  const [completed, setCompleted] = useState({});
+  const [runId, setRunId] = useState(0);
+
+  const scenario = SCENARIOS.find((s) => s.id === scenarioId) || null;
+
+  // Shuffle choice order per turn so the "best" answer isn't always last
+  const shuffledTurns = useMemo(() => {
+    if (!scenario) return [];
+    return scenario.turns.map((t) => ({ ...t, choices: shuffle(t.choices) }));
+  }, [scenario, runId]);
+
+  function startScenario(id) {
+    setScenarioId(id);
+    setTurnIdx(0);
+    setTrust(50);
+    setPicked(null);
+    setHistory([]);
+    setGreats(0);
+    setSkills([]);
+    setRunId((r) => r + 1);
+    setScreen("intro");
+  }
+
+  function choose(choice) {
+    const newTrust = Math.max(0, Math.min(100, trust + choice.delta));
+    setTrust(newTrust);
+    setPicked(choice);
+    if (choice.quality === 2) {
+      setGreats((g) => g + 1);
+      setSkills((s) => (s.includes(choice.skill) ? s : [...s, choice.skill]));
+    }
+  }
+
+  function nextTurn() {
+    const turn = shuffledTurns[turnIdx];
+    setHistory((h) => [...h, { npc: turn.npc, you: picked.text }]);
+    setPicked(null);
+    if (turnIdx + 1 < shuffledTurns.length) {
+      setTurnIdx(turnIdx + 1);
+    } else {
+      const r = ratingFor(trust, greats);
+      const prevStars = completed[scenarioId] || 0;
+      // seeds: reward stars gained this run (first clear, or improvement on a replay)
+      const starsGained = Math.max(0, r.stars - prevStars);
+      if (starsGained > 0) {
+        awardSeeds(starsGained * 15, "Did well in TalkQuest");
+      }
+      setCompleted((c) => ({ ...c, [scenarioId]: Math.max(c[scenarioId] || 0, r.stars) }));
+      setScreen("end");
+    }
+  }
+
+  const turn = shuffledTurns[turnIdx];
+
+  return (
+    <div className="min-h-screen w-full px-4 py-6" style={{ background: C.paper, ...ROUNDED }}>
+      <div className="mx-auto flex max-w-xl flex-col gap-4">
+        {screen !== "home" && scenario && (
+          <button
+            onClick={() => setScreen("home")}
+            className="self-start rounded-full px-3 py-1 text-xs font-bold focus:outline-none focus-visible:ring-4"
+            style={{ background: C.card, color: C.ink, border: `1.5px solid ${C.ink}` }}
+          >
+            ← All scenarios
+          </button>
+        )}
+
+        {screen === "home" && <HomeScreen onPick={startScenario} completed={completed} />}
+
+        {screen === "intro" && scenario && (
+          <div className="flex flex-col gap-4">
+            <div
+              className="rounded-2xl p-5"
+              style={{ background: C.card, border: `2px solid ${C.ink}`, boxShadow: `4px 4px 0 ${C.ink}` }}
+            >
+              <div className="mb-1 flex items-center gap-2">
+                <span className="text-3xl" aria-hidden="true">{scenario.emoji}</span>
+                <h2 className="text-xl font-extrabold" style={{ color: C.ink }}>
+                  {scenario.title}
+                </h2>
+              </div>
+              <p className="text-[15px]" style={{ color: C.ink }}>{scenario.setup}</p>
+              <p className="mt-3 rounded-xl px-3 py-2 text-sm font-bold" style={{ background: C.paper, color: C.ink, border: `1.5px dashed ${C.ink}` }}>
+                🎯 Your goal: {scenario.goal}
+              </p>
+            </div>
+            <button
+              onClick={() => setScreen("play")}
+              className="rounded-xl px-5 py-3 text-base font-extrabold focus:outline-none focus-visible:ring-4"
+              style={{ background: C.coral, color: "#fff", border: `2px solid ${C.ink}`, boxShadow: `3px 3px 0 ${C.ink}` }}
+            >
+              Start the conversation
+            </button>
+          </div>
+        )}
+
+        {screen === "play" && scenario && turn && (
+          <div className="flex flex-col gap-4">
+            <TrustMeter trust={trust} adult={scenario.adult} />
+
+            <div className="flex flex-col gap-3">
+              {history.slice(-1).map((h, i) => (
+                <div key={i} className="flex flex-col gap-3 opacity-60">
+                  <Bubble who="npc" emoji={scenario.emoji}>{h.npc}</Bubble>
+                  <Bubble who="you">{h.you}</Bubble>
+                </div>
+              ))}
+              <Bubble who="npc" emoji={scenario.emoji}>{turn.npc}</Bubble>
+              {picked && <Bubble who="you">{picked.text}</Bubble>}
+            </div>
+
+            {!picked && (
+              <div className="flex flex-col gap-2">
+                <div className="text-xs font-bold uppercase tracking-wider" style={{ color: C.inkSoft }}>
+                  What do you say?
+                </div>
+                {turn.choices.map((c, i) => (
+                  <button
+                    key={i}
+                    onClick={() => choose(c)}
+                    className="rounded-2xl px-4 py-3 text-left text-[15px] font-semibold leading-snug transition-transform hover:-translate-y-0.5 focus:outline-none focus-visible:ring-4"
+                    style={{ background: C.card, color: C.ink, border: `2px solid ${C.ink}`, boxShadow: `2px 2px 0 ${C.ink}` }}
+                  >
+                    “{c.text}”
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {picked && (
+              <div className="flex flex-col gap-3">
+                <div
+                  className="rounded-2xl p-4"
+                  style={{ background: C.card, border: `2px solid ${QUALITY_STYLE[picked.quality].color}`, boxShadow: `3px 3px 0 ${QUALITY_STYLE[picked.quality].color}` }}
+                >
+                  <div className="mb-1 flex items-center justify-between">
+                    <span className="text-sm font-extrabold" style={{ color: QUALITY_STYLE[picked.quality].color }}>
+                      {QUALITY_STYLE[picked.quality].icon} {QUALITY_STYLE[picked.quality].tag}
+                    </span>
+                    <span className="text-xs font-bold" style={{ color: picked.delta >= 0 ? C.mint : C.rose }}>
+                      {picked.delta >= 0 ? `+${picked.delta}` : picked.delta} trust
+                    </span>
+                  </div>
+                  <p className="text-sm leading-relaxed" style={{ color: C.ink }}>
+                    {picked.feedback}
+                  </p>
+                  <p className="mt-2 text-xs font-bold uppercase tracking-wider" style={{ color: C.inkSoft }}>
+                    Skill: {picked.skill}
+                  </p>
+                </div>
+                <button
+                  onClick={nextTurn}
+                  className="self-end rounded-xl px-5 py-2.5 text-sm font-extrabold focus:outline-none focus-visible:ring-4"
+                  style={{ background: C.ink, color: "#fff", border: `2px solid ${C.ink}`, boxShadow: `3px 3px 0 ${C.coral}` }}
+                >
+                  {turnIdx + 1 < shuffledTurns.length ? "Continue →" : "See how it went →"}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {screen === "end" && scenario && (
+          <EndScreen
+            scenario={scenario}
+            trust={trust}
+            greats={greats}
+            skills={skills}
+            onReplay={() => startScenario(scenario.id)}
+            onHome={() => setScreen("home")}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<TalkQuest />);
+  </script>
+</body>
+</html>
