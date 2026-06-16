@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>For grown-ups · Little Clearing 🌿</title>
+<meta name="description" content="The thinking behind Little Clearing — gentle games that quietly build the skills kids would otherwise only meet in a therapist's office." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#FBF7EF; --sky:#DCEAF0; --sky-deep:#C7DEE6;
+    --sage:#9FC1A8; --sage-soft:#E4EFE3;
+    --ink:#2C4A52; --ink-soft:#5E7C82;
+    --peach:#F0A878; --peach-deep:#E08E5C;
+    --card:#FFFFFF; --line:#E6E0D2;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    font-family:'Nunito', system-ui, sans-serif; color:var(--ink);
+    background:var(--paper); -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  }
+  .display{ font-family:'Baloo 2','Nunito',sans-serif; }
+
+  .sky{
+    position:fixed; inset:0; z-index:-2;
+    background:linear-gradient(180deg, var(--sky) 0%, var(--sky-deep) 34%, var(--paper) 70%);
+    background-size:100% 200%; animation:drift 26s ease-in-out infinite alternate;
+  }
+  @keyframes drift{ from{ background-position:50% 0%; } to{ background-position:50% 24%; } }
+  .sun{
+    position:fixed; top:-90px; right:-60px; z-index:-1; width:280px; height:280px; border-radius:50%;
+    background:radial-gradient(circle at center, rgba(244,211,94,.45) 0%, rgba(244,211,94,.14) 45%, rgba(244,211,94,0) 70%);
+    animation:breathe 11s ease-in-out infinite alternate;
+  }
+  @keyframes breathe{ from{ transform:scale(1); opacity:.85; } to{ transform:scale(1.12); opacity:1; } }
+  .blob{ position:fixed; z-index:-1; border-radius:50%; filter:blur(2px); opacity:.45; }
+  .blob.a{ width:120px; height:120px; left:-36px; top:28%; background:var(--sage-soft); animation:fl 15s ease-in-out infinite alternate; }
+  .blob.b{ width:80px; height:80px; right:6%; bottom:14%; background:#FCE9D6; animation:fl 18s ease-in-out infinite alternate; }
+  @keyframes fl{ from{ transform:translateY(0); } to{ transform:translateY(22px); } }
+
+  .wrap{ max-width:680px; margin:0 auto; padding:0 24px; }
+
+  header.top{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:26px 0 6px; max-width:680px; margin:0 auto; padding-left:24px; padding-right:24px;
+  }
+  header.top a.home{ display:flex; align-items:center; gap:9px; text-decoration:none; color:var(--ink); }
+  header.top .leaf{ font-size:23px; }
+  header.top .name{ font-size:20px; font-weight:700; }
+  header.top a.back{
+    text-decoration:none; color:var(--ink-soft); font-weight:600; font-size:14px;
+    padding:8px 15px; border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,.55);
+  }
+
+  .hero{ text-align:center; padding:40px 0 8px; }
+  .eyebrow{
+    font-size:13px; letter-spacing:2px; text-transform:uppercase;
+    color:var(--peach-deep); font-weight:700; margin-bottom:14px;
+  }
+  .hero h1{ font-size:clamp(30px,5.4vw,44px); margin:0 0 16px; line-height:1.1; }
+  .hero p{ font-size:clamp(16px,2.3vw,19px); color:var(--ink-soft); line-height:1.6; max-width:560px; margin:0 auto; }
+
+  .panel{
+    background:var(--card); border:1px solid var(--line); border-radius:24px;
+    padding:30px 30px; margin:30px 0; box-shadow:0 10px 28px rgba(44,74,82,.06);
+  }
+  .panel h2{ font-family:'Baloo 2',sans-serif; font-size:22px; margin:0 0 12px; color:var(--ink); }
+  .panel p{ color:var(--ink-soft); line-height:1.7; margin:0 0 14px; font-size:16px; }
+  .panel p:last-child{ margin-bottom:0; }
+  .panel p strong{ color:var(--ink); font-weight:700; }
+
+  .skills{ display:grid; grid-template-columns:1fr; gap:14px; margin:18px 0 0; }
+  .skill{ display:flex; gap:14px; align-items:flex-start; }
+  .skill .ico{
+    flex:0 0 auto; width:42px; height:42px; border-radius:13px;
+    display:flex; align-items:center; justify-content:center; font-size:20px;
+    background:var(--sage-soft);
+  }
+  .skill.b .ico{ background:#FBE6DE; }
+  .skill .body h3{ font-family:'Baloo 2',sans-serif; font-size:17px; margin:2px 0 4px; }
+  .skill .body p{ margin:0; font-size:15px; color:var(--ink-soft); line-height:1.55; }
+
+  .note{
+    background:var(--sage-soft); border:none; border-radius:20px; padding:22px 26px;
+    margin:26px 0; color:#3C5A45;
+  }
+  .note p{ margin:0; line-height:1.65; font-size:15.5px; }
+  .note strong{ color:#2F4A38; }
+
+  footer{ text-align:center; padding:34px 0 44px; color:var(--ink-soft); font-size:14px; }
+  footer a{ color:var(--peach-deep); text-decoration:none; font-weight:700; }
+
+  @media (prefers-reduced-motion: reduce){
+    .sky,.sun,.blob{ animation:none !important; }
+  }
+</style>
+</head>
+<body>
+  <div class="sky"></div>
+  <div class="sun"></div>
+  <div class="blob a"></div>
+  <div class="blob b"></div>
+
+  <header class="top">
+    <a class="home" href="index.html">
+      <span class="leaf">🌿</span>
+      <span class="name display">Little Clearing</span>
+    </a>
+    <a class="back" href="index.html">← Back to games</a>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow display">For grown-ups</div>
+      <h1 class="display">The quiet idea behind the play.</h1>
+      <p>Little Clearing was built on a simple belief: the skills that help children feel steadier in the world shouldn't only live in a therapist's office. They can grow gently, through play, in a place that never feels like a lesson.</p>
+    </section>
+
+    <div class="panel">
+      <h2>Why "therapy through gaming"</h2>
+      <p>Plenty of kids — and honestly, plenty of adults — go quiet at the word <em>therapy</em>. It can feel heavy, or like something's wrong. So a child who would benefit enormously from learning to name a feeling, sit with a hard choice, or rehearse a tough conversation often never gets the chance to practise any of it.</p>
+      <p>These games take a softer road. A child thinks they're running a lemonade stand or talking their way through a tricky moment with a parent. What they're <strong>actually</strong> doing is building emotional regulation, decision-making, and self-confidence — the same muscles a good counsellor would help them strengthen, just wrapped in something that feels like fun.</p>
+      <p>No pressure. No labels. No "now let's talk about your feelings." Just a calm clearing where those skills can quietly take root.</p>
+    </div>
+
+    <div class="panel">
+      <h2>What the games gently build</h2>
+      <div class="skills">
+        <div class="skill">
+          <div class="ico">🍋</div>
+          <div class="body">
+            <h3>Money Quest</h3>
+            <p>Confidence and patience with money — earning, waiting, planning, and recognising when something's too good to be true. Practical resilience, dressed up as a game.</p>
+          </div>
+        </div>
+        <div class="skill b">
+          <div class="ico">💬</div>
+          <div class="body">
+            <h3>TalkQuest</h3>
+            <p>Rehearsing the conversations that scare us — owning a mistake, asking for help, being honest. A safe place to practise brave words before they're needed for real.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note">
+      <p><strong>A gentle, honest note:</strong> these games are a warm supplement, not a replacement for professional care. If your child is struggling in a way that worries you, please reach out to a doctor, counsellor, or trusted mental-health professional. Little Clearing is here to help on the everyday days — not to stand in for real support when it's needed.</p>
+    </div>
+
+    <div class="panel">
+      <h2>A safe little corner</h2>
+      <p>There are no ads, no chat with strangers, and nothing to buy. Each game runs right in the browser, nothing is collected about your child, and the whole place is built to feel calm rather than overstimulating.</p>
+      <p>It's meant to be a spot you can hand your child without a second thought — and maybe even sit and play alongside them.</p>
+    </div>
+  </main>
+
+  <footer>
+    Made with ♥ for curious kids · <a href="index.html">Back to the games →</a>
+  </footer>
+</body>
+</html>
