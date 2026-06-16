@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Money Quest 🍋 — Learn money skills, earn coins</title>
+  <meta name="description" content="A free money-smarts game for kids: earn coins, build streaks, and watch compound interest grow your jar." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js" crossorigin></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>body { margin: 0; }</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+const { useState, useEffect } = React;
+
+// ---------- GAME CONTENT ----------
+const LEVELS = [
+  {
+    id: 0,
+    title: "Earning Money",
+    emoji: "🍋",
+    tag: "Where money comes from",
+    badge: "Lemonade Boss",
+    lesson: [
+      "Money doesn't grow on trees — people earn it by doing something valuable for someone else. That could be a job, chores, babysitting, or selling lemonade.",
+      "The more useful your skills are, the more you can earn. That's why learning new things is one of the best money moves you can ever make.",
+    ],
+    questions: [
+      {
+        q: "You really want a game that costs $60. What's the smartest FIRST step?",
+        options: [
+          "Ask your parents every day until they give in",
+          "Find ways to earn it — chores, a lemonade stand, helping neighbors",
+          "Borrow it from a friend and worry later",
+          "Wait for it to magically appear",
+        ],
+        correct: 1,
+        explain:
+          "Earning it yourself means nobody can take it back, and you'll value the game more. Plus you just learned how to make money!",
+      },
+      {
+        q: "Maya walks dogs for $10 per dog. She walks 3 dogs every Saturday. How much after 2 Saturdays?",
+        options: ["$30", "$50", "$60", "$80"],
+        correct: 2,
+        explain:
+          "3 dogs × $10 = $30 each Saturday. Two Saturdays = $60. Small jobs add up fast when you keep showing up!",
+      },
+      {
+        q: "Which of these grows your earning power the MOST over time?",
+        options: [
+          "Buying lottery tickets",
+          "Learning new skills",
+          "Complaining about prices",
+          "Hiding money under your bed",
+        ],
+        correct: 1,
+        explain:
+          "Skills are like a money machine you carry in your brain. The more you can do, the more people will pay you to do it.",
+      },
+    ],
+  },
+  {
+    id: 1,
+    title: "Needs vs Wants",
+    emoji: "🎯",
+    tag: "Spending with a brain",
+    badge: "Smart Shopper",
+    lesson: [
+      "A NEED is something you must have to live and be okay: food, water, a safe home, school supplies.",
+      "A WANT is something fun or nice to have: game skins, candy, the newest sneakers. Wants aren't bad — but needs always come first.",
+    ],
+    questions: [
+      {
+        q: "Which one of these is a NEED?",
+        options: [
+          "A rare game skin",
+          "Concert tickets",
+          "Food for the week",
+          "The newest phone",
+        ],
+        correct: 2,
+        explain:
+          "You literally can't function without food. Everything else on that list is a want — fun, but optional.",
+      },
+      {
+        q: "You have $20. School lunches this week cost $15. A sticker pack costs $8. What do you do?",
+        options: [
+          "Buy the stickers — they're limited edition!",
+          "Cover lunch first, then see what's left",
+          "Skip lunch two days to afford both",
+          "Spend it all and figure it out later",
+        ],
+        correct: 1,
+        explain:
+          "Needs first, always. After lunch is covered you have $5 left — not enough for stickers yet, but you didn't go hungry. That's a win.",
+      },
+      {
+        q: "Are wants bad?",
+        options: [
+          "Yes, never buy anything fun",
+          "No — wants are fine AFTER needs are covered and some money is saved",
+          "Yes, fun is a scam",
+          "Only on weekends",
+        ],
+        correct: 1,
+        explain:
+          "Money is also for enjoying life! The trick is the order: needs → savings → wants. Get the order right and you can have fun guilt-free.",
+      },
+    ],
+  },
+  {
+    id: 2,
+    title: "Budgeting",
+    emoji: "🗺️",
+    tag: "A plan for every dollar",
+    badge: "Budget Captain",
+    lesson: [
+      "A budget is just a plan that tells your money where to go — instead of wondering where it went.",
+      "An easy starter plan is Save–Spend–Share: put some away for later, keep some for now, and set a little aside to help others.",
+    ],
+    questions: [
+      {
+        q: "You get $40 for your birthday. Which plan follows Save–Spend–Share?",
+        options: [
+          "$40 on candy, day one",
+          "$15 saved, $20 to spend, $5 to share or donate",
+          "$40 hidden forever, never touched",
+          "$40 loaned to your cousin at 50% interest",
+        ],
+        correct: 1,
+        explain:
+          "That split covers the future (save), the fun (spend), and kindness (share). The exact numbers can change — having a plan is what matters.",
+      },
+      {
+        q: "What IS a budget, really?",
+        options: [
+          "A punishment for liking nice things",
+          "A plan for your money",
+          "Something only adults with boring jobs need",
+          "An app that yells at you",
+        ],
+        correct: 1,
+        explain:
+          "That's it. A plan. People with budgets aren't less fun — they just know exactly how much fun they can afford.",
+      },
+      {
+        q: "Oops — you spent your whole week's snack money in two days. Best move?",
+        options: [
+          "Give up, budgets don't work",
+          "Borrow snack money and repeat next week",
+          "Track what happened and adjust next week's plan",
+          "Blame the vending machine",
+        ],
+        correct: 2,
+        explain:
+          "Budgets aren't about being perfect — they're about noticing and adjusting. Every pro budgeter has blown a budget. They just tried again.",
+      },
+    ],
+  },
+  {
+    id: 3,
+    title: "Compound Interest",
+    emoji: "🌱",
+    tag: "Money that grows money",
+    badge: "Interest Wizard",
+    lesson: [
+      "When you save money in a bank, the bank pays YOU a little extra called interest. It's like your money planted seeds.",
+      "Compound interest is the magic part: next year you earn interest on your interest. Start early and small amounts become huge — time is your superpower.",
+    ],
+    questions: [
+      {
+        q: "You save $100 at 10% interest per year. How much after 1 year?",
+        options: ["$100", "$101", "$110", "$200"],
+        correct: 2,
+        explain: "10% of $100 is $10, so you'd have $110 — and you didn't have to do anything. Your money worked while you slept.",
+      },
+      {
+        q: "Year 2: your $110 earns 10% again. Why do you earn MORE than $10 this time?",
+        options: [
+          "The bank made a mistake",
+          "You earn interest on your interest — that's compounding",
+          "Inflation",
+          "You don't — it's always exactly $10",
+        ],
+        correct: 1,
+        explain:
+          "10% of $110 is $11. The $10 you earned last year is now earning its own money. That snowball gets bigger every single year.",
+      },
+      {
+        q: "Who likely ends up with MORE money at 65?",
+        options: [
+          "Sam: saves $50/month starting at 16",
+          "Alex: saves $200/month starting at 40",
+          "Neither, saving is pointless",
+          "Whoever finds money on the ground",
+        ],
+        correct: 0,
+        explain:
+          "Sam wins in most scenarios! Starting 24 years earlier gives compounding way more time to snowball. When you're young, TIME beats AMOUNT.",
+      },
+    ],
+  },
+  {
+    id: 4,
+    title: "Credit & Debt",
+    emoji: "🧾",
+    tag: "Borrowed money bites back",
+    badge: "Debt Dodger",
+    lesson: [
+      "Credit means borrowing money you promise to pay back — usually with interest added on top. This time, interest works AGAINST you.",
+      "Debt isn't always evil (borrowing for education or a home can make sense), but borrowing for snacks and skins is how people get stuck.",
+    ],
+    questions: [
+      {
+        q: "What is a credit card, really?",
+        options: [
+          "Free money from the bank",
+          "A loan you must pay back, often with interest",
+          "A magic rectangle",
+          "A gift card that refills itself",
+        ],
+        correct: 1,
+        explain:
+          "Every swipe is a mini-loan. Pay it back fast and it's a handy tool. Pay it back slowly and the interest piles up against you.",
+      },
+      {
+        q: "If you only pay the tiny 'minimum payment' on credit card debt, what happens?",
+        options: [
+          "The debt disappears eventually, no big deal",
+          "Interest keeps growing the debt — you can owe way more than you spent",
+          "The bank thanks you and lowers the price",
+          "Nothing, minimums are a cheat code",
+        ],
+        correct: 1,
+        explain:
+          "Minimum payments mostly cover interest, barely touching what you owe. A $500 TV can quietly become $900+. Banks love minimum payers.",
+      },
+      {
+        q: "Which is the most sensible reason to borrow money?",
+        options: [
+          "Daily bubble tea",
+          "Education or training that raises what you can earn",
+          "A cooler phone than your friend's",
+          "In-game currency",
+        ],
+        correct: 1,
+        explain:
+          "Good debt buys things that grow in value or grow YOU. Bad debt buys things that are gone by Tuesday.",
+      },
+    ],
+  },
+  {
+    id: 5,
+    title: "Scam Defense",
+    emoji: "🛡️",
+    tag: "Protect your coins",
+    badge: "Scam Slayer",
+    lesson: [
+      "Scammers love targeting young people online — fake giveaways, 'free' gift cards, messages pretending to be friends or famous people.",
+      "Golden rules: if it sounds too good to be true, it is. Never share passwords or PINs. Real prizes never ask YOU to pay first.",
+    ],
+    questions: [
+      {
+        q: "A DM says: 'Send a $50 gift card and we'll send back $500!' What is this?",
+        options: [
+          "An amazing investment",
+          "A scam — real money doesn't multiply by magic",
+          "A bank promotion",
+          "Worth trying once with small money",
+        ],
+        correct: 1,
+        explain:
+          "100% scam. The moment you send the card, they vanish. Nobody hands strangers free money — that's the oldest trick on the internet.",
+      },
+      {
+        q: "Which of these should you NEVER share, even with someone claiming to be your bank?",
+        options: [
+          "Your favorite color",
+          "Your passwords and PIN codes",
+          "Your opinion on pineapple pizza",
+          "Your high score",
+        ],
+        correct: 1,
+        explain:
+          "Real banks never ask for your password or PIN. Anyone who does is a scammer — hang up, block, and tell a trusted adult.",
+      },
+      {
+        q: "An online 'friend' you've never met says they have a guaranteed way to double your money fast. You should…",
+        options: [
+          "Send a little to test it",
+          "Be suspicious — 'guaranteed' + 'fast' = classic scam recipe",
+          "Send everything for maximum profit",
+          "Ask them to double it twice",
+        ],
+        correct: 1,
+        explain:
+          "No real investment is guaranteed AND fast. That combo is scammer perfume. Trust your gut and talk to an adult you trust.",
+      },
+    ],
+  },
+];
+
+const COIN_CORRECT = 10;
+const COIN_LEARN = 3;
+const STREAK_BONUS = 5;
+const JAR_MAX = 420;
+
+// ---------- STYLES ----------
+const css = `
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap');
+
+.mq-root { font-family: 'Nunito', system-ui, sans-serif; }
+.mq-display { font-family: 'Fredoka', 'Nunito', sans-serif; }
+
+@keyframes mq-pop { 0% { transform: scale(0.6); opacity: 0; } 70% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
+@keyframes mq-float-up { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-34px); opacity: 0; } }
+@keyframes mq-coin-drop { 0% { transform: translateY(-26px); opacity: 0; } 60% { opacity: 1; } 100% { transform: translateY(0); opacity: 1; } }
+@keyframes mq-sparkle { 0%,100% { opacity: 0.3; transform: scale(0.9);} 50% { opacity: 1; transform: scale(1.15);} }
+@keyframes mq-wiggle { 0%,100% { transform: rotate(0deg);} 25% { transform: rotate(-4deg);} 75% { transform: rotate(4deg);} }
+
+.mq-pop { animation: mq-pop 0.35s ease-out both; }
+.mq-float { animation: mq-float-up 0.9s ease-out both; }
+.mq-coin { animation: mq-coin-drop 0.5s ease-out both; }
+.mq-sparkle { animation: mq-sparkle 1.4s ease-in-out infinite; }
+.mq-wiggle { animation: mq-wiggle 0.6s ease-in-out; }
+
+.mq-jarfill { transition: height 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .mq-pop, .mq-float, .mq-coin, .mq-sparkle, .mq-wiggle { animation: none !important; }
+  .mq-jarfill { transition: none !important; }
+}
+`;
+
+const C = {
+  sky: "#EAF4FE",
+  ink: "#1E3A5F",
+  inkSoft: "#5A7290",
+  sunny: "#FFC83D",
+  sunnyDark: "#E0A714",
+  berry: "#FF6B6B",
+  leaf: "#2FB873",
+  leafDark: "#1F8A55",
+  card: "#FFFFFF",
+  line: "#D7E6F5",
+};
+
+// ---------- SMALL COMPONENTS ----------
+function Awning() {
+  const stripes = Array.from({ length: 12 });
+  return (
+    <div className="flex w-full overflow-hidden" style={{ height: 18 }}>
+      {stripes.map((_, i) => (
+        <div key={i} className="flex-1" style={{ background: i % 2 === 0 ? C.berry : "#FFF6F6", borderBottomLeftRadius: 9, borderBottomRightRadius: 9, marginRight: 2 }} />
+      ))}
+    </div>
+  );
+}
+
+function Jar({ coins }) {
+  const pct = Math.min(coins / JAR_MAX, 1);
+  const fillH = 8 + pct * 50;
+  return (
+    <svg width="56" height="70" viewBox="0 0 56 70" aria-label={`Coin jar, ${coins} coins`}>
+      <rect x="14" y="2" width="28" height="7" rx="2.5" fill={C.inkSoft} />
+      <path d="M10 12 h36 v44 a12 12 0 0 1 -12 12 h-12 a12 12 0 0 1 -12 -12 z" fill="#FFFFFF" stroke={C.line} strokeWidth="2" />
+      <clipPath id="jarclip">
+        <path d="M12 13 h32 v42 a11 11 0 0 1 -11 11 h-10 a11 11 0 0 1 -11 -11 z" />
+      </clipPath>
+      <g clipPath="url(#jarclip)">
+        <rect className="mq-jarfill" x="10" y={66 - fillH} width="36" height={fillH} fill={C.sunny} />
+        <circle cx="22" cy={64 - fillH} r="4" fill={C.sunnyDark} opacity={pct > 0.05 ? 1 : 0} />
+        <circle cx="34" cy={66 - fillH} r="4" fill={C.sunnyDark} opacity={pct > 0.12 ? 1 : 0} />
+      </g>
+    </svg>
+  );
+}
+
+function CoinBurst({ amount, burstKey }) {
+  if (!amount) return null;
+  return (
+    <span key={burstKey} className="mq-float mq-display absolute -top-1 right-0 text-sm font-bold" style={{ color: C.leafDark }}>
+      +{amount} 🪙
+    </span>
+  );
+}
+
+// ---------- MAIN APP ----------
+function MoneyQuest() {
+  const [screen, setScreen] = useState("home");
+  const [coins, setCoins] = useState(0);
+  const [streak, setStreak] = useState(0);
+  const [bestStreak, setBestStreak] = useState(0);
+  const [completed, setCompleted] = useState([]);
+  const [levelIdx, setLevelIdx] = useState(0);
+  const [qIdx, setQIdx] = useState(0);
+  const [picked, setPicked] = useState(null);
+  const [levelCoins, setLevelCoins] = useState(0);
+  const [interestEarned, setInterestEarned] = useState(0);
+  const [burst, setBurst] = useState({ amount: 0, key: 0 });
+
+  const level = LEVELS[levelIdx];
+
+  const addCoins = (n) => {
+    setCoins((c) => c + n);
+    setLevelCoins((c) => c + n);
+    setBurst((b) => ({ amount: n, key: b.key + 1 }));
+  };
+
+  const startLevel = (i) => {
+    setLevelIdx(i);
+    setQIdx(0);
+    setPicked(null);
+    setLevelCoins(0);
+    setScreen("lesson");
+  };
+
+  const pick = (i) => {
+    if (picked !== null) return;
+    setPicked(i);
+    const right = i === level.questions[qIdx].correct;
+    if (right) {
+      const bonus = streak + 1 >= 3 ? STREAK_BONUS : 0;
+      addCoins(COIN_CORRECT + bonus);
+      setStreak((s) => {
+        const ns = s + 1;
+        setBestStreak((b) => Math.max(b, ns));
+        return ns;
+      });
+    } else {
+      addCoins(COIN_LEARN);
+      setStreak(0);
+    }
+  };
+
+  const next = () => {
+    if (qIdx + 1 < level.questions.length) {
+      setQIdx(qIdx + 1);
+      setPicked(null);
+    } else {
+      // level complete → interest time (the lesson IS the mechanic)
+      const interest = Math.max(1, Math.round(coins * 0.1));
+      setInterestEarned(interest);
+      setCoins((c) => c + interest);
+      setCompleted((arr) => (arr.includes(level.id) ? arr : [...arr, level.id]));
+      setScreen("interest");
+    }
+  };
+
+  const allDone = completed.length === LEVELS.length;
+
+  const resetGame = () => {
+    setCoins(0); setStreak(0); setBestStreak(0); setCompleted([]);
+    setLevelIdx(0); setQIdx(0); setPicked(null); setScreen("home");
+  };
+
+  // ---------- SCREENS ----------
+  const Header = () => (
+    <div className="sticky top-0 z-10" style={{ background: C.sky }}>
+      <Awning />
+      <div className="flex items-center justify-between px-4 py-2 max-w-md mx-auto">
+        <button onClick={() => setScreen(screen === "home" ? "home" : "map")} className="mq-display text-lg font-bold" style={{ color: C.ink }}>
+          🍋 Money Quest
+        </button>
+        <div className="flex items-center gap-3">
+          <div className="relative flex items-center gap-1 px-3 py-1 rounded-full" style={{ background: "#FFF3CF", border: `2px solid ${C.sunny}` }}>
+            <span aria-hidden>🪙</span>
+            <span className="mq-display font-bold" style={{ color: C.ink }}>{coins}</span>
+            <CoinBurst amount={burst.amount} burstKey={burst.key} />
+          </div>
+          <div className="flex items-center gap-1 px-3 py-1 rounded-full" style={{ background: streak >= 3 ? "#FFE2E2" : "#EEF4FB", border: `2px solid ${streak >= 3 ? C.berry : C.line}` }}>
+            <span aria-hidden>🔥</span>
+            <span className="mq-display font-bold" style={{ color: C.ink }}>{streak}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const Home = () => (
+    <div className="mq-pop max-w-md mx-auto px-5 pt-10 pb-16 text-center">
+      <div className="text-6xl mb-3 mq-wiggle inline-block">🍋</div>
+      <h1 className="mq-display text-4xl font-bold mb-2" style={{ color: C.ink }}>Money Quest</h1>
+      <p className="text-base mb-1 font-bold" style={{ color: C.inkSoft }}>Run your own lemonade-stand fortune.</p>
+      <p className="text-sm mb-8" style={{ color: C.inkSoft }}>
+        Answer money challenges, earn coins, and watch your jar grow interest — for real, inside the game.
+      </p>
+      <div className="rounded-2xl p-4 mb-8 text-left" style={{ background: C.card, border: `2px solid ${C.line}` }}>
+        <p className="mq-display font-bold mb-2" style={{ color: C.ink }}>How it works</p>
+        <p className="text-sm mb-1" style={{ color: C.inkSoft }}>🪙 Correct answers earn 10 coins. Wrong ones still earn 3 — learning pays.</p>
+        <p className="text-sm mb-1" style={{ color: C.inkSoft }}>🔥 A 3+ streak adds bonus coins.</p>
+        <p className="text-sm" style={{ color: C.inkSoft }}>🌱 Finish a level and your whole jar earns 10% interest. That's compounding!</p>
+      </div>
+      <button
+        onClick={() => setScreen("map")}
+        className="mq-display w-full py-4 rounded-2xl text-xl font-bold text-white"
+        style={{ background: C.leaf, boxShadow: `0 4px 0 ${C.leafDark}` }}
+      >
+        Start the Quest
+      </button>
+    </div>
+  );
+
+  const Map = () => (
+    <div className="mq-pop max-w-md mx-auto px-5 pt-6 pb-16">
+      <div className="flex items-end justify-between mb-5">
+        <div>
+          <h2 className="mq-display text-2xl font-bold" style={{ color: C.ink }}>Your Quest Map</h2>
+          <p className="text-sm" style={{ color: C.inkSoft }}>{completed.length} of {LEVELS.length} levels complete</p>
+        </div>
+        <Jar coins={coins} />
+      </div>
+      {allDone && (
+        <button onClick={() => setScreen("done")} className="mq-display w-full mb-4 py-3 rounded-2xl font-bold text-white" style={{ background: C.sunnyDark, boxShadow: `0 4px 0 #A87C0A` }}>
+          🏆 See your final results
+        </button>
+      )}
+      <div className="flex flex-col gap-3">
+        {LEVELS.map((lv, i) => {
+          const done = completed.includes(lv.id);
+          const locked = i > 0 && !completed.includes(LEVELS[i - 1].id);
+          return (
+            <button
+              key={lv.id}
+              disabled={locked}
+              onClick={() => startLevel(i)}
+              className="flex items-center gap-4 p-4 rounded-2xl text-left"
+              style={{
+                background: locked ? "#F2F6FB" : C.card,
+                border: `2px solid ${done ? C.leaf : C.line}`,
+                opacity: locked ? 0.55 : 1,
+                boxShadow: locked ? "none" : "0 2px 0 " + C.line,
+              }}
+            >
+              <span className="text-3xl" aria-hidden>{locked ? "🔒" : lv.emoji}</span>
+              <span className="flex-1">
+                <span className="mq-display block font-bold" style={{ color: C.ink }}>
+                  Level {i + 1}: {lv.title}
+                </span>
+                <span className="text-sm" style={{ color: C.inkSoft }}>{lv.tag}</span>
+              </span>
+              {done && <span className="mq-display text-xs font-bold px-2 py-1 rounded-full" style={{ background: "#E2F7EC", color: C.leafDark }}>✓ {lv.badge}</span>}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+
+  const Lesson = () => (
+    <div className="mq-pop max-w-md mx-auto px-5 pt-6 pb-16">
+      <p className="mq-display text-sm font-bold mb-1" style={{ color: C.inkSoft }}>Level {levelIdx + 1}</p>
+      <h2 className="mq-display text-3xl font-bold mb-4" style={{ color: C.ink }}>{level.emoji} {level.title}</h2>
+      <div className="rounded-2xl p-5 mb-6" style={{ background: C.card, border: `2px solid ${C.line}` }}>
+        {level.lesson.map((p, i) => (
+          <p key={i} className="text-base mb-3 last:mb-0 font-bold" style={{ color: C.ink, lineHeight: 1.55 }}>{p}</p>
+        ))}
+      </div>
+      <button
+        onClick={() => setScreen("quiz")}
+        className="mq-display w-full py-4 rounded-2xl text-lg font-bold text-white"
+        style={{ background: C.leaf, boxShadow: `0 4px 0 ${C.leafDark}` }}
+      >
+        I'm ready — quiz me!
+      </button>
+    </div>
+  );
+
+  const Quiz = () => {
+    const question = level.questions[qIdx];
+    const answered = picked !== null;
+    const right = answered && picked === question.correct;
+    return (
+      <div className="mq-pop max-w-md mx-auto px-5 pt-6 pb-16">
+        <div className="flex items-center justify-between mb-3">
+          <p className="mq-display text-sm font-bold" style={{ color: C.inkSoft }}>
+            {level.emoji} {level.title} · Question {qIdx + 1}/{level.questions.length}
+          </p>
+        </div>
+        <div className="flex gap-1 mb-5" role="progressbar" aria-valuenow={qIdx + 1} aria-valuemax={level.questions.length}>
+          {level.questions.map((_, i) => (
+            <div key={i} className="flex-1 rounded-full" style={{ height: 6, background: i <= qIdx ? C.sunny : C.line }} />
+          ))}
+        </div>
+        <h2 className="mq-display text-xl font-bold mb-5" style={{ color: C.ink, lineHeight: 1.35 }}>{question.q}</h2>
+        <div className="flex flex-col gap-3 mb-5">
+          {question.options.map((opt, i) => {
+            let bg = C.card, border = C.line, color = C.ink;
+            if (answered && i === question.correct) { bg = "#E2F7EC"; border = C.leaf; color = C.leafDark; }
+            else if (answered && i === picked && !right) { bg = "#FFE9E9"; border = C.berry; color = "#B43B3B"; }
+            return (
+              <button
+                key={i}
+                onClick={() => pick(i)}
+                disabled={answered}
+                className="p-4 rounded-2xl text-left font-bold"
+                style={{ background: bg, border: `2px solid ${border}`, color, boxShadow: answered ? "none" : `0 2px 0 ${C.line}` }}
+              >
+                {opt}
+              </button>
+            );
+          })}
+        </div>
+        {answered && (
+          <div className="mq-pop rounded-2xl p-4 mb-5" style={{ background: right ? "#E2F7EC" : "#FFF3CF", border: `2px solid ${right ? C.leaf : C.sunny}` }}>
+            <p className="mq-display font-bold mb-1" style={{ color: C.ink }}>
+              {right ? (streak >= 3 ? `Correct! 🔥 Streak bonus! +${COIN_CORRECT + STREAK_BONUS} coins` : `Correct! +${COIN_CORRECT} coins`) : `Not quite — but +${COIN_LEARN} coins for learning`}
+            </p>
+            <p className="text-sm font-bold" style={{ color: C.inkSoft, lineHeight: 1.5 }}>{question.explain}</p>
+          </div>
+        )}
+        {answered && (
+          <button
+            onClick={next}
+            className="mq-display w-full py-4 rounded-2xl text-lg font-bold text-white"
+            style={{ background: C.leaf, boxShadow: `0 4px 0 ${C.leafDark}` }}
+          >
+            {qIdx + 1 < level.questions.length ? "Next question" : "Finish level"}
+          </button>
+        )}
+      </div>
+    );
+  };
+
+  const Interest = () => (
+    <div className="mq-pop max-w-md mx-auto px-5 pt-10 pb-16 text-center">
+      <div className="mq-sparkle text-5xl mb-2">✨</div>
+      <h2 className="mq-display text-3xl font-bold mb-2" style={{ color: C.ink }}>Interest Day!</h2>
+      <p className="text-base font-bold mb-6" style={{ color: C.inkSoft }}>
+        Level complete! While you played, your jar earned <span style={{ color: C.leafDark }}>10% interest</span>.
+      </p>
+      <div className="flex justify-center mb-4"><Jar coins={coins} /></div>
+      <div className="rounded-2xl p-5 mb-3" style={{ background: C.card, border: `2px solid ${C.leaf}` }}>
+        <p className="mq-display text-lg font-bold" style={{ color: C.ink }}>
+          Quiz coins: +{levelCoins} 🪙
+        </p>
+        <p className="mq-display text-lg font-bold" style={{ color: C.leafDark }}>
+          Interest: +{interestEarned} 🪙 — earned by doing nothing!
+        </p>
+        <p className="text-sm font-bold mt-2" style={{ color: C.inkSoft }}>
+          That's compound interest. The bigger your jar gets, the bigger every Interest Day becomes. This is exactly how real savings work.
+        </p>
+      </div>
+      <p className="mq-display text-sm font-bold mb-6" style={{ color: C.inkSoft }}>🏅 Badge earned: {level.badge}</p>
+      <button
+        onClick={() => setScreen(allDone ? "done" : "map")}
+        className="mq-display w-full py-4 rounded-2xl text-lg font-bold text-white"
+        style={{ background: C.leaf, boxShadow: `0 4px 0 ${C.leafDark}` }}
+      >
+        {allDone ? "See final results" : "Back to the map"}
+      </button>
+    </div>
+  );
+
+  const Done = () => (
+    <div className="mq-pop max-w-md mx-auto px-5 pt-10 pb-16 text-center">
+      <div className="text-6xl mb-3">🏆</div>
+      <h2 className="mq-display text-3xl font-bold mb-2" style={{ color: C.ink }}>Quest Complete!</h2>
+      <p className="text-base font-bold mb-6" style={{ color: C.inkSoft }}>You're officially money-smarter than most adults. Seriously.</p>
+      <div className="rounded-2xl p-5 mb-4 text-left" style={{ background: C.card, border: `2px solid ${C.sunny}` }}>
+        <p className="mq-display font-bold mb-2" style={{ color: C.ink }}>Final jar: {coins} 🪙 · Best streak: {bestStreak} 🔥</p>
+        {LEVELS.map((lv) => (
+          <p key={lv.id} className="text-sm font-bold mb-1" style={{ color: C.inkSoft }}>
+            {lv.emoji} {lv.title} → 🏅 {lv.badge}
+          </p>
+        ))}
+      </div>
+      <div className="rounded-2xl p-5 mb-6 text-left" style={{ background: "#E2F7EC", border: `2px solid ${C.leaf}` }}>
+        <p className="mq-display font-bold mb-2" style={{ color: C.leafDark }}>Take this with you:</p>
+        <p className="text-sm font-bold" style={{ color: C.ink, lineHeight: 1.6 }}>
+          Earn with your skills. Needs before wants. Give every dollar a plan. Start saving early — time is your superpower. Borrow carefully. And if it sounds too good to be true… it is. 🛡️
+        </p>
+      </div>
+      <button onClick={resetGame} className="mq-display w-full py-4 rounded-2xl text-lg font-bold text-white" style={{ background: C.leaf, boxShadow: `0 4px 0 ${C.leafDark}` }}>
+        Play again
+      </button>
+    </div>
+  );
+
+  return (
+    <div className="mq-root min-h-screen" style={{ background: C.sky }}>
+      <style>{css}</style>
+      <Header />
+      {screen === "home" && <Home />}
+      {screen === "map" && <Map />}
+      {screen === "lesson" && <Lesson />}
+      {screen === "quiz" && <Quiz />}
+      {screen === "interest" && <Interest />}
+      {screen === "done" && <Done />}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<MoneyQuest />);
+  </script>
+</body>
+</html>
