@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Spark Catcher ✨ — find what lights you up</title>
+<meta name="description" content="A quick, joyful game that helps kids discover what they love — building, art, helping, or exploring." />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
+<script src="seeds.js"></script>
+<style>
+  :root{
+    --paper:#FBF7EF; --sky:#DCEAF0; --sky-deep:#C7DEE6;
+    --sage:#9FC1A8; --sage-soft:#E4EFE3; --sage-line:#CFE3D0;
+    --ink:#2C4A52; --ink-soft:#5E7C82;
+    --peach:#F0A878; --peach-deep:#E08E5C;
+    --lemon:#F4D35E; --card:#FFFFFF; --line:#E6E0D2;
+    --builder:#E08E5C; --artist:#B58CC9; --helper:#E06B8B; --explorer:#3FA98C;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{ font-family:'Nunito',sans-serif; color:var(--ink);
+        background:linear-gradient(180deg,var(--sky),var(--paper) 75%); min-height:100vh; }
+  .display{ font-family:'Baloo 2',sans-serif; }
+
+  /* shared seeds bar */
+  #seeds-bar{ position:sticky; top:0; z-index:9999; display:flex; align-items:center;
+        justify-content:space-between; padding:8px 14px; background:var(--paper);
+        border-bottom:1px solid var(--line); font-family:'Baloo 2',sans-serif; }
+  #seeds-bar a, #seeds-bar .pill{ display:inline-flex; align-items:center; gap:7px;
+        text-decoration:none; color:var(--ink); font-weight:600; font-size:15px;
+        background:var(--sage-soft); border:1px solid var(--sage-line);
+        padding:6px 14px; border-radius:999px; }
+
+  .wrap{ max-width:560px; margin:0 auto; padding:26px 20px 70px; }
+
+  /* intro */
+  .intro{ text-align:center; padding-top:22px; }
+  .intro .big{ font-size:64px; margin-bottom:6px; }
+  .intro h1{ font-size:clamp(30px,6vw,42px); margin:0 0 10px; }
+  .intro p{ color:var(--ink-soft); font-size:17px; line-height:1.6; max-width:420px; margin:0 auto 26px; }
+  .btn{ font-family:'Baloo 2',sans-serif; font-weight:600; font-size:18px; border:none;
+        color:#fff; padding:15px 30px; border-radius:18px; cursor:pointer; transition:transform .15s; }
+  .btn:active{ transform:translateY(1px); }
+  .btn-sage{ background:var(--sage); box-shadow:0 4px 0 var(--sage); box-shadow:0 4px 0 #7FA489; }
+  .btn-peach{ background:var(--peach); box-shadow:0 4px 0 var(--peach-deep); }
+
+  /* play */
+  .play-head{ text-align:center; margin-bottom:14px; }
+  .play-head h2{ font-family:'Baloo 2',sans-serif; font-size:22px; margin:0 0 4px; }
+  .play-head p{ color:var(--ink-soft); margin:0; font-size:15px; }
+  .progress{ height:8px; background:var(--sage-soft); border-radius:999px; overflow:hidden; margin:14px 0 26px; }
+  .progress > div{ height:100%; background:var(--sage); border-radius:999px; transition:width .3s; }
+
+  .card-stage{ display:flex; flex-direction:column; align-items:center; gap:22px; }
+  .spark-card{ width:100%; max-width:360px; background:var(--card); border:2px solid var(--line);
+        border-radius:28px; padding:40px 24px; text-align:center; box-shadow:0 12px 30px rgba(44,74,82,.08);
+        animation:pop .35s ease-out both; }
+  @keyframes pop{ 0%{ transform:scale(.7); opacity:0;} 70%{ transform:scale(1.05);} 100%{ transform:scale(1); opacity:1;} }
+  .spark-card .emoji{ font-size:80px; line-height:1; margin-bottom:14px; display:block; }
+  .spark-card .label{ font-family:'Baloo 2',sans-serif; font-size:24px; }
+
+  .choice-row{ display:flex; gap:14px; width:100%; max-width:360px; }
+  .choice-row button{ flex:1; font-family:'Baloo 2',sans-serif; font-weight:600; font-size:17px;
+        border:none; border-radius:18px; padding:16px; cursor:pointer; transition:transform .12s; }
+  .choice-row button:active{ transform:scale(.96); }
+  .yes{ background:var(--sage); color:#fff; box-shadow:0 4px 0 #7FA489; }
+  .no{ background:#EEF4FB; color:var(--ink-soft); box-shadow:0 4px 0 var(--line); }
+
+  /* result */
+  .result{ text-align:center; padding-top:10px; animation:pop .4s ease-out both; }
+  .result .crown{ font-size:70px; margin-bottom:6px; }
+  .result h2{ font-family:'Baloo 2',sans-serif; font-size:34px; margin:0 0 4px; }
+  .result .tag{ display:inline-block; font-family:'Baloo 2',sans-serif; font-weight:600;
+        padding:6px 16px; border-radius:999px; color:#fff; margin-bottom:16px; font-size:15px; }
+  .result .blurb{ color:var(--ink-soft); font-size:17px; line-height:1.6; max-width:420px;
+        margin:0 auto 22px; }
+  .result-card{ background:var(--card); border:2px solid var(--line); border-radius:22px;
+        padding:22px; margin:0 auto 16px; max-width:420px; text-align:left; box-shadow:0 10px 28px rgba(44,74,82,.07); }
+  .result-card h3{ font-family:'Baloo 2',sans-serif; font-size:18px; margin:0 0 8px; }
+  .result-card p{ color:var(--ink-soft); margin:0 0 14px; line-height:1.55; font-size:15px; }
+  .result-card .gamebtn{ display:inline-flex; align-items:center; gap:8px; font-family:'Baloo 2',sans-serif;
+        font-weight:600; font-size:15px; padding:11px 18px; border-radius:14px; border:none; cursor:pointer; color:#fff; }
+  .soon{ display:inline-block; font-size:13px; font-weight:700; color:var(--ink-soft);
+        background:var(--sage-soft); border:1px solid var(--sage-line); padding:8px 14px; border-radius:999px; }
+  .runners{ font-size:14px; color:var(--ink-soft); margin-top:8px; }
+  .secondary-link{ display:inline-block; margin-top:18px; color:var(--ink-soft); font-weight:600;
+        text-decoration:none; font-size:14px; }
+</style>
+</head>
+<body>
+  <div id="seeds-bar">
+    <a href="index.html">🏡 Home</a>
+    <span class="pill">🌱 <span id="seeds-num">0</span> seeds</span>
+  </div>
+
+  <div class="wrap" id="app"></div>
+
+  <script>
+  (function(){
+    // ---- seeds helpers ----
+    function awardSeeds(n, why){ try{ if(window.Seeds){ window.Seeds.award(n,why); showToast(n);} }catch(e){} }
+    function updateBar(){ var el=document.getElementById('seeds-num'); if(el){ try{ el.textContent=(window.Seeds?window.Seeds.get():0);}catch(e){} } }
+    function showToast(n){
+      var t=document.getElementById('seed-toast');
+      if(!t){ t=document.createElement('div'); t.id='seed-toast';
+        t.style.cssText="position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(120px);background:#2C4A52;color:#fff;font-family:'Baloo 2',sans-serif;font-weight:600;padding:13px 22px;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.2);transition:transform .4s cubic-bezier(.22,1,.36,1);z-index:10000;font-size:16px;";
+        document.body.appendChild(t); }
+      t.textContent="🌱 +"+n+" seeds!";
+      requestAnimationFrame(function(){ t.style.transform="translateX(-50%) translateY(0)"; });
+      clearTimeout(t._h); t._h=setTimeout(function(){ t.style.transform="translateX(-50%) translateY(120px)"; },2200);
+      updateBar();
+    }
+    updateBar();
+    if(window.Seeds && window.Seeds.onChange) window.Seeds.onChange(updateBar);
+
+    // ---- the four sparks ----
+    var SPARKS = {
+      builder:  { name:"Builder",  emoji:"🔨", color:"var(--builder)",
+        blurb:"You love making things exist that weren't there before — forts, machines, towers, ideas. You see a pile of stuff and imagine what it could become.",
+        game:{ name:"Block Builder", desc:"Snap blocks together and earn seeds for the structures you create.", ready:false } },
+      artist:   { name:"Artist",   emoji:"🎨", color:"var(--artist)",
+        blurb:"You see the world in colours, sounds, and stories. You love making things beautiful and showing people how you feel.",
+        game:{ name:"Color Quest", desc:"Paint, pattern, and create — earn seeds for your masterpieces.", ready:false } },
+      helper:   { name:"Helper",   emoji:"🤝", color:"var(--helper)",
+        blurb:"You notice when someone needs a hand, and helping makes you happy. Kindness is your superpower.",
+        game:{ name:"Kindness Quest", desc:"Solve everyday problems by helping others — and grow your seeds.", ready:false } },
+      explorer: { name:"Explorer", emoji:"🗺️", color:"var(--explorer)",
+        blurb:"You're curious about everything — new places, how things work, what's around the next corner. Adventure is your middle name.",
+        game:{ name:"Trail Seeker", desc:"Discover hidden places and earn seeds for every discovery.", ready:false } }
+    };
+
+    // ---- the deck: each card sparks toward one type ----
+    var DECK = [
+      { emoji:"🔨", label:"Build a fort", spark:"builder" },
+      { emoji:"🎨", label:"Paint a picture", spark:"artist" },
+      { emoji:"🤝", label:"Help a friend", spark:"helper" },
+      { emoji:"🗺️", label:"Explore somewhere new", spark:"explorer" },
+      { emoji:"🧱", label:"Stack big blocks", spark:"builder" },
+      { emoji:"🎵", label:"Make up a song", spark:"artist" },
+      { emoji:"🩹", label:"Cheer someone up", spark:"helper" },
+      { emoji:"🔭", label:"Look at the stars", spark:"explorer" },
+      { emoji:"⚙️", label:"Figure out how it works", spark:"builder" },
+      { emoji:"✏️", label:"Draw your own comic", spark:"artist" },
+      { emoji:"🥪", label:"Share your snack", spark:"helper" },
+      { emoji:"🧭", label:"Go on an adventure", spark:"explorer" },
+      { emoji:"🏗️", label:"Design a treehouse", spark:"builder" },
+      { emoji:"💃", label:"Put on a show", spark:"artist" },
+      { emoji:"🐶", label:"Take care of an animal", spark:"helper" },
+      { emoji:"🌍", label:"Learn about other countries", spark:"explorer" }
+    ];
+
+    function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i];a[i]=a[j];a[j]=t;} return a; }
+
+    var app = document.getElementById('app');
+    var deck, idx, scores;
+
+    function start(){
+      deck = shuffle(DECK);
+      idx = 0;
+      scores = { builder:0, artist:0, helper:0, explorer:0 };
+      renderCard();
+    }
+
+    // ---- intro ----
+    function renderIntro(){
+      app.innerHTML =
+        '<div class="intro">' +
+          '<span class="big">✨</span>' +
+          '<h1 class="display">Spark Catcher</h1>' +
+          '<p>Quick! Cards will pop up one at a time. Tap <b>Yes!</b> if it sparks joy, or <b>Nah</b> if it\u2019s not for you. There are no wrong answers \u2014 just be you.</p>' +
+          '<button class="btn btn-sage" id="startBtn">Start catching ✨</button>' +
+        '</div>';
+      document.getElementById('startBtn').onclick = start;
+    }
+
+    // ---- one card ----
+    function renderCard(){
+      if(idx >= deck.length){ return renderResult(); }
+      var c = deck[idx];
+      var pct = Math.round((idx/deck.length)*100);
+      app.innerHTML =
+        '<div class="play-head">' +
+          '<h2 class="display">Does this spark joy?</h2>' +
+          '<p>Card ' + (idx+1) + ' of ' + deck.length + '</p>' +
+        '</div>' +
+        '<div class="progress"><div style="width:'+pct+'%"></div></div>' +
+        '<div class="card-stage">' +
+          '<div class="spark-card"><span class="emoji">'+c.emoji+'</span><span class="label display">'+c.label+'</span></div>' +
+          '<div class="choice-row">' +
+            '<button class="no" id="noBtn">Nah</button>' +
+            '<button class="yes" id="yesBtn">Yes! ✨</button>' +
+          '</div>' +
+        '</div>';
+      document.getElementById('yesBtn').onclick = function(){ scores[c.spark]++; idx++; renderCard(); };
+      document.getElementById('noBtn').onclick  = function(){ idx++; renderCard(); };
+    }
+
+    // ---- result ----
+    function renderResult(){
+      // find top spark (ties -> first by deck order of keys)
+      var top = "builder", best = -1, order = ["builder","artist","helper","explorer"];
+      order.forEach(function(k){ if(scores[k] > best){ best = scores[k]; top = k; } });
+      var s = SPARKS[top];
+
+      // runners-up (other sparks they also liked)
+      var others = order.filter(function(k){ return k!==top && scores[k]>0; })
+                        .sort(function(a,b){ return scores[b]-scores[a]; })
+                        .map(function(k){ return SPARKS[k].emoji+" "+SPARKS[k].name; });
+
+      // award seeds once per discovery session
+      awardSeeds(20, "Discovered a spark in Spark Catcher");
+
+      var gameBlock = s.game.ready
+        ? '<button class="gamebtn" style="background:'+s.color+'" onclick="location.href=\''+s.game.file+'\'">Play '+s.game.name+' →</button>'
+        : '<span class="soon">'+s.game.name+' \u2014 coming soon 🌱</span>';
+
+      app.innerHTML =
+        '<div class="result">' +
+          '<div class="crown">'+s.emoji+'</div>' +
+          '<h2 class="display">You\u2019re a '+s.name+'!</h2>' +
+          '<div class="tag" style="background:'+s.color+'">Your brightest spark</div>' +
+          '<p class="blurb">'+s.blurb+'</p>' +
+          '<div class="result-card">' +
+            '<h3>A game just for '+s.name+'s</h3>' +
+            '<p>'+s.game.desc+'</p>' +
+            gameBlock +
+          '</div>' +
+          (others.length ? '<p class="runners">You also lit up for: '+others.join(" · ")+'</p>' : '') +
+          '<br/><button class="btn btn-peach" id="againBtn" style="margin-top:14px">Catch again ✨</button>' +
+          '<br/><a class="secondary-link" href="index.html">← Back to all games</a>' +
+        '</div>';
+      document.getElementById('againBtn').onclick = renderIntro;
+    }
+
+    renderIntro();
+  })();
+  </script>
+</body>
+</html>
