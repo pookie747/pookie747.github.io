@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Play 🎮 — games, Little Clearing</title>
+<meta name="description" content="Friendly little games for kids — learn about money, brave words, and what makes you you. Earn seeds as you play." />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#FBF7EF; --sky:#DCEAF0; --sky-deep:#C7DEE6;
+    --sage:#9FC1A8; --sage-soft:#E4EFE3; --sage-line:#CFE3D0; --sage-deep:#7FA489;
+    --ink:#2C4A52; --ink-soft:#5E7C82;
+    --peach:#F0A878; --peach-deep:#E08E5C;
+    --lemon:#F4D35E; --card:#FFFFFF; --line:#E6E0D2;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{ font-family:'Nunito', system-ui, sans-serif; color:var(--ink);
+        background:linear-gradient(180deg,var(--sky),var(--paper) 75%); min-height:100vh;
+        -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+  .display{ font-family:'Baloo 2','Nunito',sans-serif; }
+
+  #top-bar{ position:sticky; top:0; z-index:50; display:flex; align-items:center;
+        justify-content:space-between; padding:9px 14px; background:rgba(251,247,239,.85);
+        backdrop-filter:blur(6px); border-bottom:1px solid var(--line); font-family:'Baloo 2',sans-serif; }
+  #top-bar a, #top-bar .pill{ display:inline-flex; align-items:center; gap:7px; text-decoration:none;
+        color:var(--ink); font-weight:600; font-size:15px; background:var(--sage-soft);
+        border:1px solid var(--sage-line); padding:6px 14px; border-radius:999px; }
+
+  .wrap{ max-width:960px; margin:0 auto; padding:0 22px 70px; }
+  .intro{ text-align:center; padding:34px 0 8px; }
+  .intro .leaf{ font-size:40px; }
+  .intro h1{ font-size:clamp(32px,6.5vw,48px); margin:8px 0 10px; }
+  .intro p{ color:var(--ink-soft); font-size:17px; line-height:1.6; max-width:480px; margin:0 auto; }
+
+  .section-label{ text-align:center; margin:40px 0 22px; font-size:14px; letter-spacing:2px;
+        text-transform:uppercase; color:var(--ink-soft); font-weight:700; }
+  .games{ display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px; }
+  .card{ position:relative; display:block; text-decoration:none; color:inherit; overflow:hidden;
+        background:var(--card); border:1px solid var(--line); border-radius:26px; padding:28px 24px;
+        box-shadow:0 10px 28px rgba(44,74,82,.07);
+        transition:transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s; }
+  .card:hover{ transform:translateY(-6px); box-shadow:0 18px 38px rgba(44,74,82,.12); }
+  .card .glow{ position:absolute; top:-50px; right:-50px; width:160px; height:160px; border-radius:50%; opacity:.5; filter:blur(6px); }
+  .card.money .glow{ background:#FBE9B8; }
+  .card.talk .glow{ background:#F6D9D2; }
+  .card.spark .glow{ background:#ECE2F5; }
+  .card .emoji{ font-size:44px; margin-bottom:14px; }
+  .card h3{ font-family:'Baloo 2',sans-serif; font-size:24px; margin:0 0 6px; }
+  .card p{ color:var(--ink-soft); line-height:1.5; font-size:15px; margin:0 0 18px; }
+  .card .play{ display:inline-flex; align-items:center; gap:8px; font-family:'Baloo 2',sans-serif;
+        font-weight:600; font-size:15px; color:#fff; padding:11px 20px; border-radius:999px; }
+  .card.money .play{ background:var(--sage); box-shadow:0 4px 0 var(--sage-deep); }
+  .card.talk .play{ background:var(--peach); box-shadow:0 4px 0 var(--peach-deep); }
+  .card.spark .play{ background:#B58CC9; box-shadow:0 4px 0 #9A6FB3; }
+  .tag{ position:absolute; top:20px; right:20px; font-size:12px; font-weight:700;
+        padding:5px 11px; border-radius:999px; background:var(--sage-soft); color:#4C6B54; }
+  .card.talk .tag{ background:#FBE6DE; color:#A2604A; }
+  .card.spark .tag{ background:#ECE2F5; color:#7A5C92; }
+
+  .soon{ text-align:center; margin-top:24px; border:1.5px dashed var(--line); border-radius:22px;
+        padding:22px; color:var(--ink-soft); background:rgba(255,255,255,.4); max-width:640px;
+        margin-left:auto; margin-right:auto; }
+  .soon .seed{ font-size:26px; display:block; margin-bottom:6px; }
+  footer{ text-align:center; padding:40px 0 10px; color:var(--ink-soft); font-size:14px; }
+</style>
+</head>
+<body>
+  <div id="top-bar">
+    <a href="index.html">🏡 Home</a>
+    <span class="pill">🌱 <span id="seeds-num">0</span> seeds</span>
+  </div>
+
+  <div class="wrap">
+    <div class="intro">
+      <div class="leaf">🎮</div>
+      <h1 class="display">Play</h1>
+      <p>Friendly games that help you learn real-life things — and grow your seeds as you go. Pick whatever sparks your curiosity.</p>
+    </div>
+
+    <p class="section-label">Games to explore</p>
+    <section class="games">
+      <a class="card money" href="money-quest.html">
+        <div class="glow"></div>
+        <span class="tag">Money smarts</span>
+        <div class="emoji">🍋</div>
+        <h3>Money Quest</h3>
+        <p>Run your own lemonade-stand fortune. Earn coins, build streaks, and watch your jar grow with real interest.</p>
+        <span class="play">Play now →</span>
+      </a>
+
+      <a class="card talk" href="talkquest.html">
+        <div class="glow"></div>
+        <span class="tag">Brave words</span>
+        <div class="emoji">💬</div>
+        <h3>TalkQuest</h3>
+        <p>Practice the tricky conversations life throws at you. Choose your words and see where they lead.</p>
+        <span class="play">Play now →</span>
+      </a>
+
+      <a class="card spark" href="spark-catcher.html">
+        <div class="glow"></div>
+        <span class="tag">Find your spark</span>
+        <div class="emoji">✨</div>
+        <h3>Spark Catcher</h3>
+        <p>Tap what sparks joy and discover what lights you up — building, art, helping, or exploring.</p>
+        <span class="play">Play now →</span>
+      </a>
+    </section>
+
+    <div class="soon">
+      <span class="seed">🌱</span>
+      <span style="font-weight:600;">More games are growing here.</span> Check back soon!
+    </div>
+  </div>
+
+  <script src="seeds.js"></script>
+  <script>
+    function updateBar(){ var el=document.getElementById('seeds-num'); if(el && window.Seeds){ try{ el.textContent=Seeds.get(); }catch(e){} } }
+    if(window.Seeds){ updateBar(); Seeds.onChange(updateBar); }
+    window.addEventListener('seeds:change', updateBar);
+  </script>
+</body>
+</html>
