@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Breathe & Move 🌬️ — calm your body, Little Clearing</title>
+<meta name="description" content="Gentle breathing and grounding flows for kids — follow the breath, move slowly, and feel calm." />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#FBF7EF; --sky:#DCEAF0; --sky-deep:#C7DEE6;
+    --sage:#9FC1A8; --sage-soft:#E4EFE3; --sage-line:#CFE3D0; --sage-deep:#7FA489;
+    --ink:#2C4A52; --ink-soft:#5E7C82;
+    --peach:#F0A878; --peach-deep:#E08E5C;
+    --card:#FFFFFF; --line:#E6E0D2;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{ font-family:'Nunito',sans-serif; color:var(--ink);
+        background:linear-gradient(180deg,var(--sky),var(--sky-deep) 40%,var(--paper) 90%);
+        min-height:100vh; }
+  .display{ font-family:'Baloo 2',sans-serif; }
+
+  #top-bar{ position:sticky; top:0; z-index:50; display:flex; align-items:center;
+        justify-content:space-between; padding:9px 14px; background:rgba(251,247,239,.85);
+        backdrop-filter:blur(6px); border-bottom:1px solid var(--line); font-family:'Baloo 2',sans-serif; }
+  #top-bar a{ display:inline-flex; align-items:center; gap:7px; text-decoration:none;
+        color:var(--ink); font-weight:600; font-size:15px; background:var(--sage-soft);
+        border:1px solid var(--sage-line); padding:6px 14px; border-radius:999px; }
+
+  .wrap{ max-width:600px; margin:0 auto; padding:30px 20px 80px; }
+  .intro{ text-align:center; margin-bottom:30px; }
+  .intro .leaf{ font-size:40px; }
+  .intro h1{ font-size:clamp(30px,6vw,42px); margin:8px 0 8px; }
+  .intro p{ color:var(--ink-soft); font-size:17px; line-height:1.6; max-width:440px; margin:0 auto; }
+
+  /* ---------- breathing orb ---------- */
+  .breathe-zone{ background:var(--card); border:1px solid var(--line); border-radius:30px;
+        padding:34px 24px 30px; text-align:center; box-shadow:0 14px 36px rgba(44,74,82,.08);
+        margin-bottom:30px; }
+  .orb-stage{ height:280px; display:flex; align-items:center; justify-content:center; position:relative; }
+  .orb{ width:120px; height:120px; border-radius:50%;
+        background:radial-gradient(circle at 38% 34%, #BFE0C6, var(--sage));
+        box-shadow:0 0 0 0 rgba(159,193,168,.45); display:flex; align-items:center; justify-content:center; }
+  .orb-word{ font-family:'Baloo 2',sans-serif; color:#fff; font-size:20px; font-weight:600;
+        text-shadow:0 1px 3px rgba(44,74,82,.25); }
+  /* the breathing animation: 4s in, 4s hold, 6s out, 2s hold = 16s loop */
+  .orb.run{ animation:breathe 16s ease-in-out infinite; }
+  @keyframes breathe{
+    0%   { transform:scale(1);    box-shadow:0 0 0 0 rgba(159,193,168,.0); }
+    25%  { transform:scale(2.0);  box-shadow:0 0 0 26px rgba(159,193,168,.18); } /* breathed in */
+    50%  { transform:scale(2.0);  box-shadow:0 0 0 26px rgba(159,193,168,.18); } /* hold full */
+    87.5%{ transform:scale(1);    box-shadow:0 0 0 0 rgba(159,193,168,.0); }     /* breathed out */
+    100% { transform:scale(1);    box-shadow:0 0 0 0 rgba(159,193,168,.0); }     /* hold empty */
+  }
+  .breathe-controls{ margin-top:8px; }
+  .breathe-controls h2{ font-family:'Baloo 2',sans-serif; font-size:22px; margin:0 0 4px; }
+  .breathe-controls p{ color:var(--ink-soft); margin:0 0 16px; font-size:15px; }
+  .btn{ font-family:'Baloo 2',sans-serif; font-weight:600; font-size:17px; border:none;
+        color:#fff; padding:13px 28px; border-radius:16px; cursor:pointer; transition:transform .15s; }
+  .btn:active{ transform:translateY(1px); }
+  .btn-sage{ background:var(--sage); box-shadow:0 4px 0 var(--sage-deep); }
+  .round-pick{ display:inline-flex; gap:8px; margin-top:14px; flex-wrap:wrap; justify-content:center; }
+  .round-pick button{ font-family:'Nunito',sans-serif; font-weight:700; font-size:14px;
+        background:var(--sage-soft); color:var(--ink); border:1px solid var(--sage-line);
+        padding:8px 14px; border-radius:999px; cursor:pointer; }
+  .round-pick button.active{ background:var(--sage); color:#fff; border-color:var(--sage); }
+
+  /* ---------- flows ---------- */
+  .section-label{ text-align:center; font-size:13px; letter-spacing:2px; text-transform:uppercase;
+        color:var(--ink-soft); font-weight:700; margin:6px 0 18px; }
+  .flow-list{ display:flex; flex-direction:column; gap:16px; }
+  .flow{ background:var(--card); border:1px solid var(--line); border-radius:22px; overflow:hidden;
+        box-shadow:0 10px 26px rgba(44,74,82,.06); }
+  .flow-head{ display:flex; align-items:center; gap:14px; padding:18px 20px; cursor:pointer; }
+  .flow-head .ico{ flex:0 0 auto; width:46px; height:46px; border-radius:14px; background:var(--sage-soft);
+        display:flex; align-items:center; justify-content:center; font-size:24px; }
+  .flow-head .meta{ flex:1; }
+  .flow-head h3{ font-family:'Baloo 2',sans-serif; font-size:18px; margin:0; }
+  .flow-head .sub{ color:var(--ink-soft); font-size:13.5px; margin-top:2px; }
+  .flow-head .chev{ color:var(--ink-soft); transition:transform .25s; font-size:18px; }
+  .flow.open .chev{ transform:rotate(90deg); }
+  .flow-body{ max-height:0; overflow:hidden; transition:max-height .35s ease; }
+  .flow.open .flow-body{ max-height:600px; }
+  .flow-body ol{ margin:0; padding:4px 24px 22px 42px; color:var(--ink-soft); }
+  .flow-body li{ margin-bottom:11px; line-height:1.55; }
+  .flow-body li b{ color:var(--ink); }
+  .flow-body .tip{ margin:0 24px 22px; background:var(--sage-soft); border-radius:14px;
+        padding:12px 16px; color:#3C5A45; font-size:14px; }
+
+  footer{ text-align:center; padding:40px 0 10px; color:var(--ink-soft); font-size:14px; }
+
+  @media (prefers-reduced-motion: reduce){ .orb.run{ animation:none; } }
+</style>
+</head>
+<body>
+  <div id="top-bar">
+    <a href="index.html">🏡 Home</a>
+    <a href="#flows" style="background:#EEF3F8;">↓ Flows</a>
+  </div>
+
+  <div class="wrap">
+    <div class="intro">
+      <div class="leaf">🌬️</div>
+      <h1 class="display">Breathe &amp; Move</h1>
+      <p>A quiet place to slow down. Follow the bubble with your breath, or try a gentle flow. There's no rush here — it's okay to just be.</p>
+    </div>
+
+    <!-- breathing orb -->
+    <div class="breathe-zone">
+      <div class="orb-stage">
+        <div class="orb" id="orb"><span class="orb-word" id="orbWord">Ready?</span></div>
+      </div>
+      <div class="breathe-controls">
+        <h2 class="display">Follow the breath</h2>
+        <p id="breatheHint">Watch the bubble. Breathe in as it grows, out as it shrinks.</p>
+        <button class="btn btn-sage" id="breatheBtn">Start breathing</button>
+        <div class="round-pick" id="roundPick">
+          <button data-rounds="3" class="active">3 breaths</button>
+          <button data-rounds="5">5 breaths</button>
+          <button data-rounds="8">8 breaths</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="flows"></div>
+    <p class="section-label">Gentle flows to try</p>
+    <div class="flow-list" id="flowList"></div>
+
+    <footer>Take what you need. Leave the rest. 🌿</footer>
+  </div>
+
+  <script>
+  (function(){
+    // ---------- breathing orb logic ----------
+    var orb = document.getElementById('orb');
+    var orbWord = document.getElementById('orbWord');
+    var btn = document.getElementById('breatheBtn');
+    var hint = document.getElementById('breatheHint');
+    var roundPick = document.getElementById('roundPick');
+    var rounds = 3, running = false, timers = [];
+
+    roundPick.addEventListener('click', function(e){
+      if(e.target.tagName !== 'BUTTON' || running) return;
+      [].forEach.call(roundPick.children, function(b){ b.classList.remove('active'); });
+      e.target.classList.add('active');
+      rounds = parseInt(e.target.dataset.rounds, 10);
+    });
+
+    // phases within one 16s loop: in(0-4s), hold(4-8s), out(8-14s), rest(14-16s)
+    function runCycle(remaining){
+      if(remaining <= 0){ finish(); return; }
+      orbWord.textContent = "Breathe in…";
+      timers.push(setTimeout(function(){ orbWord.textContent = "Hold…"; }, 4000));
+      timers.push(setTimeout(function(){ orbWord.textContent = "Breathe out…"; }, 8000));
+      timers.push(setTimeout(function(){ orbWord.textContent = "Rest…"; }, 14000));
+      timers.push(setTimeout(function(){ runCycle(remaining - 1); }, 16000));
+    }
+    function finish(){
+      running = false;
+      orb.classList.remove('run');
+      orbWord.textContent = "Well done 🌿";
+      btn.textContent = "Breathe again";
+      hint.textContent = "Notice how you feel now. A little calmer? That's the magic of slow breathing.";
+    }
+    function clearTimers(){ timers.forEach(clearTimeout); timers = []; }
+
+    btn.addEventListener('click', function(){
+      if(running){
+        clearTimers(); orb.classList.remove('run'); running = false;
+        orbWord.textContent = "Ready?"; btn.textContent = "Start breathing"; return;
+      }
+      running = true; btn.textContent = "Stop";
+      hint.textContent = "Breathe in as the bubble grows. Hold. Breathe out as it shrinks. Let's go.";
+      orb.classList.add('run');
+      clearTimers();
+      runCycle(rounds);
+    });
+
+    // ---------- gentle flows (qi gong / grounding for kids) ----------
+    var FLOWS = [
+      { emoji:"🌳", title:"Rooting like a tree", sub:"A grounding flow · 2 min",
+        steps:[
+          "Stand up tall with your feet a little apart, like a strong young tree.",
+          "Imagine <b>roots growing</b> from your feet down into the ground. You're steady. You belong here.",
+          "Slowly raise your arms up like <b>branches reaching for the sun</b>. Breathe in.",
+          "Gently sway side to side, like a tree in a soft breeze.",
+          "Lower your arms slowly and breathe out. Feel how <b>calm and steady</b> you are."
+        ],
+        tip:"Whenever you feel wobbly or worried, remember: you can root like a tree, anywhere." },
+      { emoji:"🌊", title:"Ocean arms", sub:"Qi gong wave flow · 2 min",
+        steps:[
+          "Stand softly, knees a tiny bit bent, hands floating in front of your belly.",
+          "Breathe in and <b>float your hands up</b> like a wave rising. Slow and smooth.",
+          "Breathe out and <b>let your hands sink down</b>, like the wave rolling back to sea.",
+          "Repeat slowly, 5 gentle waves. Let your whole body be soft like water.",
+          "Finish with both hands resting on your belly. Feel it rise and fall."
+        ],
+        tip:"Smooth and slow wins here — there's no such thing as doing it too gently." },
+      { emoji:"🦋", title:"Butterfly hug", sub:"A calming squeeze · 1 min",
+        steps:[
+          "Cross your arms over your chest so each hand rests on the opposite shoulder.",
+          "This is your <b>butterfly</b>. Give yourself a slow, gentle squeeze.",
+          "Tap your hands <b>one at a time</b>, left… right… left… right… like soft butterfly wings.",
+          "Keep tapping slowly and breathe. Tell yourself: <b>\u201cI\u2019m safe. It\u2019s okay to be here.\u201d</b>",
+          "Slow your taps down… and rest. You just gave yourself a hug."
+        ],
+        tip:"This one is great when big feelings show up. Your butterfly is always with you." },
+      { emoji:"⭐", title:"Five senses landing", sub:"A grounding game · 2 min",
+        steps:[
+          "Look around and find <b>5 things you can see</b>. Say them quietly.",
+          "Notice <b>4 things you can touch</b> — your shirt, the floor, a chair.",
+          "Listen for <b>3 sounds</b> around you, near or far.",
+          "Find <b>2 things you can smell</b> (or two smells you like to imagine).",
+          "Think of <b>1 thing you can taste</b>, or one thing you're thankful for. You've landed. You're here, now."
+        ],
+        tip:"This is a secret tool grown-ups use too. It brings your mind back to right now." }
+    ];
+
+    var list = document.getElementById('flowList');
+    FLOWS.forEach(function(f){
+      var el = document.createElement('div');
+      el.className = 'flow';
+      el.innerHTML =
+        '<div class="flow-head">' +
+          '<div class="ico">'+f.emoji+'</div>' +
+          '<div class="meta"><h3>'+f.title+'</h3><div class="sub">'+f.sub+'</div></div>' +
+          '<div class="chev">›</div>' +
+        '</div>' +
+        '<div class="flow-body">' +
+          '<ol>'+ f.steps.map(function(s){ return '<li>'+s+'</li>'; }).join('') +'</ol>' +
+          '<div class="tip">💡 '+f.tip+'</div>' +
+        '</div>';
+      el.querySelector('.flow-head').addEventListener('click', function(){ el.classList.toggle('open'); });
+      list.appendChild(el);
+    });
+  })();
+  </script>
+</body>
+</html>

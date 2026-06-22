@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Together 🤝 — family flow, Little Clearing</title>
+<meta name="description" content="Short, warm activities for a kid and a grown-up to do as a team — connection in a few minutes." />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#FBF7EF; --sky:#DCEAF0; --sky-deep:#C7DEE6;
+    --sage:#9FC1A8; --sage-soft:#E4EFE3; --sage-line:#CFE3D0; --sage-deep:#7FA489;
+    --ink:#2C4A52; --ink-soft:#5E7C82;
+    --peach:#F0A878; --peach-deep:#E08E5C; --peach-soft:#FBE6DE;
+    --card:#FFFFFF; --line:#E6E0D2;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{ font-family:'Nunito',sans-serif; color:var(--ink);
+        background:linear-gradient(180deg,#FCEFE6,var(--paper) 70%); min-height:100vh; }
+  .display{ font-family:'Baloo 2',sans-serif; }
+
+  #top-bar{ position:sticky; top:0; z-index:50; display:flex; align-items:center;
+        justify-content:space-between; padding:9px 14px; background:rgba(251,247,239,.85);
+        backdrop-filter:blur(6px); border-bottom:1px solid var(--line); font-family:'Baloo 2',sans-serif; }
+  #top-bar a{ display:inline-flex; align-items:center; gap:7px; text-decoration:none;
+        color:var(--ink); font-weight:600; font-size:15px; background:var(--peach-soft);
+        border:1px solid #F4D2C5; padding:6px 14px; border-radius:999px; }
+
+  .wrap{ max-width:600px; margin:0 auto; padding:30px 20px 80px; }
+  .intro{ text-align:center; margin-bottom:8px; }
+  .intro .leaf{ font-size:40px; }
+  .intro h1{ font-size:clamp(30px,6vw,42px); margin:8px 0 8px; }
+  .intro p{ color:var(--ink-soft); font-size:17px; line-height:1.6; max-width:450px; margin:0 auto; }
+
+  /* spinner / picker */
+  .picker{ text-align:center; margin:26px 0 34px; }
+  .picker .btn{ font-family:'Baloo 2',sans-serif; font-weight:600; font-size:18px; border:none;
+        color:#fff; padding:15px 30px; border-radius:18px; cursor:pointer; transition:transform .15s;
+        background:var(--peach); box-shadow:0 4px 0 var(--peach-deep); }
+  .picker .btn:active{ transform:translateY(1px); }
+  .picked{ margin-top:22px; }
+
+  .activity{ background:var(--card); border:1px solid var(--line); border-radius:24px;
+        padding:26px 24px; box-shadow:0 12px 30px rgba(44,74,82,.08); text-align:left;
+        animation:rise .4s ease-out both; }
+  @keyframes rise{ from{ opacity:0; transform:translateY(14px);} to{ opacity:1; transform:translateY(0);} }
+  .activity .top{ display:flex; align-items:center; gap:14px; margin-bottom:14px; }
+  .activity .emoji{ font-size:40px; }
+  .activity h2{ font-family:'Baloo 2',sans-serif; font-size:23px; margin:0; }
+  .activity .time{ color:var(--ink-soft); font-size:13.5px; margin-top:2px; }
+  .activity .how{ color:var(--ink-soft); line-height:1.65; font-size:16px; margin:0 0 14px; }
+  .activity .how b{ color:var(--ink); }
+  .activity .why{ background:var(--sage-soft); border-radius:14px; padding:13px 16px;
+        color:#3C5A45; font-size:14px; line-height:1.55; }
+  .activity .why b{ color:#2F4A38; }
+
+  .section-label{ text-align:center; font-size:13px; letter-spacing:2px; text-transform:uppercase;
+        color:var(--ink-soft); font-weight:700; margin:34px 0 18px; }
+  .all-list{ display:flex; flex-direction:column; gap:14px; }
+  .mini{ display:flex; align-items:center; gap:14px; background:var(--card);
+        border:1px solid var(--line); border-radius:18px; padding:15px 18px; cursor:pointer;
+        transition:transform .15s; box-shadow:0 8px 22px rgba(44,74,82,.05); }
+  .mini:hover{ transform:translateY(-2px); }
+  .mini .e{ font-size:26px; }
+  .mini .t{ flex:1; }
+  .mini .t h4{ font-family:'Baloo 2',sans-serif; font-size:16px; margin:0; }
+  .mini .t .s{ color:var(--ink-soft); font-size:13px; margin-top:1px; }
+
+  .note{ text-align:center; color:var(--ink-soft); font-size:14px; line-height:1.6;
+        margin-top:34px; padding:18px; background:rgba(255,255,255,.5);
+        border:1px dashed var(--line); border-radius:18px; }
+  footer{ text-align:center; padding:30px 0 10px; color:var(--ink-soft); font-size:14px; }
+</style>
+</head>
+<body>
+  <div id="top-bar">
+    <a href="index.html">🏡 Home</a>
+    <a href="#all" style="background:#EEF3F8;border-color:#D7E0EC;">↓ All activities</a>
+  </div>
+
+  <div class="wrap">
+    <div class="intro">
+      <div class="leaf">🤝</div>
+      <h1 class="display">Together</h1>
+      <p>Short, warm things to do with a grown-up you love — a parent, a grandparent, anyone on your team. Just a few minutes of being close.</p>
+    </div>
+
+    <div class="picker">
+      <button class="btn" id="spinBtn">Surprise us! 🎲</button>
+      <div class="picked" id="picked"></div>
+    </div>
+
+    <div id="all"></div>
+    <p class="section-label">Or pick one yourselves</p>
+    <div class="all-list" id="allList"></div>
+
+    <div class="note">
+      🌿 These are for a kid and grown-up to do <b>together</b>. No screens needed once you've read it — put the phone down and just be with each other.
+    </div>
+
+    <footer>A few minutes together is never wasted. 💛</footer>
+  </div>
+
+  <script>
+  (function(){
+    var ACTIVITIES = [
+      { emoji:"🌟", title:"Rose & Thorn", time:"3 minutes · talking",
+        how:"Take turns sharing your <b>rose</b> (the best part of your day) and your <b>thorn</b> (the hardest part). The grown-up goes first to show how — and shares a real thorn too, not just a happy one.",
+        why:"<b>Why it helps:</b> kids learn that hard feelings are normal and shareable when they see a grown-up name their own." },
+      { emoji:"🪞", title:"Mirror, mirror", time:"2 minutes · movement",
+        how:"Stand facing each other. One person moves <b>very slowly</b> — raising an arm, making a silly face — and the other mirrors it like a reflection. Then swap who leads. No talking, just watching.",
+        why:"<b>Why it helps:</b> slow, wordless attention builds connection and helps a wound-up kid settle." },
+      { emoji:"📚", title:"Make up a story", time:"5 minutes · imagination",
+        how:"One person says <b>one sentence</b> of a story. The next person adds the next sentence. Keep going back and forth. The sillier and more surprising, the better!",
+        why:"<b>Why it helps:</b> shared imagination is pure connection, and it gives a quiet kid an easy way in." },
+      { emoji:"🙏", title:"Three thank-yous", time:"2 minutes · gratitude",
+        how:"Each of you says <b>three things you're thankful for</b> today — they can be tiny (a warm blanket, a good snack). Try to make one of them about <b>each other</b>.",
+        why:"<b>Why it helps:</b> gratitude out loud lifts mood for both of you, and hearing 'I'm thankful for you' means the world to a kid." },
+      { emoji:"🫧", title:"Belly breaths buddy", time:"2 minutes · calm",
+        how:"Lie down side by side. Put a small toy or hand on each of your <b>bellies</b>. Breathe slowly and watch the toy rise and fall. Try to breathe in time with each other.",
+        why:"<b>Why it helps:</b> co-regulating breath with a calm adult is one of the fastest ways to soothe a child's nervous system." },
+      { emoji:"💪", title:"You're great because…", time:"2 minutes · kindness",
+        how:"Take turns finishing the sentence <b>\u201cYou're great because\u2026\u201d</b> about each other. Say at least three each. Look at each other when you say it.",
+        why:"<b>Why it helps:</b> specific, spoken praise builds a kid's sense of worth far more than a quick 'good job.'" },
+      { emoji:"🎨", title:"Draw each other", time:"5 minutes · creativity",
+        how:"Grab paper and something to draw with. Set a 2-minute timer and <b>draw each other</b> — no peeking until the end! Big laughs guaranteed. Stick them on the fridge.",
+        why:"<b>Why it helps:</b> playful, low-stakes creativity together signals 'you're fun to be with,' which kids deeply need to feel." },
+      { emoji:"🌙", title:"High, low, hero", time:"3 minutes · bedtime talk",
+        how:"Great at bedtime. Each share your day's <b>high</b> (best bit), <b>low</b> (hard bit), and <b>hero</b> (someone who helped you or whom you helped).",
+        why:"<b>Why it helps:</b> the 'hero' part teaches kids to notice kindness and their own helpfulness — a quiet confidence builder." }
+    ];
+
+    function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;} return a; }
+
+    function cardHTML(a){
+      return '<div class="activity">' +
+        '<div class="top"><span class="emoji">'+a.emoji+'</span>' +
+          '<div><h2 class="display">'+a.title+'</h2><div class="time">'+a.time+'</div></div></div>' +
+        '<p class="how">'+a.how+'</p>' +
+        '<div class="why">'+a.why+'</div>' +
+      '</div>';
+    }
+
+    var picked = document.getElementById('picked');
+    var spinBtn = document.getElementById('spinBtn');
+    var last = -1;
+    spinBtn.addEventListener('click', function(){
+      var i; do { i = Math.floor(Math.random()*ACTIVITIES.length); } while(i===last && ACTIVITIES.length>1);
+      last = i;
+      picked.innerHTML = cardHTML(ACTIVITIES[i]);
+      spinBtn.textContent = "Pick another 🎲";
+      picked.scrollIntoView({ behavior:'smooth', block:'center' });
+    });
+
+    var allList = document.getElementById('allList');
+    ACTIVITIES.forEach(function(a){
+      var el = document.createElement('div');
+      el.className = 'mini';
+      el.innerHTML = '<span class="e">'+a.emoji+'</span><div class="t"><h4>'+a.title+'</h4><div class="s">'+a.time+'</div></div><span style="color:#5E7C82;font-size:18px;">›</span>';
+      el.addEventListener('click', function(){
+        picked.innerHTML = cardHTML(a);
+        spinBtn.textContent = "Pick another 🎲";
+        picked.scrollIntoView({ behavior:'smooth', block:'center' });
+      });
+      allList.appendChild(el);
+    });
+  })();
+  </script>
+</body>
+</html>
