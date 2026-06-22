@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Little Clearing 🌿 — a calm place to play, breathe & grow</title>
+<meta name="description" content="A quiet corner of the internet for kids: friendly games, breathing and grounding flows, and gentle activities to do together. It's okay to be here." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#FBF7EF; --sky:#DCEAF0; --sky-deep:#C7DEE6;
+    --sage:#9FC1A8; --sage-soft:#E4EFE3; --sage-line:#CFE3D0; --sage-deep:#7FA489;
+    --ink:#2C4A52; --ink-soft:#5E7C82;
+    --peach:#F0A878; --peach-deep:#E08E5C;
+    --lemon:#F4D35E; --card:#FFFFFF; --line:#E6E0D2;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{ font-family:'Nunito', system-ui, sans-serif; color:var(--ink); background:var(--paper);
+        -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+  .display{ font-family:'Baloo 2','Nunito',sans-serif; }
+  .sky{ position:fixed; inset:0; z-index:-2;
+        background:linear-gradient(180deg,var(--sky) 0%,var(--sky-deep) 38%,var(--paper) 80%);
+        background-size:100% 200%; animation:drift 26s ease-in-out infinite alternate; }
+  @keyframes drift{ from{ background-position:50% 0%; } to{ background-position:50% 26%; } }
+  .sun{ position:fixed; top:-90px; right:-60px; z-index:-1; width:300px; height:300px; border-radius:50%;
+        background:radial-gradient(circle at center, rgba(244,211,94,.5) 0%, rgba(244,211,94,.16) 45%, rgba(244,211,94,0) 70%);
+        animation:breathe 11s ease-in-out infinite alternate; }
+  @keyframes breathe{ from{ transform:scale(1); opacity:.85; } to{ transform:scale(1.12); opacity:1; } }
+  .blob{ position:fixed; z-index:-1; border-radius:50%; filter:blur(2px); opacity:.5; }
+  .blob.a{ width:140px; height:140px; left:-40px; top:26%; background:var(--sage-soft); animation:float1 14s ease-in-out infinite alternate; }
+  .blob.b{ width:90px; height:90px; right:8%; top:52%; background:#FCE9D6; animation:float2 17s ease-in-out infinite alternate; }
+  @keyframes float1{ from{ transform:translateY(0);} to{ transform:translateY(26px);} }
+  @keyframes float2{ from{ transform:translateY(0);} to{ transform:translateY(-22px);} }
+  .wrap{ max-width:960px; margin:0 auto; padding:0 22px; }
+  header.top{ display:flex; align-items:center; justify-content:center; gap:11px; padding:28px 0 6px; }
+  header.top .leaf{ font-size:26px; }
+  header.top .name{ font-size:22px; font-weight:700; }
+  header.top #seedBadge{ margin-left:6px; }
+  .hero{ text-align:center; padding:38px 0 8px; }
+  .hero h1{ font-size:clamp(34px,6.6vw,58px); line-height:1.05; margin:0 0 14px; }
+  .hero h1 .soft{ color:var(--peach-deep); }
+  .hero p.lede{ font-size:clamp(16px,2.4vw,20px); line-height:1.55; color:var(--ink-soft);
+        max-width:540px; margin:0 auto 6px; }
+  .breath{ display:inline-flex; align-items:center; gap:8px; margin-top:18px; padding:8px 18px;
+        border-radius:999px; background:rgba(255,255,255,.6); color:var(--ink-soft);
+        font-size:14px; font-weight:600; border:1px solid var(--line); }
+  .breath .dot{ width:9px; height:9px; border-radius:50%; background:var(--sage); animation:pulse 3.4s ease-in-out infinite; }
+  @keyframes pulse{ 0%,100%{ transform:scale(.7); opacity:.5;} 50%{ transform:scale(1.15); opacity:1;} }
+  .section-label{ text-align:center; margin:48px 0 22px; font-size:14px; letter-spacing:2px;
+        text-transform:uppercase; color:var(--ink-soft); font-weight:700; }
+  .rooms{ display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px; }
+  .room{ position:relative; display:block; text-decoration:none; color:inherit; overflow:hidden;
+        background:var(--card); border:1px solid var(--line); border-radius:26px; padding:28px 24px;
+        box-shadow:0 10px 28px rgba(44,74,82,.07);
+        transition:transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s; }
+  .room:hover{ transform:translateY(-6px); box-shadow:0 18px 38px rgba(44,74,82,.12); }
+  .room .glow{ position:absolute; top:-50px; right:-50px; width:160px; height:160px; border-radius:50%; opacity:.5; filter:blur(6px); }
+  .room.play .glow{ background:#FBE9B8; }
+  .room.breathe .glow{ background:#D8EAF2; }
+  .room.together .glow{ background:#FBE6DE; }
+  .room .emoji{ font-size:44px; margin-bottom:14px; }
+  .room h3{ font-family:'Baloo 2',sans-serif; font-size:24px; margin:0 0 6px; }
+  .room p{ color:var(--ink-soft); line-height:1.5; font-size:15px; margin:0 0 18px; }
+  .room .enter{ display:inline-flex; align-items:center; gap:8px; font-family:'Baloo 2',sans-serif;
+        font-weight:600; font-size:15px; color:#fff; padding:11px 20px; border-radius:999px; }
+  .room.play .enter{ background:var(--sage); box-shadow:0 4px 0 var(--sage-deep); }
+  .room.breathe .enter{ background:#6FA8C7; box-shadow:0 4px 0 #5A8FAC; }
+  .room.together .enter{ background:var(--peach); box-shadow:0 4px 0 var(--peach-deep); }
+  .room .count{ position:absolute; top:20px; right:20px; font-size:12px; font-weight:700;
+        padding:5px 11px; border-radius:999px; background:var(--sage-soft); color:#4C6B54; }
+  footer{ text-align:center; padding:50px 0 40px; color:var(--ink-soft); font-size:14px; }
+  footer .heart{ color:var(--peach-deep); }
+  footer .grown{ display:inline-block; margin-top:12px; color:var(--ink-soft); text-decoration:none;
+        font-weight:600; font-size:13.5px; padding:7px 16px; border-radius:999px;
+        border:1px solid var(--line); background:rgba(255,255,255,.45); }
+  @media (prefers-reduced-motion: reduce){ .sky,.sun,.blob,.breath .dot{ animation:none !important; } .room{ transition:none; } }
+</style>
+</head>
+<body>
+  <div class="sky"></div>
+  <div class="sun"></div>
+  <div class="blob a"></div>
+  <div class="blob b"></div>
+
+  <header class="top">
+    <span class="leaf">🌿</span>
+    <span class="name display">Little Clearing</span>
+    <span id="seedBadge"></span>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <h1 class="display">A calm place to<br/>play, breathe &amp; <span class="soft">grow</span>.</h1>
+      <p class="lede">A quiet little corner of the internet where you can play, slow down, and just be yourself — at your own gentle pace.</p>
+      <div class="breath"><span class="dot"></span> It's okay to be here. Take your time.</div>
+    </section>
+
+    <p class="section-label">Where would you like to go?</p>
+
+    <section class="rooms">
+      <a class="room play" href="play.html">
+        <div class="glow"></div>
+        <span class="count">3 games</span>
+        <div class="emoji">🎮</div>
+        <h3>Play</h3>
+        <p>Friendly games that help you learn real-life things — money, brave words, and what makes you, you.</p>
+        <span class="enter">Enter →</span>
+      </a>
+      <a class="room breathe" href="breathe.html">
+        <div class="glow"></div>
+        <div class="emoji">🌬️</div>
+        <h3>Breathe &amp; Move</h3>
+        <p>Slow down with a breathing bubble and gentle flows — rooting like a tree, ocean arms, butterfly hugs.</p>
+        <span class="enter">Enter →</span>
+      </a>
+      <a class="room together" href="together.html">
+        <div class="glow"></div>
+        <div class="emoji">🤝</div>
+        <h3>Together</h3>
+        <p>Short, warm things to do with a grown-up you love — a few minutes of being close as a team.</p>
+        <span class="enter">Enter →</span>
+      </a>
+    </section>
+  </main>
+
+  <footer>
+    Made with <span class="heart">♥</span> for curious kids · Little Clearing
+    <div><a class="grown" href="about.html">For grown-ups 🌿</a></div>
+  </footer>
+
+  <script src="seeds.js"></script>
+  <script>
+    function renderSeedBadge(){
+      var el = document.getElementById('seedBadge');
+      if(!el || !window.Seeds) return;
+      var n = Seeds.get();
+      el.innerHTML = n > 0
+        ? '<span style="display:inline-flex;align-items:center;gap:6px;font-family:\'Baloo 2\',sans-serif;font-weight:600;background:#E4EFE3;color:#3C5A45;border:1px solid #CFE3D0;padding:6px 13px;border-radius:999px;font-size:14px;">🌱 ' + n + '</span>'
+        : '';
+    }
+    if(window.Seeds){ renderSeedBadge(); Seeds.onChange(renderSeedBadge); }
+    window.addEventListener('seeds:change', renderSeedBadge);
+  </script>
+</body>
+</html>
