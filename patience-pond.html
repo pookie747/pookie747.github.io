@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Patience Pond 🐢 — Little Clearing</title>
+<meta name="description" content="Cross a quiet pond one calm hop at a time. A gentle game about waiting for the right moment.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+body { margin:0; }
+a { color:#4F6C49; text-decoration:none; }
+a:hover { color:#D9714F; }
+@keyframes lc-float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-16px); } }
+@keyframes lc-ripple { 0% { transform:scale(0.6); opacity:0.5; } 100% { transform:scale(1.6); opacity:0; } }
+</style>
+</helmet>
+<div style="--paper:#FBF6EC;--ink:#3A4438;--ink-soft:#6E7A67;--sage:#7C9A72;--sage-deep:#4F6C49;--sage-pale:#E4ECDC;--coral:#F0967A;--coral-deep:#D9714F;--sky:#8FBFCE;--sky-deep:#3D7887;--sky-pale:#E1F0F3;--butter:#F0C05E;--butter-deep:#B9791F;--lavender:#B9A4D6;min-height:100vh;background:var(--paper);color:var(--ink);font-family:'Nunito',sans-serif;position:relative;overflow-x:hidden;">
+
+  <header style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;padding:28px clamp(20px,5vw,56px) 8px;position:relative;">
+    <a href="./index.html" style="display:flex;align-items:center;gap:8px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:clamp(19px,2vw,22px);color:var(--ink);">
+      <span style="font-size:26px;">🌿</span>Little Clearing
+    </a>
+    <nav style="display:flex;align-items:center;gap:clamp(14px,3vw,30px);flex-wrap:wrap;">
+      <a href="./play.html" style="font-family:'Nunito',sans-serif;font-weight:900;font-size:15px;color:var(--sage-deep);">Play</a>
+      <a href="./breathe.html" style="font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;color:var(--ink-soft);">Breathe &amp; Move</a>
+      <a href="./together.html" style="font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;color:var(--ink-soft);">Together</a>
+      <a href="./about.html" style="font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;color:var(--ink-soft);">For Grown-ups</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div style="display:flex;align-items:center;gap:5px;background:var(--sage-pale);padding:9px 13px;border-radius:999px;" title="Your path: Play, Breathe &amp; Move, Together">
+        <sc-for list="{{ journeyDots }}" as="dot" hint-placeholder-count="3">
+          <span style="width:8px;height:8px;border-radius:50%;display:inline-block;background:{{ dot.color }};"></span>
+        </sc-for>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;background:var(--sage-pale);padding:8px 16px;border-radius:999px;">
+        <span style="font-size:15px;">🌱</span>
+        <span style="font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;color:var(--sage-deep);">{{ seeds }} seeds</span>
+      </div>
+    </div>
+  </header>
+
+  <section style="position:relative;padding:24px clamp(20px,5vw,56px) 16px;overflow:hidden;">
+    <div style="position:absolute;top:-70px;right:-40px;width:280px;height:280px;background:var(--sky);opacity:0.14;border-radius:55% 45% 60% 40%/45% 55% 45% 55%;z-index:0;animation:lc-float 12s ease-in-out infinite;"></div>
+    <div style="position:relative;z-index:1;display:flex;align-items:center;gap:48px;flex-wrap:wrap;padding-top:12px;">
+      <div style="flex:1 1 440px;min-width:280px;display:flex;flex-direction:column;gap:16px;">
+        <a href="./play.html" style="align-self:flex-start;font-weight:800;font-size:14px;color:var(--sage-deep);">← Back to Play</a>
+        <span style="font-size:40px;">🐢</span>
+        <h1 style="margin:0;font-family:'Fredoka',sans-serif;font-weight:600;font-size:clamp(34px,4.4vw,52px);color:var(--ink);">Patience Pond</h1>
+        <p style="margin:0;font-size:clamp(16px,1.4vw,18px);line-height:1.6;color:var(--ink-soft);max-width:520px;text-wrap:pretty;">Cross a quiet pond one calm hop at a time — waiting for the ripples to settle before you leap.</p>
+        <p style="margin:0;font-weight:800;font-size:15px;color:var(--sage-deep);">Sitting with wanting something now, and waiting anyway.</p>
+      </div>
+      <div style="flex:1 1 320px;min-width:240px;">
+        <div style="width:100%;height:300px;border-radius:28px;background:var(--sky-pale);position:relative;overflow:hidden;">
+          <svg viewBox="0 0 480 320" width="100%" height="100%" style="display:block;">
+            <circle cx="55" cy="60" r="26" fill="#fff" opacity="0.35"></circle>
+            <circle cx="415" cy="70" r="18" fill="#fff" opacity="0.3"></circle>
+            <ellipse cx="240" cy="230" rx="150" ry="26" fill="var(--sky)" opacity="0.35"></ellipse>
+            <circle cx="240" cy="228" r="86" stroke="var(--sky-deep)" stroke-width="2.5" fill="none" opacity="0.25"></circle>
+            <circle cx="240" cy="228" r="112" stroke="var(--sky-deep)" stroke-width="2.5" fill="none" opacity="0.15"></circle>
+            <ellipse cx="240" cy="222" rx="98" ry="40" fill="#8FAD84"></ellipse>
+            <path d="M240 222 L300 202" stroke="#6E8A63" stroke-width="3" fill="none" opacity="0.5"></path>
+            <ellipse cx="230" cy="150" rx="70" ry="66" fill="#7C9A72"></ellipse>
+            <path d="M185 120 Q230 100 275 120 Q265 150 230 158 Q195 150 185 120 Z" fill="#5C7D53"></path>
+            <path d="M200 122 Q230 112 260 122" stroke="#4F6C49" stroke-width="2.5" fill="none" opacity="0.6"></path>
+            <path d="M195 136 Q230 128 265 136" stroke="#4F6C49" stroke-width="2.5" fill="none" opacity="0.6"></path>
+            <ellipse cx="230" cy="196" rx="34" ry="26" fill="#7C9A72"></ellipse>
+            <circle cx="219" cy="192" r="4.5" fill="#3A4438"></circle>
+            <circle cx="241" cy="192" r="4.5" fill="#3A4438"></circle>
+            <path d="M213 188 q6 -6 12 0" stroke="#3A4438" stroke-width="2" stroke-linecap="round" fill="none"></path>
+            <path d="M235 188 q6 -6 12 0" stroke="#3A4438" stroke-width="2" stroke-linecap="round" fill="none"></path>
+            <path d="M218 205 Q230 213 242 205" stroke="#3A4438" stroke-width="2.5" stroke-linecap="round" fill="none"></path>
+            <path d="M175 175 Q160 185 168 200" stroke="#7C9A72" stroke-width="12" stroke-linecap="round" fill="none"></path>
+            <path d="M285 175 Q300 185 292 200" stroke="#7C9A72" stroke-width="12" stroke-linecap="round" fill="none"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding:8px clamp(20px,5vw,56px) 40px;position:relative;z-index:1;">
+    <div style="max-width:520px;margin:0 auto;background:#fff;border-radius:28px;padding:clamp(28px,4vw,40px);box-shadow:0 10px 28px rgba(58,68,56,0.07);border:1px solid rgba(58,68,56,0.05);display:flex;flex-direction:column;align-items:center;gap:20px;">
+
+      <sc-if value="{{ notDone }}" hint-placeholder-val="{{ true }}">
+        <div style="position:relative;width:100%;max-width:240px;height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+          <div style="position:absolute;width:90px;height:90px;border-radius:50%;border:2px solid var(--sky-deep);opacity:0.4;animation:lc-ripple 2.6s ease-out infinite;"></div>
+          <div style="position:absolute;width:90px;height:90px;border-radius:50%;border:2px solid var(--sky-deep);opacity:0.4;animation:lc-ripple 2.6s ease-out infinite;animation-delay:1.3s;"></div>
+          <span style="font-size:46px;position:relative;z-index:1;">🐢</span>
+          <span style="font-size:56px;margin-top:-16px;">🪷</span>
+        </div>
+
+        <p style="margin:0;font-weight:800;font-size:15px;color:var(--ink);text-align:center;">{{ statusLabel }}</p>
+
+        <button onClick="{{ onHop }}" disabled="{{ hopDisabled }}" style="border:none;font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;color:#fff;padding:14px 34px;border-radius:999px;background:{{ hopBg }};cursor:{{ hopCursor }};">Hop 🐢</button>
+      </sc-if>
+
+      <sc-if value="{{ sessionDone }}" hint-placeholder-val="{{ false }}">
+        <span style="font-size:46px;">🌿</span>
+        <p style="margin:0;font-weight:800;font-size:16px;color:var(--sage-deep);text-align:center;">{{ statusLabel }} · +2 seeds</p>
+        <button onClick="{{ onPlayAgain }}" style="cursor:pointer;border:2px solid var(--sage-deep);background:#fff;color:var(--sage-deep);font-weight:800;font-size:14px;padding:12px 26px;border-radius:999px;font-family:'Nunito',sans-serif;">Cross again</button>
+      </sc-if>
+
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;width:100%;">
+        <sc-for list="{{ pads }}" as="pad" hint-placeholder-count="6">
+          <div style="width:44px;height:44px;border-radius:12px;background:{{ pad.bg }};display:flex;align-items:center;justify-content:center;font-size:20px;{{ pad.ring }}">{{ pad.display }}</div>
+        </sc-for>
+      </div>
+
+    </div>
+
+    <p style="text-align:center;margin:22px auto 0;max-width:440px;font-size:14px;color:var(--ink-soft);">Each lily pad hides something calm and unhurried — you'll only find it once the ripples settle.</p>
+  </section>
+
+  <section style="padding:8px clamp(20px,5vw,56px) 0;position:relative;z-index:1;">
+    <a href="./together.html" style="max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:#FBEAE3;border-radius:22px;padding:22px 28px;" style-hover="transform:translateY(-3px);">
+      <span style="font-weight:800;font-size:15px;color:var(--ink);">🤝 Feeling patient? Try something together next.</span>
+      <span style="font-weight:800;font-size:14px;color:var(--coral-deep);white-space:nowrap;">Together →</span>
+    </a>
+  </section>
+
+  <footer style="position:relative;margin-top:56px;background:var(--sage-pale);padding:56px clamp(20px,5vw,56px) 32px;">
+    <div style="display:flex;flex-wrap:wrap;gap:48px;justify-content:space-between;max-width:1200px;margin:0 auto;">
+      <div style="max-width:280px;display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;gap:8px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:19px;color:var(--ink);"><span style="font-size:22px;">🌿</span>Little Clearing</div>
+        <p style="margin:0;font-family:'Nunito',sans-serif;font-size:14px;line-height:1.6;color:var(--ink-soft);">A calm place to play, breathe &amp; grow — at your own gentle pace.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:var(--sage-deep);">Explore</div>
+        <a href="./play.html" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--ink-soft);">🎮 Play</a>
+        <a href="./breathe.html" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--ink-soft);">🌬️ Breathe &amp; Move</a>
+        <a href="./together.html" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--ink-soft);">🤝 Together</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:var(--sage-deep);">For grown-ups</div>
+        <a href="./about.html" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--ink-soft);">🌿 Why Little Clearing</a>
+        <a href="./blog.html" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--ink-soft);">📝 Notes for grown-ups</a>
+        <a href="./resources.html" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--ink-soft);">🧺 Parent resources</a>
+      </div>
+    </div>
+    <div style="max-width:1200px;margin:40px auto 0;padding-top:22px;border-top:1px solid rgba(58,68,56,0.12);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+      <span style="font-family:'Nunito',sans-serif;font-size:13px;color:var(--ink-soft);">Made with ♥ for curious kids · Little Clearing</span>
+      <span style="font-family:'Nunito',sans-serif;font-size:13px;color:var(--ink-soft);">No ads · No strangers · Nothing to buy</span>
+    </div>
+  </footer>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;waitSeconds&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:2.4,&quot;min&quot;:1,&quot;max&quot;:5,&quot;step&quot;:0.1,&quot;unit&quot;:&quot;s&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Gameplay&quot;}}">
+class Component extends DCLogic {
+  pondItems = [
+    { emoji: '🐸', name: 'Frog', blurb: 'Blinking slowly in the sun.' },
+    { emoji: '🐌', name: 'Snail', blurb: 'In absolutely no hurry.' },
+    { emoji: '🌸', name: 'Blossom', blurb: 'Just opening, petal by petal.' },
+    { emoji: '🐟', name: 'Fish', blurb: 'Gliding by, unbothered.' },
+    { emoji: '🦆', name: 'Duckling', blurb: 'Paddling along at its own pace.' },
+    { emoji: '🌾', name: 'Reed', blurb: 'Swaying, patient in the breeze.' }
+  ];
+  waitTimer = null;
+  state = { seeds: 0, dots: ['rgba(79,108,73,0.25)', 'rgba(79,108,73,0.25)', 'rgba(79,108,73,0.25)'], step: 0, ready: false, discoveries: [], sessionDone: false };
+  componentDidMount() {
+    const s = parseInt(localStorage.getItem('lc_seeds') || '0', 10);
+    this.setState({ seeds: isNaN(s) ? 0 : s, dots: this.computeDots() });
+    this.startWait();
+  }
+  componentWillUnmount() {
+    if (this.waitTimer) clearTimeout(this.waitTimer);
+  }
+  computeDots() {
+    return ['play', 'breathe', 'together'].map(a => localStorage.getItem('lc_tried_' + a) === '1' ? 'var(--sage-deep)' : 'rgba(79,108,73,0.25)');
+  }
+  markTried(area) {
+    localStorage.setItem('lc_tried_' + area, '1');
+    this.setState({ dots: this.computeDots() });
+  }
+  addSeeds(n) {
+    const total = this.state.seeds + n;
+    localStorage.setItem('lc_seeds', String(total));
+    this.setState({ seeds: total });
+  }
+  startWait() {
+    if (this.waitTimer) clearTimeout(this.waitTimer);
+    const ms = (this.props.waitSeconds ?? 2.4) * 1000;
+    this.waitTimer = setTimeout(() => this.setState({ ready: true }), ms);
+  }
+  hop() {
+    const s = this.state;
+    if (!s.ready || s.sessionDone) return;
+    const item = this.pondItems[s.step];
+    const discoveries = [...s.discoveries, item];
+    const nextStep = s.step + 1;
+    if (nextStep >= this.pondItems.length) {
+      this.setState({ discoveries, step: nextStep, sessionDone: true, ready: false });
+      this.addSeeds(2);
+      this.markTried('play');
+    } else {
+      this.setState({ discoveries, step: nextStep, ready: false });
+      this.startWait();
+    }
+  }
+  playAgain() {
+    this.setState({ step: 0, ready: false, discoveries: [], sessionDone: false });
+    this.startWait();
+  }
+  renderVals() {
+    const s = this.state;
+    const pads = this.pondItems.map((item, i) => ({
+      display: i < s.discoveries.length ? s.discoveries[i].emoji : '🪷',
+      bg: i < s.discoveries.length ? '#fff' : 'var(--sage-pale)',
+      ring: (i === s.step && !s.sessionDone) ? 'box-shadow:0 0 0 3px var(--sage);' : 'box-shadow:none;'
+    }));
+    return {
+      seeds: s.seeds,
+      journeyDots: s.dots.map(c => ({ color: c })),
+      pads,
+      statusLabel: s.sessionDone ? 'You crossed the whole pond 🌿' : (s.ready ? 'Ready — hop!' : 'Watching the ripples settle…'),
+      hopDisabled: !s.ready || s.sessionDone,
+      hopBg: (!s.ready || s.sessionDone) ? 'rgba(79,108,73,0.35)' : 'var(--sage-deep)',
+      hopCursor: (!s.ready || s.sessionDone) ? 'default' : 'pointer',
+      onHop: () => this.hop(),
+      sessionDone: s.sessionDone,
+      notDone: !s.sessionDone,
+      onPlayAgain: () => this.playAgain()
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -136,6 +136,13 @@ a:hover { color:#D9714F; }
       </div>
     </div>
 
+    <sc-if value="{{ sparkBanner }}" hint-placeholder-val="{{ false }}">
+      <a href="{{ sparkBanner.href }}" style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;max-width:1180px;margin:0 auto 22px;background:#F1EAFB;border-radius:18px;padding:16px 22px;" style-hover="transform:translateY(-2px);">
+        <span style="font-weight:800;font-size:14.5px;color:var(--ink);">✨ You're a {{ sparkBanner.label }} — {{ sparkBanner.title }} might be your spark.</span>
+        <span style="font-weight:800;font-size:13.5px;color:var(--lavender-deep, #7C5FA6);white-space:nowrap;">Play it →</span>
+      </a>
+    </sc-if>
+
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;max-width:1180px;margin:0 auto;">
       <sc-for list="{{ filteredGames }}" as="game" hint-placeholder-count="4">
         <a href="{{ game.href }}" onClick="{{ game.onClick }}" style="position:relative;background:#fff;border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:8px;box-shadow:0 8px 20px rgba(58,68,56,0.06);border:1px solid rgba(58,68,56,0.05);" style-hover="transform:translateY(-5px);box-shadow:0 16px 30px rgba(58,68,56,0.12);">
@@ -144,21 +151,15 @@ a:hover { color:#D9714F; }
           </sc-if>
           <div style="width:48px;height:48px;border-radius:14px;background:{{ game.iconBg }};display:flex;align-items:center;justify-content:center;font-size:22px;">{{ game.emoji }}</div>
           <div style="font-weight:800;font-size:11px;letter-spacing:0.03em;text-transform:uppercase;color:{{ game.catColor }};">{{ game.category }}</div>
+          <sc-if value="{{ game.isMatch }}" hint-placeholder-val="{{ false }}">
+            <div style="font-weight:800;font-size:11.5px;color:var(--lavender-deep, #7C5FA6);">✨ Matches your spark</div>
+          </sc-if>
           <div style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:17px;color:var(--ink);">{{ game.title }}</div>
           <p style="margin:0;font-size:13.5px;line-height:1.5;color:var(--ink-soft);flex:1;">{{ game.desc }}</p>
           <span style="font-weight:800;font-size:13px;color:{{ game.ctaColor }};">{{ game.cta }}</span>
         </a>
       </sc-for>
 
-      <sc-if value="{{ showPatience }}" hint-placeholder-val="{{ true }}">
-      <div style="position:relative;background:var(--sage-pale);border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:8px;opacity:0.85;border:1px dashed rgba(79,108,73,0.35);">
-        <div style="width:48px;height:48px;border-radius:14px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;">🐢</div>
-        <div style="font-weight:800;font-size:11px;letter-spacing:0.03em;text-transform:uppercase;color:var(--sage-deep);">Coming Soon</div>
-        <div style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:17px;color:var(--ink);">Patience Pond</div>
-        <p style="margin:0;font-size:13.5px;line-height:1.5;color:var(--ink-soft);flex:1;">Slow and steady: help the pond friends wait, breathe, and make good calls when things feel hard.</p>
-        <span style="display:inline-flex;align-items:center;gap:6px;font-weight:800;font-size:12.5px;color:var(--sage-deep);">🌱 Coming soon</span>
-      </div>
-      </sc-if>
     </div>
 
     <p style="text-align:center;margin:36px auto 0;max-width:480px;font-size:14.5px;color:var(--ink-soft);">Got a game you wish existed? We're always planting new ones. 🌱</p>
@@ -199,19 +200,26 @@ a:hover { color:#D9714F; }
 </div>
 
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;showComingSoon&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Content&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;highlightSparkMatch&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Content&quot;}}">
 class Component extends DCLogic {
-  categoryList = ['All', 'Money & Life Skills', 'Talking It Out', 'Find Your Spark', 'Feelings', 'Coming Soon'];
+  categoryList = ['All', 'Money & Life Skills', 'Talking It Out', 'Find Your Spark', 'Feelings', 'Slow & Steady'];
+  sparkMap = {
+    building: { title: 'Money Quest', label: 'Builder' },
+    helping: { title: 'TalkQuest', label: 'Helper' },
+    art: { title: 'Feelings Forest', label: 'Artist' },
+    exploring: { title: 'Patience Pond', label: 'Explorer' }
+  };
   games = [
     { href: 'https://pookiegames.net/money-quest.html', hasBadge: true, badge: 'Popular', badgeBg: 'var(--sage-deep)', iconBg: 'var(--butter)', emoji: '🍋', category: 'Money & Life Skills', catColor: 'var(--butter-deep)', title: 'Money Quest', desc: 'Run your own lemonade-stand fortune. Earn coins, build streaks, and watch your jar grow with real interest.', cta: 'Play now →', ctaColor: 'var(--sage-deep)' },
     { href: 'https://pookiegames.net/talkquest.html', hasBadge: false, badge: '', badgeBg: '', iconBg: 'var(--sky)', emoji: '💬', category: 'Talking It Out', catColor: 'var(--sky-deep)', title: 'TalkQuest', desc: 'Practice the tricky conversations life throws at you. Choose your words and see where they lead.', cta: 'Play now →', ctaColor: 'var(--sage-deep)' },
     { href: 'https://pookiegames.net/spark-catcher.html', hasBadge: false, badge: '', badgeBg: '', iconBg: 'var(--lavender)', emoji: '✨', category: 'Find Your Spark', catColor: 'var(--lavender-deep)', title: 'Spark Catcher', desc: 'Tap what sparks joy and discover what lights you up — building, art, helping, or exploring.', cta: 'Play now →', ctaColor: 'var(--sage-deep)' },
-    { href: './feelings-forest.html', hasBadge: true, badge: 'New', badgeBg: 'var(--coral-deep)', iconBg: 'var(--coral)', emoji: '🦊', category: 'Feelings', catColor: 'var(--coral-deep)', title: 'Feelings Forest', desc: 'Meet woodland friends going through big feelings — help them name what they feel and find their calm.', cta: 'Play now →', ctaColor: 'var(--sage-deep)' }
+    { href: './feelings-forest.html', hasBadge: true, badge: 'New', badgeBg: 'var(--coral-deep)', iconBg: 'var(--coral)', emoji: '🦊', category: 'Feelings', catColor: 'var(--coral-deep)', title: 'Feelings Forest', desc: 'Meet woodland friends going through big feelings — help them name what they feel and find their calm.', cta: 'Play now →', ctaColor: 'var(--sage-deep)' },
+    { href: './patience-pond.html', hasBadge: true, badge: 'New', badgeBg: 'var(--sage-deep)', iconBg: 'var(--sage-pale)', emoji: '🐢', category: 'Slow & Steady', catColor: 'var(--sage-deep)', title: 'Patience Pond', desc: 'Cross a quiet pond one calm hop at a time, waiting for the ripples to settle before you leap.', cta: 'Play now →', ctaColor: 'var(--sage-deep)' }
   ];
-  state = { seeds: 0, activeCategory: 'All', dots: ['rgba(79,108,73,0.25)', 'rgba(79,108,73,0.25)', 'rgba(79,108,73,0.25)'] };
+  state = { seeds: 0, activeCategory: 'All', spark: null, dots: ['rgba(79,108,73,0.25)', 'rgba(79,108,73,0.25)', 'rgba(79,108,73,0.25)'] };
   componentDidMount() {
     const s = parseInt(localStorage.getItem('lc_seeds') || '0', 10);
-    this.setState({ seeds: isNaN(s) ? 0 : s, dots: this.computeDots() });
+    this.setState({ seeds: isNaN(s) ? 0 : s, dots: this.computeDots(), spark: localStorage.getItem('lc_spark') || null });
   }
   setCategory(c) { this.setState({ activeCategory: c }); }
   computeDots() {
@@ -223,20 +231,21 @@ class Component extends DCLogic {
   }
   renderVals() {
     const s = this.state;
-    const showComingSoon = this.props.showComingSoon ?? true;
-    const cats = this.categoryList.filter(c => c !== 'Coming Soon' || showComingSoon);
+    const highlightOn = this.props.highlightSparkMatch ?? true;
+    const sparkInfo = (highlightOn && s.spark && this.sparkMap[s.spark]) ? this.sparkMap[s.spark] : null;
+    const matchedGame = sparkInfo ? this.games.find(g => g.title === sparkInfo.title) : null;
     const filtered = s.activeCategory === 'All' ? this.games : this.games.filter(g => g.category === s.activeCategory);
     return {
       seeds: s.seeds,
       journeyDots: s.dots.map(c => ({ color: c })),
-      categoryChips: cats.map(c => ({
+      categoryChips: this.categoryList.map(c => ({
         label: c,
         onClick: () => this.setCategory(c),
         bg: s.activeCategory === c ? 'var(--sage-deep)' : 'var(--sage-pale)',
         color: s.activeCategory === c ? '#fff' : 'var(--sage-deep)'
       })),
-      filteredGames: filtered.map(g => ({ ...g, onClick: () => this.markTried('play') })),
-      showPatience: showComingSoon && (s.activeCategory === 'All' || s.activeCategory === 'Coming Soon')
+      filteredGames: filtered.map(g => ({ ...g, isMatch: !!(sparkInfo && g.title === sparkInfo.title), onClick: () => this.markTried('play') })),
+      sparkBanner: matchedGame ? { href: matchedGame.href, label: sparkInfo.label, title: sparkInfo.title } : null
     };
   }
 }
