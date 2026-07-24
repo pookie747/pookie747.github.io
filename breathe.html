@@ -56,7 +56,29 @@ a:hover { color:#D9714F; }
         <p style="margin:0;font-size:clamp(16px,1.4vw,18px);line-height:1.6;color:var(--ink-soft);max-width:520px;text-wrap:pretty;">A quiet place to slow down. Follow the bubble with your breath, or try a gentle flow. There's no rush here — it's okay to just be.</p>
       </div>
       <div style="flex:1 1 320px;min-width:240px;">
-        <image-slot id="breathe-hero" shape="rounded" radius="28" placeholder="Calm illustration: a kid breathing peacefully among soft clouds" style="width:100%;height:300px;display:block;"></image-slot>
+        <div style="width:100%;height:300px;border-radius:28px;background:var(--sky-pale);position:relative;overflow:hidden;">
+          <svg viewBox="0 0 480 320" width="100%" height="100%" style="display:block;">
+            <ellipse cx="95" cy="80" rx="15" ry="8" fill="var(--sky)" opacity="0.5" transform="rotate(-20 95 80)"></ellipse>
+            <ellipse cx="385" cy="235" rx="13" ry="7" fill="#B9A4D6" opacity="0.5" transform="rotate(15 385 235)"></ellipse>
+            <circle cx="240" cy="185" r="95" stroke="var(--sky)" stroke-width="3" fill="none" opacity="0.5"></circle>
+            <circle cx="240" cy="185" r="122" stroke="var(--sky)" stroke-width="3" fill="none" opacity="0.32"></circle>
+            <circle cx="240" cy="185" r="149" stroke="var(--sky)" stroke-width="3" fill="none" opacity="0.18"></circle>
+            <ellipse cx="240" cy="270" rx="92" ry="14" fill="#3A4438" opacity="0.08"></ellipse>
+            <path d="M205 246 Q178 260 210 270" stroke="#4F6C49" stroke-width="14" stroke-linecap="round" fill="none"></path>
+            <path d="M275 246 Q302 258 270 270" stroke="#4F6C49" stroke-width="14" stroke-linecap="round" fill="none"></path>
+            <path d="M300 178 Q312 195 302 215" stroke="#4F6C49" stroke-width="14" stroke-linecap="round" fill="none"></path>
+            <path d="M180 178 Q168 195 178 215" stroke="#4F6C49" stroke-width="14" stroke-linecap="round" fill="none"></path>
+            <ellipse cx="240" cy="185" rx="72" ry="78" fill="#7C9A72"></ellipse>
+            <ellipse cx="213" cy="158" rx="18" ry="11" fill="#8FAD84" opacity="0.55"></ellipse>
+            <path d="M225 108 Q208 74 241 90 Q236 106 225 108 Z" fill="#4F6C49"></path>
+            <path d="M255 108 Q274 71 244 89 Q247 105 255 108 Z" fill="#4F6C49"></path>
+            <path d="M209 182 q7 7 14 0" stroke="#3A4438" stroke-width="3.5" stroke-linecap="round" fill="none"></path>
+            <path d="M257 182 q7 7 14 0" stroke="#3A4438" stroke-width="3.5" stroke-linecap="round" fill="none"></path>
+            <ellipse cx="210" cy="202" rx="11" ry="7" fill="#F0967A" opacity="0.4"></ellipse>
+            <ellipse cx="270" cy="202" rx="11" ry="7" fill="#F0967A" opacity="0.4"></ellipse>
+            <path d="M222 206 Q240 216 258 206" stroke="#3A4438" stroke-width="4" stroke-linecap="round" fill="none"></path>
+          </svg>
+        </div>
       </div>
     </div>
   </section>
