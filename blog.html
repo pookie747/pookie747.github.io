@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Notes for grown-ups · Little Clearing 🌿</title>
+<meta name="description" content="Short reads on raising steady kids, from the Little Clearing team.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+body { margin:0; }
+a { color:#4F6C49; text-decoration:none; }
+a:hover { color:#D9714F; }
+</style>
+</helmet>
+<div style="--paper:#FBF6EC;--ink:#3A4438;--ink-soft:#6E7A67;--sage:#7C9A72;--sage-deep:#4F6C49;--sage-pale:#E4ECDC;--coral:#F0967A;--coral-deep:#D9714F;min-height:100vh;background:var(--paper);color:var(--ink);font-family:'Nunito',sans-serif;position:relative;overflow-x:hidden;">
+
+  <header style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;padding:28px clamp(20px,5vw,56px) 8px;position:relative;">
+    <a href="./index.html" style="display:flex;align-items:center;gap:8px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:clamp(19px,2vw,22px);color:var(--ink);">
+      <span style="font-size:26px;">🌿</span>Little Clearing
+    </a>
+    <nav style="display:flex;align-items:center;gap:clamp(14px,3vw,30px);flex-wrap:wrap;">
+      <a href="./play.html" style="font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;color:var(--ink-soft);">Play</a>
+      <a href="./breathe.html" style="font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;color:var(--ink-soft);">Breathe &amp; Move</a>
+      <a href="./together.html" style="font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;color:var(--ink-soft);">Together</a>
+      <a href="./about.html" style="font-family:'Nunito',sans-serif;font-weight:900;font-size:15px;color:var(--sage-deep);">For Grown-ups</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div style="display:flex;align-items:center;gap:5px;background:var(--sage-pale);padding:9px 13px;border-radius:999px;" title="Your path: Play, Breathe &amp; Move, Together">
+        <sc-for list="{{ journeyDots }}" as="dot" hint-placeholder-count="3">
+          <span style="width:8px;height:8px;border-radius:50%;display:inline-block;background:{{ dot.color }};"></span>
+        </sc-for>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;background:var(--sage-pale);padding:8px 16px;border-radius:999px;">
+        <span style="font-size:15px;">🌱</span>
+        <span style="font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;color:var(--sage-deep);">{{ seeds }} seeds</span>
+      </div>
+    </div>
+  </header>
+
+  <section style="padding:16px clamp(20px,5vw,56px) 8px;">
+    <a href="./about.html" style="font-weight:800;font-size:14px;color:var(--sage-deep);">← For grown-ups</a>
+  </section>
+
+  <section style="padding:8px clamp(20px,5vw,56px) 24px;">
+    <span style="font-size:36px;">📝</span>
+    <h1 style="margin:12px 0 8px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:clamp(30px,4vw,44px);color:var(--ink);">Notes for grown-ups</h1>
+    <p style="margin:0;font-size:16px;line-height:1.6;color:var(--ink-soft);max-width:560px;text-wrap:pretty;">Short reads on raising steady kids, from the Little Clearing team.</p>
+  </section>
+
+  <section style="padding:16px clamp(20px,5vw,56px) 64px;">
+    <div style="display:flex;flex-direction:column;gap:16px;max-width:720px;margin:0 auto;">
+      <sc-for list="{{ postItems }}" as="post" hint-placeholder-count="4">
+        <div style="background:#fff;border-radius:22px;padding:28px 30px;box-shadow:0 8px 22px rgba(58,68,56,0.06);border:1px solid rgba(58,68,56,0.05);">
+          <div onClick="{{ post.onClick }}" style="cursor:pointer;">
+            <div style="font-weight:800;font-size:12px;letter-spacing:0.04em;text-transform:uppercase;color:var(--coral-deep);margin-bottom:8px;">{{ post.read }}</div>
+            <div style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:20px;color:var(--ink);margin-bottom:8px;">{{ post.title }}</div>
+            <p style="margin:0;font-size:14.5px;line-height:1.6;color:var(--ink-soft);">{{ post.excerpt }}</p>
+            <span style="display:inline-block;margin-top:12px;font-weight:800;font-size:13.5px;color:var(--sage-deep);">{{ post.icon }}</span>
+          </div>
+          <sc-if value="{{ post.isOpen }}" hint-placeholder-val="{{ false }}">
+            <p style="margin:18px 0 0;padding-top:18px;border-top:1px solid rgba(58,68,56,0.08);font-size:14.5px;line-height:1.7;color:var(--ink);white-space:pre-line;text-wrap:pretty;">{{ post.body }}</p>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <footer style="position:relative;margin-top:8px;background:var(--sage-pale);padding:56px clamp(20px,5vw,56px) 32px;">
+    <div style="display:flex;flex-wrap:wrap;gap:48px;justify-content:space-between;max-width:1200px;margin:0 auto;">
+      <div style="max-width:280px;display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;gap:8px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:19px;color:var(--ink);"><span style="font-size:22px;">🌿</span>Little Clearing</div>
+        <p style="margin:0;font-family:'Nunito',sans-serif;font-size:14px;line-height:1.6;color:var(--ink-soft);">A calm place to play, breathe &amp; grow — at your own gentle pace.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:var(--sage-deep);">Explore</div>
+        <a href="./play.html" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--ink-soft);">🎮 Play</a>
+        <a href="./breathe.html" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--ink-soft);">🌬️ Breathe &amp; Move</a>
+        <a href="./together.html" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--ink-soft);">🤝 Together</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:var(--sage-deep);">For grown-ups</div>
+        <a href="./about.html" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--ink-soft);">🌿 Why Little Clearing</a>
+        <a href="./blog.html" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--ink-soft);">📝 Notes for grown-ups</a>
+        <a href="./resources.html" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--ink-soft);">🧺 Parent resources</a>
+      </div>
+    </div>
+    <div style="max-width:1200px;margin:40px auto 0;padding-top:22px;border-top:1px solid rgba(58,68,56,0.12);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+      <span style="font-family:'Nunito',sans-serif;font-size:13px;color:var(--ink-soft);">Made with ♥ for curious kids · Little Clearing</span>
+      <span style="font-family:'Nunito',sans-serif;font-size:13px;color:var(--ink-soft);">No ads · No strangers · Nothing to buy</span>
+    </div>
+  </footer>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  posts = [
+    {
+      title: "Why we don't say “calm down”",
+      read: "2 min read",
+      excerpt: "Two words that rarely work — and what to try instead.",
+      body: "Telling an upset kid to calm down almost never works — it tends to make the feeling louder, not quieter. Big feelings want to be noticed before they'll shrink.\n\nTry naming it instead: “You're really frustrated right now.” Just being seen accurately does something that “calm down” never will.\n\nOnce the feeling has a name, the next part gets easier: a hand on the back, a quiet minute together, maybe the breathing bubble in Breathe & Move. Regulation follows connection — not the other way around."
+    },
+    {
+      title: "The two-minute check-in that changes a whole evening",
+      read: "2 min read",
+      excerpt: "One tiny ritual, most nights, is worth more than one big talk.",
+      body: "Somewhere between the backpack drop and dinner, there's a two-minute window that matters more than it looks.\n\nAsk one real question — not “how was school”, but “what was the best two minutes of your day, and the worst two minutes?” Then just listen, without fixing anything.\n\nKids don't need every day solved. They need to know someone's still asking. Little Clearing's Together activities are built around exactly this — small, repeatable, low-pressure."
+    },
+    {
+      title: "What “therapy through play” actually means",
+      read: "3 min read",
+      excerpt: "It's not therapy pretending to be a game — it's the other way around.",
+      body: "We get asked this a lot, so here's the short version: Little Clearing doesn't diagnose, treat, or replace anyone's therapist.\n\nWhat it does is let a child rehearse the same muscles — naming feelings, sitting with a hard choice, practicing a brave conversation — inside something that feels like play, not homework for their emotions.\n\nNo pressure, no labels, nothing clinical. Just low-stakes practice for real-life moments, one lemonade stand or forest friend at a time. Read more on the For Grown-ups page."
+    },
+    {
+      title: "Screens, but make it gentle",
+      read: "2 min read",
+      excerpt: "We know the irony of a website telling you to put the phone down.",
+      body: "Little Clearing lives on a screen, which means we think about screens more than most.\n\nOur rule for ourselves: no infinite scroll, no notifications, no engagement tricks — every page is built to be finished, not endless. Together activities even ask you to put the device down entirely once you've read them.\n\nWe'd rather be a short, calm stop than another feed that doesn't know when to end."
+    }
+  ];
+  state = { seeds: 0, open: null, dots: ['rgba(79,108,73,0.25)', 'rgba(79,108,73,0.25)', 'rgba(79,108,73,0.25)'] };
+  componentDidMount() {
+    const s = parseInt(localStorage.getItem('lc_seeds') || '0', 10);
+    this.setState({ seeds: isNaN(s) ? 0 : s, dots: this.computeDots() });
+  }
+  computeDots() {
+    return ['play', 'breathe', 'together'].map(a => localStorage.getItem('lc_tried_' + a) === '1' ? 'var(--sage-deep)' : 'rgba(79,108,73,0.25)');
+  }
+  toggle(i) {
+    this.setState({ open: this.state.open === i ? null : i });
+  }
+  renderVals() {
+    const s = this.state;
+    return {
+      seeds: s.seeds,
+      journeyDots: s.dots.map(c => ({ color: c })),
+      postItems: this.posts.map((p, i) => ({
+        title: p.title, read: p.read, excerpt: p.excerpt, body: p.body,
+        isOpen: s.open === i,
+        icon: s.open === i ? 'Show less −' : 'Read more +',
+        onClick: () => this.toggle(i)
+      }))
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,164 +1,227 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>For grown-ups · Little Clearing 🌿</title>
-<meta name="description" content="The thinking behind Little Clearing — gentle games that quietly build the skills kids would otherwise only meet in a therapist's office." />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
-<style>
-  :root{
-    --paper:#FBF7EF; --sky:#DCEAF0; --sky-deep:#C7DEE6;
-    --sage:#9FC1A8; --sage-soft:#E4EFE3;
-    --ink:#2C4A52; --ink-soft:#5E7C82;
-    --peach:#F0A878; --peach-deep:#E08E5C;
-    --card:#FFFFFF; --line:#E6E0D2;
-  }
-  *{ box-sizing:border-box; }
-  html,body{ margin:0; padding:0; }
-  body{
-    font-family:'Nunito', system-ui, sans-serif; color:var(--ink);
-    background:var(--paper); -webkit-font-smoothing:antialiased; overflow-x:hidden;
-  }
-  .display{ font-family:'Baloo 2','Nunito',sans-serif; }
-
-  .sky{
-    position:fixed; inset:0; z-index:-2;
-    background:linear-gradient(180deg, var(--sky) 0%, var(--sky-deep) 34%, var(--paper) 70%);
-    background-size:100% 200%; animation:drift 26s ease-in-out infinite alternate;
-  }
-  @keyframes drift{ from{ background-position:50% 0%; } to{ background-position:50% 24%; } }
-  .sun{
-    position:fixed; top:-90px; right:-60px; z-index:-1; width:280px; height:280px; border-radius:50%;
-    background:radial-gradient(circle at center, rgba(244,211,94,.45) 0%, rgba(244,211,94,.14) 45%, rgba(244,211,94,0) 70%);
-    animation:breathe 11s ease-in-out infinite alternate;
-  }
-  @keyframes breathe{ from{ transform:scale(1); opacity:.85; } to{ transform:scale(1.12); opacity:1; } }
-  .blob{ position:fixed; z-index:-1; border-radius:50%; filter:blur(2px); opacity:.45; }
-  .blob.a{ width:120px; height:120px; left:-36px; top:28%; background:var(--sage-soft); animation:fl 15s ease-in-out infinite alternate; }
-  .blob.b{ width:80px; height:80px; right:6%; bottom:14%; background:#FCE9D6; animation:fl 18s ease-in-out infinite alternate; }
-  @keyframes fl{ from{ transform:translateY(0); } to{ transform:translateY(22px); } }
-
-  .wrap{ max-width:680px; margin:0 auto; padding:0 24px; }
-
-  header.top{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:26px 0 6px; max-width:680px; margin:0 auto; padding-left:24px; padding-right:24px;
-  }
-  header.top a.home{ display:flex; align-items:center; gap:9px; text-decoration:none; color:var(--ink); }
-  header.top .leaf{ font-size:23px; }
-  header.top .name{ font-size:20px; font-weight:700; }
-  header.top a.back{
-    text-decoration:none; color:var(--ink-soft); font-weight:600; font-size:14px;
-    padding:8px 15px; border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,.55);
-  }
-
-  .hero{ text-align:center; padding:40px 0 8px; }
-  .eyebrow{
-    font-size:13px; letter-spacing:2px; text-transform:uppercase;
-    color:var(--peach-deep); font-weight:700; margin-bottom:14px;
-  }
-  .hero h1{ font-size:clamp(30px,5.4vw,44px); margin:0 0 16px; line-height:1.1; }
-  .hero p{ font-size:clamp(16px,2.3vw,19px); color:var(--ink-soft); line-height:1.6; max-width:560px; margin:0 auto; }
-
-  .panel{
-    background:var(--card); border:1px solid var(--line); border-radius:24px;
-    padding:30px 30px; margin:30px 0; box-shadow:0 10px 28px rgba(44,74,82,.06);
-  }
-  .panel h2{ font-family:'Baloo 2',sans-serif; font-size:22px; margin:0 0 12px; color:var(--ink); }
-  .panel p{ color:var(--ink-soft); line-height:1.7; margin:0 0 14px; font-size:16px; }
-  .panel p:last-child{ margin-bottom:0; }
-  .panel p strong{ color:var(--ink); font-weight:700; }
-
-  .skills{ display:grid; grid-template-columns:1fr; gap:14px; margin:18px 0 0; }
-  .skill{ display:flex; gap:14px; align-items:flex-start; }
-  .skill .ico{
-    flex:0 0 auto; width:42px; height:42px; border-radius:13px;
-    display:flex; align-items:center; justify-content:center; font-size:20px;
-    background:var(--sage-soft);
-  }
-  .skill.b .ico{ background:#FBE6DE; }
-  .skill .body h3{ font-family:'Baloo 2',sans-serif; font-size:17px; margin:2px 0 4px; }
-  .skill .body p{ margin:0; font-size:15px; color:var(--ink-soft); line-height:1.55; }
-
-  .note{
-    background:var(--sage-soft); border:none; border-radius:20px; padding:22px 26px;
-    margin:26px 0; color:#3C5A45;
-  }
-  .note p{ margin:0; line-height:1.65; font-size:15.5px; }
-  .note strong{ color:#2F4A38; }
-
-  footer{ text-align:center; padding:34px 0 44px; color:var(--ink-soft); font-size:14px; }
-  footer a{ color:var(--peach-deep); text-decoration:none; font-weight:700; }
-
-  @media (prefers-reduced-motion: reduce){
-    .sky,.sun,.blob{ animation:none !important; }
-  }
-</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
 </head>
 <body>
-  <div class="sky"></div>
-  <div class="sun"></div>
-  <div class="blob a"></div>
-  <div class="blob b"></div>
+<x-dc>
+<helmet>
+<title>For grown-ups · Little Clearing 🌿</title>
+<meta name="description" content="The thinking behind Little Clearing — gentle games that quietly build the skills kids would otherwise only meet in a therapist's office.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+body { margin:0; }
+a { color:#4F6C49; text-decoration:none; }
+a:hover { color:#D9714F; }
+@keyframes lc-float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-16px); } }
+</style>
+</helmet>
+<div style="--paper:#FBF6EC;--ink:#3A4438;--ink-soft:#6E7A67;--sage:#7C9A72;--sage-deep:#4F6C49;--sage-pale:#E4ECDC;--coral:#F0967A;--coral-deep:#D9714F;--sky:#8FBFCE;--sky-deep:#3D7887;--butter:#F0C05E;--butter-deep:#B9791F;--lavender:#B9A4D6;--lavender-deep:#7C5FA6;min-height:100vh;background:var(--paper);color:var(--ink);font-family:'Nunito',sans-serif;position:relative;overflow-x:hidden;">
 
-  <header class="top">
-    <a class="home" href="index.html">
-      <span class="leaf">🌿</span>
-      <span class="name display">Little Clearing</span>
+  <header style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;padding:28px clamp(20px,5vw,56px) 8px;position:relative;">
+    <a href="./index.html" style="display:flex;align-items:center;gap:8px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:clamp(19px,2vw,22px);color:var(--ink);">
+      <span style="font-size:26px;">🌿</span>Little Clearing
     </a>
-    <a class="back" href="index.html">← Back to games</a>
-  </header>
-
-  <main class="wrap">
-    <section class="hero">
-      <div class="eyebrow display">For grown-ups</div>
-      <h1 class="display">The quiet idea behind the play.</h1>
-      <p>Little Clearing was built on a simple belief: the skills that help children feel steadier in the world shouldn't only live in a therapist's office. They can grow gently, through play, in a place that never feels like a lesson.</p>
-    </section>
-
-    <div class="panel">
-      <h2>Why "therapy through gaming"</h2>
-      <p>Plenty of kids — and honestly, plenty of adults — go quiet at the word <em>therapy</em>. It can feel heavy, or like something's wrong. So a child who would benefit enormously from learning to name a feeling, sit with a hard choice, or rehearse a tough conversation often never gets the chance to practise any of it.</p>
-      <p>These games take a softer road. A child thinks they're running a lemonade stand or talking their way through a tricky moment with a parent. What they're <strong>actually</strong> doing is building emotional regulation, decision-making, and self-confidence — the same muscles a good counsellor would help them strengthen, just wrapped in something that feels like fun.</p>
-      <p>No pressure. No labels. No "now let's talk about your feelings." Just a calm clearing where those skills can quietly take root.</p>
-    </div>
-
-    <div class="panel">
-      <h2>What the games gently build</h2>
-      <div class="skills">
-        <div class="skill">
-          <div class="ico">🍋</div>
-          <div class="body">
-            <h3>Money Quest</h3>
-            <p>Confidence and patience with money — earning, waiting, planning, and recognising when something's too good to be true. Practical resilience, dressed up as a game.</p>
-          </div>
-        </div>
-        <div class="skill b">
-          <div class="ico">💬</div>
-          <div class="body">
-            <h3>TalkQuest</h3>
-            <p>Rehearsing the conversations that scare us — owning a mistake, asking for help, being honest. A safe place to practise brave words before they're needed for real.</p>
-          </div>
-        </div>
+    <nav style="display:flex;align-items:center;gap:clamp(14px,3vw,30px);flex-wrap:wrap;">
+      <a href="./play.html" style="font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;color:var(--ink-soft);">Play</a>
+      <a href="./breathe.html" style="font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;color:var(--ink-soft);">Breathe &amp; Move</a>
+      <a href="./together.html" style="font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;color:var(--ink-soft);">Together</a>
+      <a href="./about.html" style="font-family:'Nunito',sans-serif;font-weight:900;font-size:15px;color:var(--sage-deep);">For Grown-ups</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div style="display:flex;align-items:center;gap:5px;background:var(--sage-pale);padding:9px 13px;border-radius:999px;" title="Your path: Play, Breathe &amp; Move, Together">
+        <sc-for list="{{ journeyDots }}" as="dot" hint-placeholder-count="3">
+          <span style="width:8px;height:8px;border-radius:50%;display:inline-block;background:{{ dot.color }};"></span>
+        </sc-for>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;background:var(--sage-pale);padding:8px 16px;border-radius:999px;">
+        <span style="font-size:15px;">🌱</span>
+        <span style="font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;color:var(--sage-deep);">{{ seeds }} seeds</span>
       </div>
     </div>
+  </header>
 
-    <div class="note">
-      <p><strong>A gentle, honest note:</strong> these games are a warm supplement, not a replacement for professional care. If your child is struggling in a way that worries you, please reach out to a doctor, counsellor, or trusted mental-health professional. Little Clearing is here to help on the everyday days — not to stand in for real support when it's needed.</p>
+  <section style="position:relative;padding:24px clamp(20px,5vw,56px) 16px;overflow:hidden;">
+    <div style="position:absolute;top:-70px;right:-50px;width:300px;height:300px;background:var(--sage-pale);border-radius:50% 50% 45% 55%/55% 45% 55% 45%;z-index:0;animation:lc-float 12s ease-in-out infinite;"></div>
+    <div style="position:relative;z-index:1;display:flex;align-items:center;gap:48px;flex-wrap:wrap;padding-top:12px;">
+      <div style="flex:1 1 440px;min-width:280px;display:flex;flex-direction:column;gap:16px;">
+        <span style="display:inline-flex;align-self:flex-start;background:var(--sage-pale);color:var(--sage-deep);font-weight:800;font-size:12px;letter-spacing:0.05em;text-transform:uppercase;padding:7px 16px;border-radius:999px;">For grown-ups</span>
+        <h1 style="margin:0;font-family:'Fredoka',sans-serif;font-weight:600;font-size:clamp(32px,4vw,48px);line-height:1.15;color:var(--ink);text-wrap:pretty;">The quiet idea behind the play.</h1>
+        <p style="margin:0;font-size:clamp(16px,1.4vw,18px);line-height:1.6;color:var(--ink-soft);max-width:540px;text-wrap:pretty;">Little Clearing was built on a simple belief: the skills that help children feel steadier in the world shouldn't only live in a therapist's office. They can grow gently, through play, in a place that never feels like a lesson.</p>
+      </div>
+      <div style="flex:1 1 320px;min-width:240px;">
+        <image-slot id="about-hero" shape="rounded" radius="28" placeholder="Warm illustration: a grown-up and a kid sitting together reading" style="width:100%;height:300px;display:block;"></image-slot>
+      </div>
     </div>
+  </section>
 
-    <div class="panel">
-      <h2>A safe little corner</h2>
-      <p>There are no ads, no chat with strangers, and nothing to buy. Each game runs right in the browser, nothing is collected about your child, and the whole place is built to feel calm rather than overstimulating.</p>
-      <p>It's meant to be a spot you can hand your child without a second thought — and maybe even sit and play alongside them.</p>
+  <section style="padding:24px clamp(20px,5vw,56px) 8px;position:relative;z-index:1;">
+    <div style="max-width:760px;margin:0 auto;">
+      <h2 style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:clamp(22px,2.6vw,28px);color:var(--ink);margin:0 0 18px;">Why “therapy through gaming”</h2>
+      <p style="font-size:15.5px;line-height:1.7;color:var(--ink-soft);margin:0 0 16px;text-wrap:pretty;">Plenty of kids — and honestly, plenty of adults — go quiet at the word <em>therapy</em>. It can feel heavy, or like something's wrong. So a child who would benefit enormously from learning to name a feeling, sit with a hard choice, or rehearse a tough conversation often never gets the chance to practise any of it.</p>
+      <p style="font-size:15.5px;line-height:1.7;color:var(--ink-soft);margin:0 0 16px;text-wrap:pretty;">These games take a softer road. A child thinks they're running a lemonade stand or talking their way through a tricky moment with a parent. What they're <strong>actually</strong> doing is building emotional regulation, decision-making, and self-confidence — the same muscles a good counsellor would help them strengthen, just wrapped in something that feels like fun.</p>
+      <p style="font-size:15.5px;line-height:1.7;color:var(--ink-soft);margin:0;text-wrap:pretty;">No pressure. No labels. No “now let's talk about your feelings.” Just a calm clearing where those skills can quietly take root.</p>
     </div>
-  </main>
+  </section>
 
-  <footer>
-    Made with ♥ for curious kids · <a href="index.html">Back to the games →</a>
+  <section style="padding:32px clamp(20px,5vw,56px) 16px;position:relative;z-index:1;">
+    <h2 style="text-align:center;font-family:'Fredoka',sans-serif;font-weight:600;font-size:clamp(22px,2.6vw,28px);color:var(--ink);margin:0 0 32px;">What the games gently build</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;max-width:1180px;margin:0 auto;">
+
+      <div style="background:#fff;border-radius:22px;padding:26px;box-shadow:0 8px 22px rgba(58,68,56,0.06);border:1px solid rgba(58,68,56,0.05);">
+        <span style="font-size:28px;">🍋</span>
+        <div style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:17px;color:var(--ink);margin:10px 0 6px;">Money Quest</div>
+        <p style="margin:0;font-size:14px;line-height:1.6;color:var(--ink-soft);">Confidence and patience with money — earning, waiting, planning, and recognising when something's too good to be true. Practical resilience, dressed up as a game.</p>
+      </div>
+
+      <div style="background:#fff;border-radius:22px;padding:26px;box-shadow:0 8px 22px rgba(58,68,56,0.06);border:1px solid rgba(58,68,56,0.05);">
+        <span style="font-size:28px;">💬</span>
+        <div style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:17px;color:var(--ink);margin:10px 0 6px;">TalkQuest</div>
+        <p style="margin:0;font-size:14px;line-height:1.6;color:var(--ink-soft);">Rehearsing the conversations that scare us — owning a mistake, asking for help, being honest. A safe place to practise brave words before they're needed for real.</p>
+      </div>
+
+      <div style="background:#fff;border-radius:22px;padding:26px;box-shadow:0 8px 22px rgba(58,68,56,0.06);border:1px solid rgba(58,68,56,0.05);">
+        <span style="font-size:28px;">✨</span>
+        <div style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:17px;color:var(--ink);margin:10px 0 6px;">Spark Catcher</div>
+        <p style="margin:0;font-size:14px;line-height:1.6;color:var(--ink-soft);">Confidence in what makes you, you — noticing what lights you up, whether that's building, art, helping, or exploring. Self-knowledge, dressed up as a game.</p>
+      </div>
+
+      <div style="background:#fff;border-radius:22px;padding:26px;box-shadow:0 8px 22px rgba(58,68,56,0.06);border:1px solid rgba(58,68,56,0.05);">
+        <span style="font-size:28px;">🦊</span>
+        <div style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:17px;color:var(--ink);margin:10px 0 6px;">Feelings Forest</div>
+        <p style="margin:0;font-size:14px;line-height:1.6;color:var(--ink-soft);">A wider vocabulary for big feelings — noticing what's happening inside and finding the words for it. Emotional literacy, dressed up as a walk in the woods.</p>
+      </div>
+
+      <div style="background:var(--sage-pale);border-radius:22px;padding:26px;border:1px dashed rgba(79,108,73,0.35);">
+        <span style="font-size:28px;">🐢</span>
+        <div style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:17px;color:var(--ink);margin:10px 0 6px;">Patience Pond <span style="font-size:11px;font-weight:800;color:var(--sage-deep);text-transform:uppercase;">Coming soon</span></div>
+        <p style="margin:0;font-size:14px;line-height:1.6;color:var(--ink-soft);">Sitting with wanting something now, and waiting anyway. Patience and impulse control, one calm pond at a time.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section style="padding:24px clamp(20px,5vw,56px) 8px;position:relative;z-index:1;">
+    <div style="max-width:760px;margin:0 auto;background:#fff;border-left:4px solid var(--coral);border-radius:18px;padding:26px 30px;box-shadow:0 8px 22px rgba(58,68,56,0.05);">
+      <p style="margin:0;font-size:14.5px;line-height:1.65;color:var(--ink);"><strong>A gentle, honest note:</strong> these games are a warm supplement, not a replacement for professional care. If your child is struggling in a way that worries you, please reach out to a doctor, counsellor, or trusted mental-health professional. Little Clearing is here to help on the everyday days — not to stand in for real support when it's needed.</p>
+    </div>
+  </section>
+
+  <section style="padding:32px clamp(20px,5vw,56px) 8px;position:relative;z-index:1;">
+    <div style="max-width:760px;margin:0 auto;">
+      <h2 style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:clamp(22px,2.6vw,28px);color:var(--ink);margin:0 0 18px;">A safe little corner</h2>
+      <p style="font-size:15.5px;line-height:1.7;color:var(--ink-soft);margin:0 0 16px;text-wrap:pretty;">There are no ads, no chat with strangers, and nothing to buy. Each game runs right in the browser, nothing is collected about your child, and the whole place is built to feel calm rather than overstimulating.</p>
+      <p style="font-size:15.5px;line-height:1.7;color:var(--ink-soft);margin:0;text-wrap:pretty;">It's meant to be a spot you can hand your child without a second thought — and maybe even sit and play alongside them.</p>
+    </div>
+  </section>
+
+  <sc-if value="{{ showFaq }}" hint-placeholder-val="{{ true }}">
+  <section style="padding:40px clamp(20px,5vw,56px) 16px;position:relative;z-index:1;">
+    <h2 style="text-align:center;font-family:'Fredoka',sans-serif;font-weight:600;font-size:clamp(22px,2.6vw,28px);color:var(--ink);margin:0 0 28px;">A few questions</h2>
+    <div style="display:flex;flex-direction:column;gap:14px;max-width:760px;margin:0 auto;">
+      <sc-for list="{{ faqItems }}" as="item" hint-placeholder-count="6">
+        <div style="background:#fff;border-radius:18px;padding:20px 24px;box-shadow:0 6px 18px rgba(58,68,56,0.05);border:1px solid rgba(58,68,56,0.05);">
+          <div onClick="{{ item.onClick }}" style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;gap:16px;">
+            <span style="font-weight:800;font-size:15.5px;color:var(--ink);">{{ item.q }}</span>
+            <span style="font-size:20px;color:var(--sage-deep);flex-shrink:0;">{{ item.icon }}</span>
+          </div>
+          <sc-if value="{{ item.open }}" hint-placeholder-val="{{ false }}">
+            <p style="margin:14px 0 0;font-size:14.5px;line-height:1.6;color:var(--ink-soft);">{{ item.a }}</p>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+  </sc-if>
+
+  <section style="padding:32px clamp(20px,5vw,56px) 64px;position:relative;z-index:1;">
+    <div style="display:flex;gap:22px;flex-wrap:wrap;max-width:760px;margin:0 auto;">
+      <a href="./blog.html" style="flex:1 1 260px;background:var(--sage-pale);border-radius:22px;padding:26px;display:flex;flex-direction:column;gap:8px;" style-hover="transform:translateY(-4px);">
+        <span style="font-size:26px;">📝</span>
+        <div style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:17px;color:var(--ink);">Notes for grown-ups</div>
+        <p style="margin:0;font-size:14px;line-height:1.55;color:var(--ink-soft);">Short reads on raising steady kids.</p>
+        <span style="margin-top:auto;font-weight:800;font-size:13.5px;color:var(--sage-deep);">Read the notes →</span>
+      </a>
+      <a href="./resources.html" style="flex:1 1 260px;background:var(--sage-pale);border-radius:22px;padding:26px;display:flex;flex-direction:column;gap:8px;" style-hover="transform:translateY(-4px);">
+        <span style="font-size:26px;">🧺</span>
+        <div style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:17px;color:var(--ink);">Parent resources</div>
+        <p style="margin:0;font-size:14px;line-height:1.55;color:var(--ink-soft);">Conversation starters and a mini-guide for big feelings.</p>
+        <span style="margin-top:auto;font-weight:800;font-size:13.5px;color:var(--sage-deep);">Borrow something →</span>
+      </a>
+    </div>
+  </section>
+
+  <section style="padding:8px clamp(20px,5vw,56px) 0;position:relative;z-index:1;">
+    <a href="./play.html" style="max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:var(--sage-pale);border-radius:22px;padding:22px 28px;" style-hover="transform:translateY(-3px);">
+      <span style="font-weight:800;font-size:15px;color:var(--ink);">🎮 Ready to jump back in?</span>
+      <span style="font-weight:800;font-size:14px;color:var(--sage-deep);white-space:nowrap;">Back to Play →</span>
+    </a>
+  </section>
+
+  <footer style="position:relative;margin-top:8px;background:var(--sage-pale);padding:56px clamp(20px,5vw,56px) 32px;">
+    <div style="display:flex;flex-wrap:wrap;gap:48px;justify-content:space-between;max-width:1200px;margin:0 auto;">
+      <div style="max-width:280px;display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;gap:8px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:19px;color:var(--ink);"><span style="font-size:22px;">🌿</span>Little Clearing</div>
+        <p style="margin:0;font-family:'Nunito',sans-serif;font-size:14px;line-height:1.6;color:var(--ink-soft);">A calm place to play, breathe &amp; grow — at your own gentle pace.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:var(--sage-deep);">Explore</div>
+        <a href="./play.html" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--ink-soft);">🎮 Play</a>
+        <a href="./breathe.html" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--ink-soft);">🌬️ Breathe &amp; Move</a>
+        <a href="./together.html" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--ink-soft);">🤝 Together</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:var(--sage-deep);">For grown-ups</div>
+        <a href="./about.html" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--ink-soft);">🌿 Why Little Clearing</a>
+        <a href="./blog.html" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--ink-soft);">📝 Notes for grown-ups</a>
+        <a href="./resources.html" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--ink-soft);">🧺 Parent resources</a>
+      </div>
+    </div>
+    <div style="max-width:1200px;margin:40px auto 0;padding-top:22px;border-top:1px solid rgba(58,68,56,0.12);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+      <span style="font-family:'Nunito',sans-serif;font-size:13px;color:var(--ink-soft);">Made with ♥ for curious kids · Little Clearing</span>
+      <span style="font-family:'Nunito',sans-serif;font-size:13px;color:var(--ink-soft);">No ads · No strangers · Nothing to buy</span>
+    </div>
   </footer>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showFaq&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Content&quot;}}">
+class Component extends DCLogic {
+  faqs = [
+    { q:"Is Little Clearing really free?", a:"Yes — every game and activity here is free to play, with nothing to buy and no ads." },
+    { q:"Do you collect data about my child?", a:"No accounts, no tracking, nothing collected about your child. Everything runs right in the browser." },
+    { q:"What ages is this made for?", a:"Little Clearing is built with roughly 6–12 year olds in mind, though the calm stuff works at any age." },
+    { q:"Can my child use this without me?", a:"Absolutely — it's designed to be safe to hand over. That said, we love it when grown-ups play along too." },
+    { q:"What are “seeds” for?", a:"Seeds are just a little way to notice progress and coming back — no store, no pressure, just a small “you showed up” signal." },
+    { q:"My child is really struggling — is this enough?", a:"Little Clearing is a gentle everyday supplement, not professional care. Please reach out to a doctor, counsellor, or therapist if something feels bigger than the everyday." }
+  ];
+  state = { seeds: 0, openFaq: null, dots: ['rgba(79,108,73,0.25)', 'rgba(79,108,73,0.25)', 'rgba(79,108,73,0.25)'] };
+  componentDidMount() {
+    const s = parseInt(localStorage.getItem('lc_seeds') || '0', 10);
+    this.setState({ seeds: isNaN(s) ? 0 : s, dots: this.computeDots() });
+  }
+  computeDots() {
+    return ['play', 'breathe', 'together'].map(a => localStorage.getItem('lc_tried_' + a) === '1' ? 'var(--sage-deep)' : 'rgba(79,108,73,0.25)');
+  }
+  toggleFaq(i) {
+    this.setState({ openFaq: this.state.openFaq === i ? null : i });
+  }
+  renderVals() {
+    const s = this.state;
+    return {
+      seeds: s.seeds,
+      journeyDots: s.dots.map(c => ({ color: c })),
+      showFaq: this.props.showFaq ?? true,
+      faqItems: this.faqs.map((f, i) => ({ q: f.q, a: f.a, open: s.openFaq === i, icon: s.openFaq === i ? '−' : '+', onClick: () => this.toggleFaq(i) }))
+    };
+  }
+}
+</script>
 </body>
 </html>

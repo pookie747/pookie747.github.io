@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Feelings Forest 🦊 — Play, Little Clearing</title>
+<meta name="description" content="Meet woodland friends going through big feelings and help them find the words for what they feel.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+body { margin:0; }
+a { color:#4F6C49; text-decoration:none; }
+a:hover { color:#D9714F; }
+</style>
+</helmet>
+<div style="--paper:#FBF6EC;--ink:#3A4438;--ink-soft:#6E7A67;--sage:#7C9A72;--sage-deep:#4F6C49;--sage-pale:#E4ECDC;--coral:#F0967A;--coral-deep:#D9714F;min-height:100vh;background:var(--paper);color:var(--ink);font-family:'Nunito',sans-serif;position:relative;overflow-x:hidden;">
+
+  <header style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;padding:28px clamp(20px,5vw,56px) 8px;position:relative;">
+    <a href="./index.html" style="display:flex;align-items:center;gap:8px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:clamp(19px,2vw,22px);color:var(--ink);">
+      <span style="font-size:26px;">🌿</span>Little Clearing
+    </a>
+    <nav style="display:flex;align-items:center;gap:clamp(14px,3vw,30px);flex-wrap:wrap;">
+      <a href="./play.html" style="font-family:'Nunito',sans-serif;font-weight:900;font-size:15px;color:var(--sage-deep);">Play</a>
+      <a href="./breathe.html" style="font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;color:var(--ink-soft);">Breathe &amp; Move</a>
+      <a href="./together.html" style="font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;color:var(--ink-soft);">Together</a>
+      <a href="./about.html" style="font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;color:var(--ink-soft);">For Grown-ups</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div style="display:flex;align-items:center;gap:5px;background:var(--sage-pale);padding:9px 13px;border-radius:999px;" title="Your path: Play, Breathe &amp; Move, Together">
+        <sc-for list="{{ journeyDots }}" as="dot" hint-placeholder-count="3">
+          <span style="width:8px;height:8px;border-radius:50%;display:inline-block;background:{{ dot.color }};"></span>
+        </sc-for>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;background:var(--sage-pale);padding:8px 16px;border-radius:999px;">
+        <span style="font-size:15px;">🌱</span>
+        <span style="font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;color:var(--sage-deep);">{{ seeds }} seeds</span>
+      </div>
+    </div>
+  </header>
+
+  <section style="padding:16px clamp(20px,5vw,56px) 0;">
+    <a href="./play.html" style="font-weight:800;font-size:14px;color:var(--sage-deep);">← Back to Play</a>
+  </section>
+
+  <section style="padding:16px clamp(20px,5vw,56px) 8px;text-align:center;">
+    <span style="font-size:40px;">🦊</span>
+    <h1 style="margin:10px 0 8px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:clamp(28px,3.6vw,38px);color:var(--ink);">Feelings Forest</h1>
+    <p style="margin:0 auto;max-width:480px;font-size:15.5px;line-height:1.6;color:var(--ink-soft);text-wrap:pretty;">Meet woodland friends going through big feelings. Help them find the words for what they feel.</p>
+  </section>
+
+  <section style="padding:16px clamp(20px,5vw,56px) 64px;display:flex;justify-content:center;">
+    <div style="width:100%;max-width:560px;">
+
+      <sc-if value="{{ !finished }}" hint-placeholder-val="{{ true }}">
+      <div style="background:#fff;border-radius:28px;padding:36px clamp(24px,4vw,40px);box-shadow:0 12px 32px rgba(58,68,56,0.08);border:1px solid rgba(58,68,56,0.05);">
+
+        <div style="display:flex;gap:8px;justify-content:center;margin-bottom:28px;">
+          <sc-for list="{{ dots }}" as="dot" hint-placeholder-count="6">
+            <span style="width:10px;height:10px;border-radius:50%;display:inline-block;background:{{ dot.color }};"></span>
+          </sc-for>
+        </div>
+
+        <div style="text-align:center;">
+          <span style="font-size:56px;">{{ current.emoji }}</span>
+          <div style="font-weight:800;font-size:13px;letter-spacing:0.04em;text-transform:uppercase;color:var(--coral-deep);margin-top:10px;">{{ current.stepLabel }}</div>
+          <p style="margin:12px auto 0;font-size:17px;line-height:1.55;color:var(--ink);max-width:420px;text-wrap:pretty;">{{ current.text }}</p>
+        </div>
+
+        <sc-if value="{{ !selected }}" hint-placeholder-val="{{ true }}">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:26px;">
+          <sc-for list="{{ optionButtons }}" as="opt" hint-placeholder-count="4">
+            <button onClick="{{ opt.onClick }}" style="cursor:pointer;border:2px solid var(--sage-pale);background:#fff;border-radius:16px;padding:16px 12px;font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;color:var(--ink);" style-hover="background:var(--sage-pale);border-color:var(--sage);">{{ opt.label }}</button>
+          </sc-for>
+        </div>
+        </sc-if>
+
+        <sc-if value="{{ selected }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:26px;background:var(--sage-pale);border-radius:18px;padding:22px 24px;">
+          <p style="margin:0;font-size:15px;line-height:1.6;color:var(--ink);text-wrap:pretty;">{{ current.feedback }}</p>
+        </div>
+        <button onClick="{{ onNext }}" style="cursor:pointer;margin-top:18px;width:100%;border:none;background:var(--sage-deep);color:#fff;font-weight:800;font-size:15px;padding:16px;border-radius:999px;font-family:'Nunito',sans-serif;">{{ nextLabel }}</button>
+        </sc-if>
+
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ finished }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#fff;border-radius:28px;padding:48px clamp(24px,4vw,40px);box-shadow:0 12px 32px rgba(58,68,56,0.08);border:1px solid rgba(58,68,56,0.05);text-align:center;">
+        <span style="font-size:52px;">🌿</span>
+        <h2 style="margin:14px 0 10px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:24px;color:var(--ink);">You walked with 6 forest friends today.</h2>
+        <p style="margin:0 0 20px;font-size:15.5px;color:var(--ink-soft);">Every feeling you named was a good one to notice.</p>
+        <div style="display:inline-flex;align-items:center;gap:8px;background:var(--sage-pale);padding:9px 18px;border-radius:999px;margin-bottom:26px;">
+          <span>🌱</span><span style="font-weight:800;font-size:14px;color:var(--sage-deep);">+6 seeds earned</span>
+        </div>
+        <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+          <button onClick="{{ onPlayAgain }}" style="cursor:pointer;border:2px solid var(--sage-deep);background:#fff;color:var(--sage-deep);font-weight:800;font-size:14.5px;padding:13px 24px;border-radius:999px;font-family:'Nunito',sans-serif;">Play again</button>
+          <a href="./play.html" style="display:inline-flex;align-items:center;border:none;background:var(--sage-deep);color:#fff;font-weight:800;font-size:14.5px;padding:13px 24px;border-radius:999px;">Back to Play</a>
+        </div>
+      </div>
+      </sc-if>
+
+    </div>
+  </section>
+
+  <footer style="position:relative;margin-top:8px;background:var(--sage-pale);padding:56px clamp(20px,5vw,56px) 32px;">
+    <div style="display:flex;flex-wrap:wrap;gap:48px;justify-content:space-between;max-width:1200px;margin:0 auto;">
+      <div style="max-width:280px;display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;gap:8px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:19px;color:var(--ink);"><span style="font-size:22px;">🌿</span>Little Clearing</div>
+        <p style="margin:0;font-family:'Nunito',sans-serif;font-size:14px;line-height:1.6;color:var(--ink-soft);">A calm place to play, breathe &amp; grow — at your own gentle pace.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:var(--sage-deep);">Explore</div>
+        <a href="./play.html" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--ink-soft);">🎮 Play</a>
+        <a href="./breathe.html" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--ink-soft);">🌬️ Breathe &amp; Move</a>
+        <a href="./together.html" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--ink-soft);">🤝 Together</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:var(--sage-deep);">For grown-ups</div>
+        <a href="./about.html" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--ink-soft);">🌿 Why Little Clearing</a>
+        <a href="./blog.html" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--ink-soft);">📝 Notes for grown-ups</a>
+        <a href="./resources.html" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--ink-soft);">🧺 Parent resources</a>
+      </div>
+    </div>
+    <div style="max-width:1200px;margin:40px auto 0;padding-top:22px;border-top:1px solid rgba(58,68,56,0.12);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+      <span style="font-family:'Nunito',sans-serif;font-size:13px;color:var(--ink-soft);">Made with ♥ for curious kids · Little Clearing</span>
+      <span style="font-family:'Nunito',sans-serif;font-size:13px;color:var(--ink-soft);">No ads · No strangers · Nothing to buy</span>
+    </div>
+  </footer>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  scenarios = [
+    { emoji:'🦊', text:"Fox forgot their line in the school play and everyone got quiet.", options:['Embarrassed','Excited','Bored','Proud'], best:0, feedback:"Fox is feeling embarrassed — cheeks hot, wanting to hide. Naming it is the first step to feeling better." },
+    { emoji:'🦉', text:"Owl studied all week and finally got every spelling word right.", options:['Jealous','Proud','Angry','Nervous'], best:1, feedback:"Owl is feeling proud — that warm, tall feeling after hard work pays off." },
+    { emoji:'🐢', text:"Turtle's friends ran ahead and Turtle couldn't catch up.", options:['Left out','Silly','Sleepy','Brave'], best:0, feedback:"Turtle is feeling left out — it's hard when everyone else feels closer than you. That feeling makes sense." },
+    { emoji:'🐰', text:"Rabbit has a big presentation tomorrow.", options:['Nervous','Bored','Angry','Calm'], best:0, feedback:"Rabbit is feeling nervous — a fluttery, jumpy feeling before something big. Even brave rabbits feel it." },
+    { emoji:'🦔', text:"Hedgehog's little brother broke her favorite toy by accident.", options:['Frustrated','Excited','Proud','Curious'], best:0, feedback:"Hedgehog is feeling frustrated — that hot, stuck feeling when something unfair happens. It's okay to feel it." },
+    { emoji:'🐿️', text:"Squirrel finally shared her worry with a friend, and it felt lighter.", options:['Relieved','Embarrassed','Angry','Bored'], best:0, feedback:"Squirrel is feeling relieved — like putting down something heavy. Sharing worries can do that." }
+  ];
+  state = { index: 0, selected: null, finished: false, seeds: 0, headerDots: ['rgba(79,108,73,0.25)', 'rgba(79,108,73,0.25)', 'rgba(79,108,73,0.25)'] };
+  componentDidMount() {
+    const s = parseInt(localStorage.getItem('lc_seeds') || '0', 10);
+    this.setState({ seeds: isNaN(s) ? 0 : s, headerDots: this.computeHeaderDots() });
+  }
+  computeHeaderDots() {
+    return ['play', 'breathe', 'together'].map(a => localStorage.getItem('lc_tried_' + a) === '1' ? 'var(--sage-deep)' : 'rgba(79,108,73,0.25)');
+  }
+  markTried(area) {
+    localStorage.setItem('lc_tried_' + area, '1');
+    this.setState({ headerDots: this.computeHeaderDots() });
+  }
+  addSeeds(n) {
+    const total = this.state.seeds + n;
+    localStorage.setItem('lc_seeds', String(total));
+    this.setState({ seeds: total });
+  }
+  pick(i) { this.setState({ selected: i }); }
+  next() {
+    if (this.state.index < this.scenarios.length - 1) {
+      this.setState({ index: this.state.index + 1, selected: null });
+    } else {
+      this.setState({ finished: true });
+      this.addSeeds(6);
+      this.markTried('play');
+    }
+  }
+  playAgain() { this.setState({ index: 0, selected: null, finished: false }); }
+  renderVals() {
+    const s = this.state;
+    const scen = this.scenarios[s.index];
+    const isLast = s.index === this.scenarios.length - 1;
+    return {
+      seeds: s.seeds,
+      journeyDots: s.headerDots.map(c => ({ color: c })),
+      selected: s.selected !== null,
+      finished: s.finished,
+      current: {
+        emoji: scen.emoji,
+        text: scen.text,
+        stepLabel: (s.index + 1) + ' of ' + this.scenarios.length,
+        feedback: s.selected !== null ? scen.feedback : ''
+      },
+      dots: this.scenarios.map((_, i) => ({ color: i < s.index ? '#4F6C49' : (i === s.index ? '#F0967A' : '#E4ECDC') })),
+      optionButtons: scen.options.map((label, i) => ({ label, onClick: () => this.pick(i) })),
+      nextLabel: isLast ? 'See how you did →' : 'Next friend →',
+      onNext: () => this.next(),
+      onPlayAgain: () => this.playAgain()
+    };
+  }
+}
+</script>
+</body>
+</html>

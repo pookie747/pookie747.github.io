@@ -1,125 +1,195 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Play 🎮 — games, Little Clearing</title>
-<meta name="description" content="Friendly little games for kids — learn about money, brave words, and what makes you you. Earn seeds as you play." />
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
-<style>
-  :root{
-    --paper:#FBF7EF; --sky:#DCEAF0; --sky-deep:#C7DEE6;
-    --sage:#9FC1A8; --sage-soft:#E4EFE3; --sage-line:#CFE3D0; --sage-deep:#7FA489;
-    --ink:#2C4A52; --ink-soft:#5E7C82;
-    --peach:#F0A878; --peach-deep:#E08E5C;
-    --lemon:#F4D35E; --card:#FFFFFF; --line:#E6E0D2;
-  }
-  *{ box-sizing:border-box; }
-  html,body{ margin:0; padding:0; }
-  body{ font-family:'Nunito', system-ui, sans-serif; color:var(--ink);
-        background:linear-gradient(180deg,var(--sky),var(--paper) 75%); min-height:100vh;
-        -webkit-font-smoothing:antialiased; overflow-x:hidden; }
-  .display{ font-family:'Baloo 2','Nunito',sans-serif; }
-
-  #top-bar{ position:sticky; top:0; z-index:50; display:flex; align-items:center;
-        justify-content:space-between; padding:9px 14px; background:rgba(251,247,239,.85);
-        backdrop-filter:blur(6px); border-bottom:1px solid var(--line); font-family:'Baloo 2',sans-serif; }
-  #top-bar a, #top-bar .pill{ display:inline-flex; align-items:center; gap:7px; text-decoration:none;
-        color:var(--ink); font-weight:600; font-size:15px; background:var(--sage-soft);
-        border:1px solid var(--sage-line); padding:6px 14px; border-radius:999px; }
-
-  .wrap{ max-width:960px; margin:0 auto; padding:0 22px 70px; }
-  .intro{ text-align:center; padding:34px 0 8px; }
-  .intro .leaf{ font-size:40px; }
-  .intro h1{ font-size:clamp(32px,6.5vw,48px); margin:8px 0 10px; }
-  .intro p{ color:var(--ink-soft); font-size:17px; line-height:1.6; max-width:480px; margin:0 auto; }
-
-  .section-label{ text-align:center; margin:40px 0 22px; font-size:14px; letter-spacing:2px;
-        text-transform:uppercase; color:var(--ink-soft); font-weight:700; }
-  .games{ display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px; }
-  .card{ position:relative; display:block; text-decoration:none; color:inherit; overflow:hidden;
-        background:var(--card); border:1px solid var(--line); border-radius:26px; padding:28px 24px;
-        box-shadow:0 10px 28px rgba(44,74,82,.07);
-        transition:transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s; }
-  .card:hover{ transform:translateY(-6px); box-shadow:0 18px 38px rgba(44,74,82,.12); }
-  .card .glow{ position:absolute; top:-50px; right:-50px; width:160px; height:160px; border-radius:50%; opacity:.5; filter:blur(6px); }
-  .card.money .glow{ background:#FBE9B8; }
-  .card.talk .glow{ background:#F6D9D2; }
-  .card.spark .glow{ background:#ECE2F5; }
-  .card .emoji{ font-size:44px; margin-bottom:14px; }
-  .card h3{ font-family:'Baloo 2',sans-serif; font-size:24px; margin:0 0 6px; }
-  .card p{ color:var(--ink-soft); line-height:1.5; font-size:15px; margin:0 0 18px; }
-  .card .play{ display:inline-flex; align-items:center; gap:8px; font-family:'Baloo 2',sans-serif;
-        font-weight:600; font-size:15px; color:#fff; padding:11px 20px; border-radius:999px; }
-  .card.money .play{ background:var(--sage); box-shadow:0 4px 0 var(--sage-deep); }
-  .card.talk .play{ background:var(--peach); box-shadow:0 4px 0 var(--peach-deep); }
-  .card.spark .play{ background:#B58CC9; box-shadow:0 4px 0 #9A6FB3; }
-  .tag{ position:absolute; top:20px; right:20px; font-size:12px; font-weight:700;
-        padding:5px 11px; border-radius:999px; background:var(--sage-soft); color:#4C6B54; }
-  .card.talk .tag{ background:#FBE6DE; color:#A2604A; }
-  .card.spark .tag{ background:#ECE2F5; color:#7A5C92; }
-
-  .soon{ text-align:center; margin-top:24px; border:1.5px dashed var(--line); border-radius:22px;
-        padding:22px; color:var(--ink-soft); background:rgba(255,255,255,.4); max-width:640px;
-        margin-left:auto; margin-right:auto; }
-  .soon .seed{ font-size:26px; display:block; margin-bottom:6px; }
-  footer{ text-align:center; padding:40px 0 10px; color:var(--ink-soft); font-size:14px; }
-</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
 </head>
 <body>
-  <div id="top-bar">
-    <a href="index.html">🏡 Home</a>
-    <span class="pill">🌱 <span id="seeds-num">0</span> seeds</span>
-  </div>
+<x-dc>
+<helmet>
+<title>Play 🎮 — games, Little Clearing</title>
+<meta name="description" content="Friendly little games for kids — learn about money, brave words, and what makes you you. Earn seeds as you play.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+body { margin:0; }
+a { color:#4F6C49; text-decoration:none; }
+a:hover { color:#D9714F; }
+@keyframes lc-float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-16px); } }
+@keyframes lc-float-slow { 0%,100% { transform:translateY(0) rotate(0deg); } 50% { transform:translateY(-9px) rotate(2deg); } }
+</style>
+</helmet>
+<div style="--paper:#FBF6EC;--ink:#3A4438;--ink-soft:#6E7A67;--sage:#7C9A72;--sage-deep:#4F6C49;--sage-pale:#E4ECDC;--coral:#F0967A;--coral-deep:#D9714F;--sky:#8FBFCE;--sky-deep:#3D7887;--butter:#F0C05E;--butter-deep:#B9791F;--lavender:#B9A4D6;--lavender-deep:#7C5FA6;min-height:100vh;background:var(--paper);color:var(--ink);font-family:'Nunito',sans-serif;position:relative;overflow-x:hidden;">
 
-  <div class="wrap">
-    <div class="intro">
-      <div class="leaf">🎮</div>
-      <h1 class="display">Play</h1>
-      <p>Friendly games that help you learn real-life things — and grow your seeds as you go. Pick whatever sparks your curiosity.</p>
+  <header style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;padding:28px clamp(20px,5vw,56px) 8px;position:relative;">
+    <a href="./index.html" style="display:flex;align-items:center;gap:8px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:clamp(19px,2vw,22px);color:var(--ink);">
+      <span style="font-size:26px;">🌿</span>Little Clearing
+    </a>
+    <nav style="display:flex;align-items:center;gap:clamp(14px,3vw,30px);flex-wrap:wrap;">
+      <a href="./play.html" style="font-family:'Nunito',sans-serif;font-weight:900;font-size:15px;color:var(--sage-deep);">Play</a>
+      <a href="./breathe.html" style="font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;color:var(--ink-soft);">Breathe &amp; Move</a>
+      <a href="./together.html" style="font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;color:var(--ink-soft);">Together</a>
+      <a href="./about.html" style="font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;color:var(--ink-soft);">For Grown-ups</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div style="display:flex;align-items:center;gap:5px;background:var(--sage-pale);padding:9px 13px;border-radius:999px;" title="Your path: Play, Breathe &amp; Move, Together">
+        <sc-for list="{{ journeyDots }}" as="dot" hint-placeholder-count="3">
+          <span style="width:8px;height:8px;border-radius:50%;display:inline-block;background:{{ dot.color }};"></span>
+        </sc-for>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;background:var(--sage-pale);padding:8px 16px;border-radius:999px;">
+        <span style="font-size:15px;">🌱</span>
+        <span style="font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;color:var(--sage-deep);">{{ seeds }} seeds</span>
+      </div>
+    </div>
+  </header>
+
+  <section style="position:relative;padding:24px clamp(20px,5vw,56px) 16px;overflow:hidden;">
+    <div style="position:absolute;top:-70px;right:-40px;width:280px;height:280px;background:var(--butter);opacity:0.16;border-radius:55% 45% 60% 40%/45% 55% 45% 55%;z-index:0;animation:lc-float 12s ease-in-out infinite;"></div>
+    <div style="position:relative;z-index:1;display:flex;align-items:center;gap:48px;flex-wrap:wrap;padding-top:12px;">
+      <div style="flex:1 1 440px;min-width:280px;display:flex;flex-direction:column;gap:16px;">
+        <span style="font-size:40px;">🎮</span>
+        <h1 style="margin:0;font-family:'Fredoka',sans-serif;font-weight:600;font-size:clamp(34px,4.4vw,52px);color:var(--ink);">Play</h1>
+        <p style="margin:0;font-size:clamp(16px,1.4vw,18px);line-height:1.6;color:var(--ink-soft);max-width:520px;text-wrap:pretty;">Friendly games that help you learn real-life things — and grow your seeds as you go. Pick whatever sparks your curiosity.</p>
+      </div>
+      <div style="flex:1 1 320px;min-width:240px;">
+        <image-slot id="play-hero" shape="rounded" radius="28" placeholder="Playful illustration: a kid surrounded by floating game icons" style="width:100%;height:300px;display:block;"></image-slot>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding:8px clamp(20px,5vw,56px) 0;position:relative;z-index:1;">
+    <div style="max-width:1180px;margin:0 auto;background:linear-gradient(135deg,var(--coral) 0%,#e79572 100%);border-radius:30px;padding:clamp(26px,4vw,42px);display:flex;align-items:center;gap:36px;flex-wrap:wrap;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:-50px;right:-30px;width:200px;height:200px;background:rgba(255,255,255,0.14);border-radius:50%;"></div>
+      <div style="flex:1 1 360px;min-width:260px;position:relative;z-index:1;display:flex;flex-direction:column;gap:14px;">
+        <span style="display:inline-flex;align-self:flex-start;align-items:center;gap:6px;background:rgba(255,255,255,0.22);color:#fff;font-weight:800;font-size:12px;letter-spacing:0.04em;text-transform:uppercase;padding:7px 14px;border-radius:999px;">⭐ Featured</span>
+        <div style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:clamp(23px,3vw,30px);color:#fff;">Feelings Forest</div>
+        <p style="margin:0;font-size:15px;line-height:1.55;color:rgba(255,255,255,0.92);max-width:400px;text-wrap:pretty;">Meet woodland friends going through big feelings — help them name what they feel and find their calm.</p>
+        <a href="./feelings-forest.html" style="align-self:flex-start;margin-top:4px;background:#fff;color:var(--coral-deep);font-weight:800;font-size:15px;padding:14px 28px;border-radius:999px;">▶ Play now</a>
+      </div>
+      <div style="flex:1 1 220px;min-width:200px;position:relative;z-index:1;">
+        <image-slot id="play-featured" shape="rounded" radius="22" placeholder="Featured game art: Feelings Forest" style="width:100%;height:190px;display:block;"></image-slot>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding:44px clamp(20px,5vw,56px) 16px;position:relative;z-index:1;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;max-width:1180px;margin:0 auto 26px;">
+      <h2 style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:clamp(22px,2.6vw,28px);color:var(--ink);margin:0;">All games</h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <sc-for list="{{ categoryChips }}" as="chip" hint-placeholder-count="6">
+          <button onClick="{{ chip.onClick }}" style="cursor:pointer;border:none;font-family:'Nunito',sans-serif;font-weight:800;font-size:13.5px;padding:9px 17px;border-radius:999px;background:{{ chip.bg }};color:{{ chip.color }};">{{ chip.label }}</button>
+        </sc-for>
+      </div>
     </div>
 
-    <p class="section-label">Games to explore</p>
-    <section class="games">
-      <a class="card money" href="money-quest.html">
-        <div class="glow"></div>
-        <span class="tag">Money smarts</span>
-        <div class="emoji">🍋</div>
-        <h3>Money Quest</h3>
-        <p>Run your own lemonade-stand fortune. Earn coins, build streaks, and watch your jar grow with real interest.</p>
-        <span class="play">Play now →</span>
-      </a>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;max-width:1180px;margin:0 auto;">
+      <sc-for list="{{ filteredGames }}" as="game" hint-placeholder-count="4">
+        <a href="{{ game.href }}" onClick="{{ game.onClick }}" style="position:relative;background:#fff;border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:8px;box-shadow:0 8px 20px rgba(58,68,56,0.06);border:1px solid rgba(58,68,56,0.05);" style-hover="transform:translateY(-5px);box-shadow:0 16px 30px rgba(58,68,56,0.12);">
+          <sc-if value="{{ game.hasBadge }}" hint-placeholder-val="{{ false }}">
+            <span style="position:absolute;top:14px;right:14px;background:{{ game.badgeBg }};color:#fff;font-weight:800;font-size:10.5px;padding:4px 9px;border-radius:999px;">{{ game.badge }}</span>
+          </sc-if>
+          <div style="width:48px;height:48px;border-radius:14px;background:{{ game.iconBg }};display:flex;align-items:center;justify-content:center;font-size:22px;">{{ game.emoji }}</div>
+          <div style="font-weight:800;font-size:11px;letter-spacing:0.03em;text-transform:uppercase;color:{{ game.catColor }};">{{ game.category }}</div>
+          <div style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:17px;color:var(--ink);">{{ game.title }}</div>
+          <p style="margin:0;font-size:13.5px;line-height:1.5;color:var(--ink-soft);flex:1;">{{ game.desc }}</p>
+          <span style="font-weight:800;font-size:13px;color:{{ game.ctaColor }};">{{ game.cta }}</span>
+        </a>
+      </sc-for>
 
-      <a class="card talk" href="talkquest.html">
-        <div class="glow"></div>
-        <span class="tag">Brave words</span>
-        <div class="emoji">💬</div>
-        <h3>TalkQuest</h3>
-        <p>Practice the tricky conversations life throws at you. Choose your words and see where they lead.</p>
-        <span class="play">Play now →</span>
-      </a>
-
-      <a class="card spark" href="spark-catcher.html">
-        <div class="glow"></div>
-        <span class="tag">Find your spark</span>
-        <div class="emoji">✨</div>
-        <h3>Spark Catcher</h3>
-        <p>Tap what sparks joy and discover what lights you up — building, art, helping, or exploring.</p>
-        <span class="play">Play now →</span>
-      </a>
-    </section>
-
-    <div class="soon">
-      <span class="seed">🌱</span>
-      <span style="font-weight:600;">More games are growing here.</span> Check back soon!
+      <sc-if value="{{ showPatience }}" hint-placeholder-val="{{ true }}">
+      <div style="position:relative;background:var(--sage-pale);border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:8px;opacity:0.85;border:1px dashed rgba(79,108,73,0.35);">
+        <div style="width:48px;height:48px;border-radius:14px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;">🐢</div>
+        <div style="font-weight:800;font-size:11px;letter-spacing:0.03em;text-transform:uppercase;color:var(--sage-deep);">Coming Soon</div>
+        <div style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:17px;color:var(--ink);">Patience Pond</div>
+        <p style="margin:0;font-size:13.5px;line-height:1.5;color:var(--ink-soft);flex:1;">Slow and steady: help the pond friends wait, breathe, and make good calls when things feel hard.</p>
+        <span style="display:inline-flex;align-items:center;gap:6px;font-weight:800;font-size:12.5px;color:var(--sage-deep);">🌱 Coming soon</span>
+      </div>
+      </sc-if>
     </div>
-  </div>
 
-  <script src="seeds.js"></script>
-  <script>
-    function updateBar(){ var el=document.getElementById('seeds-num'); if(el && window.Seeds){ try{ el.textContent=Seeds.get(); }catch(e){} } }
-    if(window.Seeds){ updateBar(); Seeds.onChange(updateBar); }
-    window.addEventListener('seeds:change', updateBar);
-  </script>
+    <p style="text-align:center;margin:36px auto 0;max-width:480px;font-size:14.5px;color:var(--ink-soft);">Got a game you wish existed? We're always planting new ones. 🌱</p>
+  </section>
+
+  <section style="padding:8px clamp(20px,5vw,56px) 0;position:relative;z-index:1;">
+    <a href="./breathe.html" style="max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:#E1F0F3;border-radius:22px;padding:22px 28px;" style-hover="transform:translateY(-3px);">
+      <span style="font-weight:800;font-size:15px;color:var(--ink);">🌬️ All played out? Try a calm breathing break next.</span>
+      <span style="font-weight:800;font-size:14px;color:var(--sky-deep);white-space:nowrap;">Breathe &amp; Move →</span>
+    </a>
+  </section>
+
+  <footer style="position:relative;margin-top:56px;background:var(--sage-pale);padding:56px clamp(20px,5vw,56px) 32px;">
+    <div style="display:flex;flex-wrap:wrap;gap:48px;justify-content:space-between;max-width:1200px;margin:0 auto;">
+      <div style="max-width:280px;display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;gap:8px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:19px;color:var(--ink);"><span style="font-size:22px;">🌿</span>Little Clearing</div>
+        <p style="margin:0;font-family:'Nunito',sans-serif;font-size:14px;line-height:1.6;color:var(--ink-soft);">A calm place to play, breathe &amp; grow — at your own gentle pace.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:var(--sage-deep);">Explore</div>
+        <a href="./play.html" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--ink-soft);">🎮 Play</a>
+        <a href="./breathe.html" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--ink-soft);">🌬️ Breathe &amp; Move</a>
+        <a href="./together.html" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--ink-soft);">🤝 Together</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:var(--sage-deep);">For grown-ups</div>
+        <a href="./about.html" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--ink-soft);">🌿 Why Little Clearing</a>
+        <a href="./blog.html" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--ink-soft);">📝 Notes for grown-ups</a>
+        <a href="./resources.html" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--ink-soft);">🧺 Parent resources</a>
+      </div>
+    </div>
+    <div style="max-width:1200px;margin:40px auto 0;padding-top:22px;border-top:1px solid rgba(58,68,56,0.12);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+      <span style="font-family:'Nunito',sans-serif;font-size:13px;color:var(--ink-soft);">Made with ♥ for curious kids · Little Clearing</span>
+      <span style="font-family:'Nunito',sans-serif;font-size:13px;color:var(--ink-soft);">No ads · No strangers · Nothing to buy</span>
+    </div>
+  </footer>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showComingSoon&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Content&quot;}}">
+class Component extends DCLogic {
+  categoryList = ['All', 'Money & Life Skills', 'Talking It Out', 'Find Your Spark', 'Feelings', 'Coming Soon'];
+  games = [
+    { href: 'https://pookiegames.net/money-quest.html', hasBadge: true, badge: 'Popular', badgeBg: 'var(--sage-deep)', iconBg: 'var(--butter)', emoji: '🍋', category: 'Money & Life Skills', catColor: 'var(--butter-deep)', title: 'Money Quest', desc: 'Run your own lemonade-stand fortune. Earn coins, build streaks, and watch your jar grow with real interest.', cta: 'Play now →', ctaColor: 'var(--sage-deep)' },
+    { href: 'https://pookiegames.net/talkquest.html', hasBadge: false, badge: '', badgeBg: '', iconBg: 'var(--sky)', emoji: '💬', category: 'Talking It Out', catColor: 'var(--sky-deep)', title: 'TalkQuest', desc: 'Practice the tricky conversations life throws at you. Choose your words and see where they lead.', cta: 'Play now →', ctaColor: 'var(--sage-deep)' },
+    { href: 'https://pookiegames.net/spark-catcher.html', hasBadge: false, badge: '', badgeBg: '', iconBg: 'var(--lavender)', emoji: '✨', category: 'Find Your Spark', catColor: 'var(--lavender-deep)', title: 'Spark Catcher', desc: 'Tap what sparks joy and discover what lights you up — building, art, helping, or exploring.', cta: 'Play now →', ctaColor: 'var(--sage-deep)' },
+    { href: './feelings-forest.html', hasBadge: true, badge: 'New', badgeBg: 'var(--coral-deep)', iconBg: 'var(--coral)', emoji: '🦊', category: 'Feelings', catColor: 'var(--coral-deep)', title: 'Feelings Forest', desc: 'Meet woodland friends going through big feelings — help them name what they feel and find their calm.', cta: 'Play now →', ctaColor: 'var(--sage-deep)' }
+  ];
+  state = { seeds: 0, activeCategory: 'All', dots: ['rgba(79,108,73,0.25)', 'rgba(79,108,73,0.25)', 'rgba(79,108,73,0.25)'] };
+  componentDidMount() {
+    const s = parseInt(localStorage.getItem('lc_seeds') || '0', 10);
+    this.setState({ seeds: isNaN(s) ? 0 : s, dots: this.computeDots() });
+  }
+  setCategory(c) { this.setState({ activeCategory: c }); }
+  computeDots() {
+    return ['play', 'breathe', 'together'].map(a => localStorage.getItem('lc_tried_' + a) === '1' ? 'var(--sage-deep)' : 'rgba(79,108,73,0.25)');
+  }
+  markTried(area) {
+    localStorage.setItem('lc_tried_' + area, '1');
+    this.setState({ dots: this.computeDots() });
+  }
+  renderVals() {
+    const s = this.state;
+    const showComingSoon = this.props.showComingSoon ?? true;
+    const cats = this.categoryList.filter(c => c !== 'Coming Soon' || showComingSoon);
+    const filtered = s.activeCategory === 'All' ? this.games : this.games.filter(g => g.category === s.activeCategory);
+    return {
+      seeds: s.seeds,
+      journeyDots: s.dots.map(c => ({ color: c })),
+      categoryChips: cats.map(c => ({
+        label: c,
+        onClick: () => this.setCategory(c),
+        bg: s.activeCategory === c ? 'var(--sage-deep)' : 'var(--sage-pale)',
+        color: s.activeCategory === c ? '#fff' : 'var(--sage-deep)'
+      })),
+      filteredGames: filtered.map(g => ({ ...g, onClick: () => this.markTried('play') })),
+      showPatience: showComingSoon && (s.activeCategory === 'All' || s.activeCategory === 'Coming Soon')
+    };
+  }
+}
+</script>
 </body>
 </html>
