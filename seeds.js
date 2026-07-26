@@ -139,5 +139,8 @@
     });
   } catch (e) {}
 
+  // sync the lc_seeds mirror once on load (covers balances earned before this version)
+  save(load());
+
   global.Seeds = Seeds;
 })(window);
