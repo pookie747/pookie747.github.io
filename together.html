@@ -271,7 +271,7 @@ class Component extends DCLogic {
   ];
   state = { seeds: 0, spotlightIndex: null, dots: ['rgba(79,108,73,0.25)', 'rgba(79,108,73,0.25)', 'rgba(79,108,73,0.25)'] };
   componentDidMount() {
-    const s = parseInt(localStorage.getItem('lc_seeds') || '0', 10);
+    let s = 0; try { const d = JSON.parse(localStorage.getItem('littleClearing.seeds.v1') || 'null'); s = (d && typeof d.total === 'number') ? d.total : parseInt(localStorage.getItem('lc_seeds') || '0', 10); } catch (e) { s = parseInt(localStorage.getItem('lc_seeds') || '0', 10); }
     this.setState({ seeds: isNaN(s) ? 0 : s, dots: this.computeDots() });
   }
   computeDots() {
