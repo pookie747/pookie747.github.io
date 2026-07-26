@@ -33,6 +33,7 @@
   function save(data) {
     try {
       localStorage.setItem(KEY, JSON.stringify(data));
+      localStorage.setItem("lc_seeds", String(data.total));
     } catch (e) {
       /* storage full or blocked — fail quietly so games never break */
     }

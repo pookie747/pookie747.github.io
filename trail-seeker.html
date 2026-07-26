@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Trail Seeker 🐿️ — spot the wild things</title>
+<meta name="description" content="A calm seek-and-find for kids: wander three wild places and spot the creatures and treasures hiding there." />
+<script src="./seeds.js"></script>
+<style>
+  :root{
+    --paper:#FBF6EC; --ink:#3A4438; --ink-soft:#6E7A67;
+    --teal:#3FA98C; --teal-deep:#2E8A6E; --line:#E6E0D2; --card:#FFFFFF;
+  }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body{ margin:0; padding:0; }
+  body{ background:var(--paper); color:var(--ink);
+        font-family:ui-rounded,'SF Pro Rounded',system-ui,-apple-system,'Segoe UI',sans-serif; }
+  #seeds-bar{ position:sticky; top:0; z-index:9999; display:flex; align-items:center;
+        justify-content:space-between; padding:8px 14px; background:var(--paper); border-bottom:1px solid var(--line); }
+  #seeds-bar a, #seeds-bar .pill{ display:inline-flex; align-items:center; gap:7px; text-decoration:none;
+        color:#2C4A52; font-weight:700; font-size:15px; background:#E4EFE3; border:1px solid #CFE3D0;
+        padding:6px 14px; border-radius:999px; }
+  .wrap{ max-width:560px; margin:0 auto; padding:18px 16px 48px; }
+  .head{ text-align:center; margin-bottom:10px; }
+  .head h1{ font-size:26px; font-weight:800; margin:0 0 2px; }
+  .head p{ margin:0; font-size:13.5px; color:var(--ink-soft); }
+  .target{ display:flex; align-items:center; justify-content:space-between; gap:10px;
+        background:var(--card); border:2px solid var(--teal); border-radius:16px;
+        padding:10px 16px; margin:12px 0; }
+  .target .q{ font-size:15px; font-weight:800; }
+  .target .prog{ font-size:12.5px; font-weight:700; color:var(--ink-soft); white-space:nowrap; }
+  #scene{ position:relative; height:min(58vh,470px); border-radius:20px; overflow:hidden;
+        border:2px solid var(--line); transition:opacity .4s; }
+  #scene.fade{ opacity:0; }
+  .item{ position:absolute; transform:translate(-50%,-50%); border:none; background:none;
+        cursor:pointer; padding:6px; line-height:1; }
+  .item span{ display:block; font-size:36px; filter:drop-shadow(0 2px 2px rgba(58,68,56,.18)); }
+  .item.found span{ animation:found .5s ease-out both; }
+  .item.nope span{ animation:wiggle .4s ease-in-out; }
+  @keyframes found{ 0%{ transform:scale(1);} 45%{ transform:scale(1.45) rotate(-8deg);} 100%{ transform:scale(1.15);} }
+  @keyframes wiggle{ 0%,100%{ transform:rotate(0);} 25%{ transform:rotate(-12deg);} 75%{ transform:rotate(12deg);} }
+  #msg{ min-height:74px; margin-top:12px; }
+  .fact{ background:var(--card); border:2px solid var(--line); border-radius:16px; padding:12px 16px;
+        font-size:14px; line-height:1.5; animation:pop .35s ease-out both; }
+  .fact b{ color:var(--teal-deep); }
+  .fact .go{ display:inline-block; margin-top:8px; border:none; background:var(--teal); color:#fff;
+        font-weight:800; font-size:13.5px; padding:9px 18px; border-radius:999px; cursor:pointer;
+        box-shadow:0 3px 0 var(--teal-deep); font-family:inherit; }
+  .fact .go:active{ transform:translateY(2px); box-shadow:0 1px 0 var(--teal-deep); }
+  .hint{ text-align:center; font-size:13px; color:var(--ink-soft); padding-top:10px; }
+  @keyframes pop{ 0%{ transform:scale(.85); opacity:0; } 100%{ transform:scale(1); opacity:1; } }
+  .recap{ text-align:center; padding:26px 18px; animation:pop .4s ease-out both; }
+  .recap h2{ font-size:24px; font-weight:800; margin:6px 0; }
+  .recap p{ color:var(--ink-soft); font-size:14.5px; margin:0 0 14px; }
+  .recap .grid{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:18px; }
+  .recap .grid span{ font-size:30px; background:var(--card); border:1.5px solid var(--line);
+        border-radius:12px; padding:8px; }
+  .recap button{ border:none; border-radius:14px; padding:13px 26px; font-size:15px; font-weight:800;
+        color:#fff; background:var(--teal); box-shadow:0 4px 0 var(--teal-deep); cursor:pointer; font-family:inherit; }
+  @media (prefers-reduced-motion: reduce){ .fact,.recap,.item.found span,.item.nope span{ animation:none !important; } }
+</style>
+</head>
+<body>
+  <div id="seeds-bar">
+    <a href="index.html">🏡 Home</a>
+    <span class="pill">🌱 <span id="seeds-num">0</span> seeds</span>
+  </div>
+
+  <div class="wrap">
+    <div class="head">
+      <h1>🐿️ Trail Seeker</h1>
+      <p>Wander slowly. The forest shows its secrets to patient eyes.</p>
+    </div>
+    <div class="target">
+      <span class="q" id="targetQ">…</span>
+      <span class="prog" id="targetProg"></span>
+    </div>
+    <div id="scene"></div>
+    <div id="msg"><p class="hint">Tap what you spot! Everything out here has a name.</p></div>
+  </div>
+
+<script>
+(function(){
+  "use strict";
+  function awardSeeds(n, why){ try{ if(window.Seeds){ window.Seeds.award(n, why); toast(n); } }catch(e){} }
+  function updateBar(){ var el=document.getElementById('seeds-num');
+    if(el){ try{ el.textContent=(window.Seeds?window.Seeds.get():0); }catch(e){} } }
+  function toast(n){
+    var t=document.getElementById('seed-toast');
+    if(!t){ t=document.createElement('div'); t.id='seed-toast';
+      t.style.cssText="position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(120px);background:#3A4438;color:#fff;font-family:inherit;font-weight:700;padding:13px 22px;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.2);transition:transform .4s cubic-bezier(.22,1,.36,1);z-index:10000;font-size:16px;";
+      document.body.appendChild(t); }
+    t.textContent="🌱 +"+n+" seeds!";
+    requestAnimationFrame(function(){ t.style.transform="translateX(-50%) translateY(0)"; });
+    clearTimeout(t._h); t._h=setTimeout(function(){ t.style.transform="translateX(-50%) translateY(120px)"; },2200);
+    updateBar();
+  }
+  updateBar();
+  if(window.Seeds && window.Seeds.onChange) window.Seeds.onChange(updateBar);
+
+  var SCENES=[
+    { name:"the Sunny Meadow",
+      bg:"linear-gradient(180deg,#DFF0F7 0%,#EFF5E3 55%,#B9D3A4 55%,#A9C79A 100%)",
+      items:[
+        { e:"🌷", n:"a tulip",     x:18, y:72, t:1, fact:"Tulips close their petals at night and open again with the morning sun." },
+        { e:"🐞", n:"a ladybug",   x:64, y:81, t:1, fact:"A ladybug's bright spots tell birds: 'I don't taste good!'" },
+        { e:"🌰", n:"an acorn",    x:83, y:88, t:1, fact:"Every giant oak tree started out as one little acorn." },
+        { e:"🦋", n:"a butterfly", x:40, y:34, t:1, fact:"Butterflies taste with their FEET — imagine that!" },
+        { e:"🌼", n:"a daisy",     x:31, y:84, t:0 },
+        { e:"🐝", n:"a busy bee",  x:73, y:42, t:0 },
+        { e:"🪨", n:"a warm rock", x:9,  y:88, t:0 },
+        { e:"🌾", n:"tall grass",  x:52, y:68, t:0 },
+        { e:"☁️", n:"a puffy cloud", x:15, y:16, t:0 }
+      ] },
+    { name:"the Deep Woods",
+      bg:"linear-gradient(180deg,#D7E6DC 0%,#CBDECB 50%,#8FAD84 50%,#7C9A72 100%)",
+      items:[
+        { e:"🐿️", n:"a squirrel",  x:26, y:60, t:1, fact:"Squirrels bury acorns and forget a few — those forgotten ones grow into new trees." },
+        { e:"🍄", n:"a mushroom",  x:70, y:84, t:1, fact:"Mushrooms are the flowers of a huge web that lives under the soil." },
+        { e:"🦉", n:"an owl",      x:82, y:22, t:1, fact:"Owls can turn their heads almost all the way around." },
+        { e:"🌿", n:"a fern",      x:12, y:86, t:1, fact:"Ferns were here before the dinosaurs — they're living fossils." },
+        { e:"🌳", n:"an old oak",  x:15, y:38, t:0 },
+        { e:"🌲", n:"a tall pine", x:55, y:30, t:0 },
+        { e:"🍂", n:"fallen leaves", x:44, y:88, t:0 },
+        { e:"🐛", n:"a caterpillar", x:60, y:66, t:0 },
+        { e:"🕸️", n:"a dewy web",  x:34, y:20, t:0 }
+      ] },
+    { name:"the Quiet Creek",
+      bg:"linear-gradient(180deg,#E1F0F3 0%,#D3E9EE 45%,#9FCBD8 45%,#8FBFCE 100%)",
+      items:[
+        { e:"🦆", n:"a duck",       x:30, y:62, t:1, fact:"Duck feathers are waterproof — water just rolls right off their backs." },
+        { e:"🐸", n:"a frog",       x:72, y:78, t:1, fact:"Frogs don't sip water — they drink it through their skin." },
+        { e:"🐢", n:"a turtle",     x:14, y:84, t:1, fact:"A turtle's shell is part of its skeleton — it can feel a gentle pat." },
+        { e:"🪷", n:"a water lily", x:55, y:58, t:1, fact:"Water lilies float on top, but their roots hug the mud far below." },
+        { e:"🐟", n:"a little fish", x:44, y:82, t:0 },
+        { e:"🪨", n:"a mossy stone", x:87, y:88, t:0 },
+        { e:"🌾", n:"soft reeds",   x:8,  y:56, t:0 },
+        { e:"🐌", n:"a slow snail", x:64, y:90, t:0 },
+        { e:"🐦", n:"a bluebird",   x:22, y:22, t:0 }
+      ] }
+  ];
+
+  var sceneEl=document.getElementById('scene'), msgEl=document.getElementById('msg');
+  var si=0, targets=[], ti=0, foundAll=[], firstRun=true;
+
+  function renderScene(){
+    var sc=SCENES[si];
+    targets=sc.items.filter(function(it){ return it.t; });
+    ti=0;
+    sceneEl.style.background=sc.bg;
+    sceneEl.innerHTML='';
+    sc.items.forEach(function(it){
+      var b=document.createElement('button');
+      b.className='item';
+      b.style.left=it.x+'%'; b.style.top=it.y+'%';
+      b.innerHTML='<span>'+it.e+'</span>';
+      b.setAttribute('aria-label',it.n);
+      b.onclick=function(){ tap(it,b); };
+      sceneEl.appendChild(b);
+    });
+    updateTarget();
+    msgEl.innerHTML='<p class="hint">You\u2019ve wandered into '+sc.name+'. Look closely…</p>';
+  }
+
+  function updateTarget(){
+    if(ti<targets.length){
+      document.getElementById('targetQ').textContent="Can you spot "+targets[ti].n+"? "+targets[ti].e;
+      document.getElementById('targetProg').textContent=(ti)+"/"+targets.length+" found · "+SCENES[si].name;
+    }
+  }
+
+  function tap(it,btn){
+    if(ti>=targets.length) return;
+    var want=targets[ti];
+    if(it===want){
+      btn.classList.add('found');
+      btn.onclick=null;
+      foundAll.push(it.e);
+      ti++;
+      var last = ti>=targets.length;
+      var lastScene = si>=SCENES.length-1;
+      var goLabel = last ? (lastScene ? "Finish the trail 🌱" : "Walk on →") : "Keep exploring →";
+      msgEl.innerHTML='<div class="fact"><b>You found '+it.n+'! '+it.e+'</b><br>'+it.fact+
+        '<br><button class="go" id="goBtn">'+goLabel+'</button></div>';
+      document.getElementById('goBtn').onclick=function(){
+        if(!last){ updateTarget(); msgEl.innerHTML='<p class="hint">Eyes open — what\u2019s next?</p>'; }
+        else if(!lastScene){
+          si++;
+          sceneEl.classList.add('fade');
+          setTimeout(function(){ renderScene(); sceneEl.classList.remove('fade'); },420);
+        }
+        else finish();
+      };
+      if(!last) updateTarget();
+      else document.getElementById('targetProg').textContent=targets.length+"/"+targets.length+" found · "+SCENES[si].name;
+    } else {
+      btn.classList.remove('nope'); void btn.offsetWidth; btn.classList.add('nope');
+      msgEl.innerHTML='<p class="hint">That\u2019s '+it.n+' '+it.e+' — lovely, but keep looking!</p>';
+    }
+  }
+
+  function finish(){
+    document.getElementById('targetQ').textContent="Trail complete! 🥾";
+    document.getElementById('targetProg').textContent="";
+    var grid=foundAll.map(function(e){ return '<span>'+e+'</span>'; }).join('');
+    sceneEl.style.background="linear-gradient(180deg,#E4ECDC,#FBF6EC)";
+    sceneEl.innerHTML='<div class="recap"><div style="font-size:46px">🥾</div>'+
+      '<h2>What a wander!</h2><p>You spotted all 12 wild things. The forest tips its leaves to you.</p>'+
+      '<div class="grid">'+grid+'</div>'+
+      '<button id="againBtn">Walk the trail again</button></div>';
+    msgEl.innerHTML='';
+    awardSeeds(firstRun?20:2,"Finished the Trail Seeker trail");
+    firstRun=false;
+    document.getElementById('againBtn').onclick=function(){
+      si=0; foundAll=[]; renderScene();
+    };
+  }
+
+  renderScene();
+})();
+</script>
+</body>
+</html>

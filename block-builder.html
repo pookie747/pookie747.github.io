@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Block Builder 🧱 — stack falling blocks into anything</title>
+<meta name="description" content="A calm building game for kids: catch falling block pieces and stack them into towers, castles, and homes." />
+<script src="./seeds.js"></script>
+<style>
+  :root{
+    --paper:#FBF6EC; --ink:#3A4438; --ink-soft:#6E7A67;
+    --sage:#7C9A72; --sage-deep:#4F6C49; --sage-pale:#E4ECDC;
+    --peach:#E08E5C; --peach-deep:#B96A3C; --line:#E6E0D2; --card:#FFFFFF;
+  }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body{ margin:0; padding:0; }
+  body{ background:var(--paper); color:var(--ink);
+        font-family:ui-rounded,'SF Pro Rounded',system-ui,-apple-system,'Segoe UI',sans-serif; }
+  #seeds-bar{ position:sticky; top:0; z-index:9999; display:flex; align-items:center;
+        justify-content:space-between; padding:8px 14px; background:var(--paper); border-bottom:1px solid var(--line); }
+  #seeds-bar a, #seeds-bar .pill{ display:inline-flex; align-items:center; gap:7px; text-decoration:none;
+        color:#2C4A52; font-weight:700; font-size:15px; background:#E4EFE3; border:1px solid #CFE3D0;
+        padding:6px 14px; border-radius:999px; }
+  .wrap{ max-width:420px; margin:0 auto; padding:18px 16px 48px; }
+  .head{ text-align:center; margin-bottom:12px; }
+  .head h1{ font-size:26px; font-weight:800; margin:0 0 2px; }
+  .head p{ margin:0; font-size:13.5px; color:var(--ink-soft); }
+  .stats{ display:flex; justify-content:center; gap:10px; margin:10px 0; }
+  .stat{ background:var(--card); border:1.5px solid var(--line); border-radius:999px;
+        padding:5px 14px; font-size:13px; font-weight:700; color:var(--ink-soft); }
+  .stat b{ color:var(--ink); }
+  #stage{ position:relative; }
+  canvas{ display:block; width:100%; border-radius:18px; background:#F2EDDF;
+        border:2px solid var(--line); touch-action:none; }
+  .mats{ display:flex; justify-content:center; gap:8px; margin:12px 0; }
+  .mat{ width:46px; height:46px; border-radius:12px; border:3px solid transparent; cursor:pointer;
+        box-shadow:0 2px 0 rgba(58,68,56,.15); }
+  .mat.on{ border-color:var(--ink); transform:scale(1.08); }
+  .pads{ display:flex; justify-content:center; gap:8px; }
+  .pad{ flex:1; max-width:86px; height:54px; border-radius:14px; border:none; background:var(--card);
+        border:2px solid var(--line); box-shadow:0 3px 0 var(--line); font-size:21px; cursor:pointer;
+        font-family:inherit; color:var(--ink); font-weight:800; }
+  .pad:active{ transform:translateY(2px); box-shadow:0 1px 0 var(--line); }
+  .pad.go{ background:var(--sage-deep); border-color:var(--sage-deep); color:#fff; box-shadow:0 3px 0 #3A5236; }
+  .note{ text-align:center; font-size:12.5px; color:var(--ink-soft); margin:10px 0 0; }
+  #overlay{ position:absolute; inset:0; display:none; align-items:center; justify-content:center;
+        background:rgba(251,246,236,.94); border-radius:18px; text-align:center; padding:24px; }
+  #overlay.show{ display:flex; }
+  #overlay .box{ animation:pop .4s ease-out both; }
+  #overlay h2{ font-size:24px; font-weight:800; margin:0 0 6px; }
+  #overlay p{ color:var(--ink-soft); font-size:14.5px; margin:0 0 18px; line-height:1.5; }
+  .btn{ border:none; border-radius:14px; padding:13px 26px; font-size:16px; font-weight:800; color:#fff;
+        background:var(--peach); box-shadow:0 4px 0 var(--peach-deep); cursor:pointer; font-family:inherit; }
+  .btn:active{ transform:translateY(2px); box-shadow:0 2px 0 var(--peach-deep); }
+  #banner{ position:absolute; top:12px; left:50%; transform:translateX(-50%) scale(0); background:var(--card);
+        border:2px solid #F0C05E; border-radius:999px; padding:8px 18px; font-weight:800; font-size:14px;
+        transition:transform .35s cubic-bezier(.22,1,.36,1); white-space:nowrap; }
+  #banner.show{ transform:translateX(-50%) scale(1); }
+  @keyframes pop{ 0%{ transform:scale(.7); opacity:0; } 70%{ transform:scale(1.05); } 100%{ transform:scale(1); opacity:1; } }
+  @media (prefers-reduced-motion: reduce){ #overlay .box{ animation:none; } }
+</style>
+</head>
+<body>
+  <div id="seeds-bar">
+    <a href="index.html">🏡 Home</a>
+    <span class="pill">🌱 <span id="seeds-num">0</span> seeds</span>
+  </div>
+
+  <div class="wrap">
+    <div class="head">
+      <h1>🧱 Block Builder</h1>
+      <p>Steer the falling pieces and build whatever you dream up. No rush, no wrong answers.</p>
+    </div>
+    <div class="stats">
+      <span class="stat">Blocks: <b id="blockCount">0</b></span>
+      <span class="stat">Height: <b id="heightCount">0</b></span>
+      <span class="stat" id="pauseStat" style="cursor:pointer">⏸ Pause</span>
+    </div>
+    <div id="stage">
+      <canvas id="cv"></canvas>
+      <div id="banner">⭐ You built up to the star! 🌱</div>
+      <div id="overlay"><div class="box">
+        <div style="font-size:52px;margin-bottom:6px">🏰</div>
+        <h2>You built to the sky!</h2>
+        <p id="endText">What a creation.</p>
+        <button class="btn" id="freshBtn">Build something new</button>
+      </div></div>
+    </div>
+    <div class="mats" id="mats"></div>
+    <div class="pads">
+      <button class="pad" id="leftBtn" aria-label="Move left">◀</button>
+      <button class="pad" id="rotBtn" aria-label="Rotate">⟳</button>
+      <button class="pad" id="rightBtn" aria-label="Move right">▶</button>
+      <button class="pad go" id="dropBtn" aria-label="Drop">⬇</button>
+    </div>
+    <p class="note">Reach the ⭐ line for a seed bonus. Arrow keys work too!</p>
+  </div>
+
+<script>
+(function(){
+  "use strict";
+  function awardSeeds(n, why){ try{ if(window.Seeds){ window.Seeds.award(n, why); toast(n); } }catch(e){} }
+  function updateBar(){ var el=document.getElementById('seeds-num');
+    if(el){ try{ el.textContent=(window.Seeds?window.Seeds.get():0); }catch(e){} } }
+  function toast(n){
+    var t=document.getElementById('seed-toast');
+    if(!t){ t=document.createElement('div'); t.id='seed-toast';
+      t.style.cssText="position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(120px);background:#3A4438;color:#fff;font-family:inherit;font-weight:700;padding:13px 22px;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.2);transition:transform .4s cubic-bezier(.22,1,.36,1);z-index:10000;font-size:16px;";
+      document.body.appendChild(t); }
+    t.textContent="🌱 +"+n+" seeds!";
+    requestAnimationFrame(function(){ t.style.transform="translateX(-50%) translateY(0)"; });
+    clearTimeout(t._h); t._h=setTimeout(function(){ t.style.transform="translateX(-50%) translateY(120px)"; },2200);
+    updateBar();
+  }
+  updateBar();
+  if(window.Seeds && window.Seeds.onChange) window.Seeds.onChange(updateBar);
+
+  var COLS=12, ROWS=16, STAR_ROW=4;
+  var MATS=[
+    { name:"Grass", body:"#7C9A72", top:"#9DBC90", edge:"#5E7A55" },
+    { name:"Wood",  body:"#B98A5C", top:"#D3A97C", edge:"#8F6640" },
+    { name:"Stone", body:"#9AA1A8", top:"#B8BEC4", edge:"#767D84" },
+    { name:"Water", body:"#8FBFCE", top:"#B3D8E2", edge:"#628FA0" },
+    { name:"Berry", body:"#F0967A", top:"#F7B49E", edge:"#C56A4E" }
+  ];
+  var SHAPES=[
+    [[0,0],[1,0],[0,1],[1,1]],        // O
+    [[0,0],[1,0],[2,0],[3,0]],        // I
+    [[0,0],[0,1],[1,1],[2,1]],        // J
+    [[2,0],[0,1],[1,1],[2,1]],        // L
+    [[1,0],[2,0],[0,1],[1,1]],        // S
+    [[0,0],[1,0],[1,1],[2,1]],        // Z
+    [[1,0],[0,1],[1,1],[2,1]]         // T
+  ];
+
+  var cv=document.getElementById('cv'), ctx=cv.getContext('2d');
+  var grid, piece, matIdx=0, paused=false, starDone=false, over=false;
+  var blocks=0, timer=null, cell=28, dpr=1;
+
+  function newGrid(){ var g=[]; for(var r=0;r<ROWS;r++){ g.push(new Array(COLS).fill(null)); } return g; }
+  function spawn(){
+    var s=SHAPES[Math.floor(Math.random()*SHAPES.length)].map(function(c){ return c.slice(); });
+    return { cells:s, x:4, y:-2, mat:matIdx };
+  }
+  function cellsOf(p){ return p.cells.map(function(c){ return [c[0]+p.x, c[1]+p.y]; }); }
+  function collides(p){
+    return cellsOf(p).some(function(c){
+      if(c[0]<0 || c[0]>=COLS || c[1]>=ROWS) return true;
+      if(c[1]>=0 && grid[c[1]][c[0]]) return true;
+      return false;
+    });
+  }
+  function rotate(p){
+    var maxX=Math.max.apply(null,p.cells.map(function(c){return c[0];}));
+    var next={ cells:p.cells.map(function(c){ return [maxX-c[1], c[0]]; }), x:p.x, y:p.y, mat:p.mat };
+    if(!collides(next)) return next;
+    next.x=p.x-1; if(!collides(next)) return next;
+    next.x=p.x+1; if(!collides(next)) return next;
+    return p;
+  }
+  function dropY(p){
+    var test={ cells:p.cells, x:p.x, y:p.y, mat:p.mat };
+    while(!collides({cells:test.cells,x:test.x,y:test.y+1,mat:test.mat})) test.y++;
+    return test.y;
+  }
+  function height(){
+    for(var r=0;r<ROWS;r++){ for(var c=0;c<COLS;c++){ if(grid[r][c]) return ROWS-r; } }
+    return 0;
+  }
+
+  function lock(){
+    cellsOf(piece).forEach(function(c){
+      if(c[1]>=0){ grid[c[1]][c[0]]=piece.mat; blocks++; }
+    });
+    document.getElementById('blockCount').textContent=blocks;
+    var h=height();
+    document.getElementById('heightCount').textContent=h;
+    if(!starDone && h>=ROWS-STAR_ROW){
+      starDone=true;
+      awardSeeds(15,"Built up to the star in Block Builder");
+      var b=document.getElementById('banner'); b.classList.add('show');
+      setTimeout(function(){ b.classList.remove('show'); },2600);
+    }
+    piece=spawn();
+    if(collides(piece)){
+      over=true; stopTick();
+      document.getElementById('endText').textContent="A "+height()+"-block-tall creation with "+blocks+" blocks. Take a look at what you made!";
+      awardSeeds(5,"Finished a Block Builder build");
+      document.getElementById('overlay').classList.add('show');
+    }
+  }
+
+  function tick(){ if(paused||over) return;
+    var next={cells:piece.cells,x:piece.x,y:piece.y+1,mat:piece.mat};
+    if(collides(next)) lock(); else piece=next;
+    draw();
+  }
+  function startTick(){ stopTick(); timer=setInterval(tick,850); }
+  function stopTick(){ if(timer) clearInterval(timer); timer=null; }
+
+  function drawCell(c,r,m,ghost){
+    var x=c*cell, y=r*cell, mt=MATS[m];
+    if(ghost){ ctx.strokeStyle=mt.edge; ctx.setLineDash([4,4]); ctx.lineWidth=2;
+      ctx.strokeRect(x+2,y+2,cell-4,cell-4); ctx.setLineDash([]); return; }
+    ctx.fillStyle=mt.body; ctx.fillRect(x,y,cell,cell);
+    ctx.fillStyle=mt.top; ctx.fillRect(x,y,cell,Math.max(3,cell*0.18));
+    ctx.strokeStyle=mt.edge; ctx.lineWidth=1; ctx.strokeRect(x+0.5,y+0.5,cell-1,cell-1);
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    // star line
+    var sy=STAR_ROW*cell;
+    ctx.strokeStyle="#E0BC5E"; ctx.setLineDash([7,6]); ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(0,sy); ctx.lineTo(cv.width/dpr,sy); ctx.stroke(); ctx.setLineDash([]);
+    ctx.font=(cell*0.7)+"px sans-serif"; ctx.textBaseline="bottom";
+    ctx.fillText("⭐",cv.width/dpr-cell,sy-2);
+    for(var r=0;r<ROWS;r++){ for(var c=0;c<COLS;c++){ if(grid[r][c]!==null) drawCell(c,r,grid[r][c]); } }
+    if(!over){
+      var gy=dropY(piece);
+      piece.cells.forEach(function(pc){
+        var gr=pc[1]+gy; if(gr>=0) drawCell(pc[0]+piece.x,gr,piece.mat,true);
+      });
+      cellsOf(piece).forEach(function(pc){ if(pc[1]>=0) drawCell(pc[0],pc[1],piece.mat); });
+    }
+  }
+
+  function resize(){
+    dpr=window.devicePixelRatio||1;
+    var w=cv.parentElement.clientWidth;
+    cell=w/COLS;
+    cv.style.height=(cell*ROWS)+"px";
+    cv.width=w*dpr; cv.height=cell*ROWS*dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    draw();
+  }
+
+  // materials palette
+  var matsEl=document.getElementById('mats');
+  MATS.forEach(function(m,i){
+    var b=document.createElement('button');
+    b.className='mat'+(i===0?' on':'');
+    b.title=m.name; b.setAttribute('aria-label',m.name);
+    b.style.background="linear-gradient(180deg,"+m.top+" 0%,"+m.top+" 18%,"+m.body+" 18%)";
+    b.style.borderBottomColor=m.edge;
+    b.onclick=function(){
+      matIdx=i; if(piece) piece.mat=i;
+      matsEl.querySelectorAll('.mat').forEach(function(x){ x.classList.remove('on'); });
+      b.classList.add('on'); draw();
+    };
+    matsEl.appendChild(b);
+  });
+
+  function move(dx){ if(paused||over) return;
+    var next={cells:piece.cells,x:piece.x+dx,y:piece.y,mat:piece.mat};
+    if(!collides(next)) piece=next; draw(); }
+  function hardDrop(){ if(paused||over) return; piece.y=dropY(piece); lock(); draw(); }
+
+  document.getElementById('leftBtn').onclick=function(){ move(-1); };
+  document.getElementById('rightBtn').onclick=function(){ move(1); };
+  document.getElementById('rotBtn').onclick=function(){ if(!paused&&!over){ piece=rotate(piece); draw(); } };
+  document.getElementById('dropBtn').onclick=hardDrop;
+  document.getElementById('pauseStat').onclick=function(){
+    paused=!paused; this.textContent=paused?'▶ Play':'⏸ Pause';
+  };
+  document.getElementById('freshBtn').onclick=function(){
+    grid=newGrid(); blocks=0; starDone=false; over=false;
+    document.getElementById('blockCount').textContent=0;
+    document.getElementById('heightCount').textContent=0;
+    document.getElementById('overlay').classList.remove('show');
+    piece=spawn(); startTick(); draw();
+  };
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowLeft'){ move(-1); e.preventDefault(); }
+    else if(e.key==='ArrowRight'){ move(1); e.preventDefault(); }
+    else if(e.key==='ArrowUp'){ if(!paused&&!over){ piece=rotate(piece); draw(); } e.preventDefault(); }
+    else if(e.key==='ArrowDown'){ hardDrop(); e.preventDefault(); }
+  });
+  window.addEventListener('resize',resize);
+
+  grid=newGrid(); piece=spawn();
+  resize(); startTick();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Color Quest 🎨 — paint whatever your heart feels</title>
+<meta name="description" content="A calm painting game for kids: a friendly canvas, soft colors, stamps, and no wrong answers." />
+<script src="./seeds.js"></script>
+<style>
+  :root{
+    --paper:#FBF6EC; --ink:#3A4438; --ink-soft:#6E7A67;
+    --lav:#B58CC9; --lav-deep:#8A63AD; --line:#E6E0D2; --card:#FFFFFF;
+  }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body{ margin:0; padding:0; }
+  body{ background:var(--paper); color:var(--ink);
+        font-family:ui-rounded,'SF Pro Rounded',system-ui,-apple-system,'Segoe UI',sans-serif; }
+  #seeds-bar{ position:sticky; top:0; z-index:9999; display:flex; align-items:center;
+        justify-content:space-between; padding:8px 14px; background:var(--paper); border-bottom:1px solid var(--line); }
+  #seeds-bar a, #seeds-bar .pill{ display:inline-flex; align-items:center; gap:7px; text-decoration:none;
+        color:#2C4A52; font-weight:700; font-size:15px; background:#E4EFE3; border:1px solid #CFE3D0;
+        padding:6px 14px; border-radius:999px; }
+  .wrap{ max-width:520px; margin:0 auto; padding:18px 16px 48px; }
+  .head{ text-align:center; margin-bottom:10px; }
+  .head h1{ font-size:26px; font-weight:800; margin:0 0 2px; }
+  .head p{ margin:0; font-size:13.5px; color:var(--ink-soft); }
+  .prompt{ display:flex; align-items:center; gap:8px; justify-content:center; margin:10px 0;
+        font-size:13px; color:var(--ink-soft); }
+  .prompt b{ color:var(--lav-deep); }
+  .prompt button{ border:1.5px solid var(--line); background:var(--card); border-radius:999px;
+        padding:3px 10px; font-size:12px; cursor:pointer; font-family:inherit; color:var(--ink-soft); }
+  #cvBox{ position:relative; }
+  canvas{ display:block; width:100%; border-radius:18px; background:#FFFDF8;
+        border:2px solid var(--line); touch-action:none; cursor:crosshair; }
+  .row{ display:flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap; margin-top:12px; }
+  .sw{ width:38px; height:38px; border-radius:50%; border:3px solid transparent; cursor:pointer;
+        box-shadow:0 2px 0 rgba(58,68,56,.15); }
+  .sw.on{ border-color:var(--ink); transform:scale(1.12); }
+  .tool{ height:40px; padding:0 14px; border-radius:12px; border:2px solid var(--line);
+        background:var(--card); font-size:14px; font-weight:700; cursor:pointer; font-family:inherit;
+        color:var(--ink); box-shadow:0 2px 0 var(--line); }
+  .tool.on{ border-color:var(--lav-deep); color:var(--lav-deep); }
+  .tool:active{ transform:translateY(1px); }
+  .stampRow{ display:none; }
+  .stampRow.show{ display:flex; }
+  .stamp{ width:44px; height:44px; border-radius:12px; border:2px solid var(--line); background:var(--card);
+        font-size:22px; cursor:pointer; box-shadow:0 2px 0 var(--line); }
+  .stamp.on{ border-color:var(--lav-deep); background:#F3EBF9; }
+  .doneBtn{ display:block; width:100%; margin-top:14px; border:none; border-radius:14px; padding:14px;
+        font-size:16px; font-weight:800; color:#fff; background:var(--lav); box-shadow:0 4px 0 var(--lav-deep);
+        cursor:pointer; font-family:inherit; }
+  .doneBtn:active{ transform:translateY(2px); box-shadow:0 2px 0 var(--lav-deep); }
+  #praise{ position:absolute; inset:0; display:none; align-items:center; justify-content:center;
+        background:rgba(251,246,236,.92); border-radius:18px; text-align:center; padding:24px; }
+  #praise.show{ display:flex; }
+  #praise .box{ animation:pop .4s ease-out both; }
+  #praise h2{ font-size:23px; font-weight:800; margin:0 0 6px; }
+  #praise p{ color:var(--ink-soft); font-size:14.5px; margin:0 0 16px; }
+  #praise button{ border:none; border-radius:12px; padding:11px 22px; font-weight:800; font-size:14px;
+        background:var(--lav); color:#fff; box-shadow:0 3px 0 var(--lav-deep); cursor:pointer; font-family:inherit; }
+  @keyframes pop{ 0%{ transform:scale(.7); opacity:0; } 70%{ transform:scale(1.05); } 100%{ transform:scale(1); opacity:1; } }
+  @media (prefers-reduced-motion: reduce){ #praise .box{ animation:none; } }
+</style>
+</head>
+<body>
+  <div id="seeds-bar">
+    <a href="index.html">🏡 Home</a>
+    <span class="pill">🌱 <span id="seeds-num">0</span> seeds</span>
+  </div>
+
+  <div class="wrap">
+    <div class="head">
+      <h1>🎨 Color Quest</h1>
+      <p>A blank canvas just for you. Paint slow, paint silly — there's no wrong way.</p>
+    </div>
+    <div class="prompt">Idea: <b id="ideaText">a happy tree</b><button id="ideaBtn">✦ new idea</button></div>
+
+    <div id="cvBox">
+      <canvas id="cv"></canvas>
+      <div id="praise"><div class="box">
+        <div style="font-size:48px;margin-bottom:4px">🖼️</div>
+        <h2 id="praiseTitle">A masterpiece!</h2>
+        <p id="praiseText">Hang this one on the fridge.</p>
+        <button id="keepBtn">Keep painting</button>
+      </div></div>
+    </div>
+
+    <div class="row" id="swatches"></div>
+    <div class="row">
+      <button class="tool on" id="sizeS">• thin</button>
+      <button class="tool" id="sizeM">● medium</button>
+      <button class="tool" id="sizeL">⬤ thick</button>
+      <button class="tool" id="eraser">🧽 Eraser</button>
+      <button class="tool" id="stampTool">✨ Stamps</button>
+      <button class="tool" id="undoBtn">↩ Undo</button>
+      <button class="tool" id="clearBtn">🧹 Clear</button>
+    </div>
+    <div class="row stampRow" id="stampRow"></div>
+
+    <button class="doneBtn" id="doneBtn">Done — I made art! 🌱</button>
+  </div>
+
+<script>
+(function(){
+  "use strict";
+  function awardSeeds(n, why){ try{ if(window.Seeds){ window.Seeds.award(n, why); toast(n); } }catch(e){} }
+  function updateBar(){ var el=document.getElementById('seeds-num');
+    if(el){ try{ el.textContent=(window.Seeds?window.Seeds.get():0); }catch(e){} } }
+  function toast(n){
+    var t=document.getElementById('seed-toast');
+    if(!t){ t=document.createElement('div'); t.id='seed-toast';
+      t.style.cssText="position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(120px);background:#3A4438;color:#fff;font-family:inherit;font-weight:700;padding:13px 22px;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.2);transition:transform .4s cubic-bezier(.22,1,.36,1);z-index:10000;font-size:16px;";
+      document.body.appendChild(t); }
+    t.textContent="🌱 +"+n+" seeds!";
+    requestAnimationFrame(function(){ t.style.transform="translateX(-50%) translateY(0)"; });
+    clearTimeout(t._h); t._h=setTimeout(function(){ t.style.transform="translateX(-50%) translateY(120px)"; },2200);
+    updateBar();
+  }
+  updateBar();
+  if(window.Seeds && window.Seeds.onChange) window.Seeds.onChange(updateBar);
+
+  var COLORS=["#3A4438","#7C9A72","#8FBFCE","#F0967A","#F0C05E","#B9A4D6","#D9714F","#E06B8B"];
+  var IDEAS=["a happy tree","your family as animals","a rainbow snail","the coziest house ever",
+             "a friendly monster","your favorite meal","a night sky full of stars","a garden for bugs"];
+  var STAMPS=["🌸","🐞","⭐","🍄","🦋","🌈"];
+  var PRAISE=[["A masterpiece!","Hang this one on the fridge."],
+              ["Beautiful work!","Every artist started exactly like this."],
+              ["Wow — look at that!","Your colors make the whole day brighter."],
+              ["That's one of a kind!","Nobody else could have painted this."]];
+
+  var cv=document.getElementById('cv'), ctx=cv.getContext('2d');
+  var color=COLORS[0], size=4, mode='brush', stamp=STAMPS[0];
+  var drawing=false, last=null, undoStack=[], firstDone=true, dpr=1;
+
+  function resize(){
+    var snap=null;
+    try{ if(cv.width) snap=ctx.getImageData(0,0,cv.width,cv.height); }catch(e){}
+    dpr=window.devicePixelRatio||1;
+    var w=cv.parentElement.clientWidth;
+    var h=Math.max(320,Math.min(460,Math.round(window.innerHeight*0.5)));
+    cv.style.height=h+"px";
+    cv.width=w*dpr; cv.height=h*dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.lineJoin="round"; ctx.lineCap="round";
+    if(snap) ctx.putImageData(snap,0,0);
+  }
+
+  function pos(e){
+    var r=cv.getBoundingClientRect();
+    return { x:e.clientX-r.left, y:e.clientY-r.top };
+  }
+  function pushUndo(){
+    try{
+      undoStack.push(ctx.getImageData(0,0,cv.width,cv.height));
+      if(undoStack.length>12) undoStack.shift();
+    }catch(e){}
+  }
+
+  cv.addEventListener('pointerdown',function(e){
+    e.preventDefault(); cv.setPointerCapture(e.pointerId);
+    pushUndo();
+    var p=pos(e);
+    if(mode==='stamp'){
+      ctx.font=(size*9+22)+"px sans-serif";
+      ctx.textAlign="center"; ctx.textBaseline="middle";
+      ctx.fillText(stamp,p.x,p.y);
+      return;
+    }
+    drawing=true; last=p;
+    ctx.strokeStyle=(mode==='eraser')?"#FFFDF8":color;
+    ctx.lineWidth=(mode==='eraser')?size*3+14:size;
+    ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(p.x+0.01,p.y+0.01); ctx.stroke();
+  });
+  cv.addEventListener('pointermove',function(e){
+    if(!drawing) return;
+    var p=pos(e);
+    ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke();
+    last=p;
+  });
+  function stop(){ drawing=false; last=null; }
+  cv.addEventListener('pointerup',stop);
+  cv.addEventListener('pointercancel',stop);
+
+  // swatches
+  var swEl=document.getElementById('swatches');
+  COLORS.forEach(function(c,i){
+    var b=document.createElement('button');
+    b.className='sw'+(i===0?' on':''); b.style.background=c; b.setAttribute('aria-label','Color '+c);
+    b.onclick=function(){
+      color=c; mode='brush';
+      document.getElementById('eraser').classList.remove('on');
+      document.getElementById('stampTool').classList.remove('on');
+      document.getElementById('stampRow').classList.remove('show');
+      swEl.querySelectorAll('.sw').forEach(function(x){ x.classList.remove('on'); });
+      b.classList.add('on');
+    };
+    swEl.appendChild(b);
+  });
+  // stamps
+  var stRow=document.getElementById('stampRow');
+  STAMPS.forEach(function(s,i){
+    var b=document.createElement('button');
+    b.className='stamp'+(i===0?' on':''); b.textContent=s;
+    b.onclick=function(){
+      stamp=s;
+      stRow.querySelectorAll('.stamp').forEach(function(x){ x.classList.remove('on'); });
+      b.classList.add('on');
+    };
+    stRow.appendChild(b);
+  });
+
+  function setSize(n,btn){
+    size=n;
+    ['sizeS','sizeM','sizeL'].forEach(function(id){ document.getElementById(id).classList.remove('on'); });
+    btn.classList.add('on');
+  }
+  document.getElementById('sizeS').onclick=function(){ setSize(4,this); };
+  document.getElementById('sizeM').onclick=function(){ setSize(10,this); };
+  document.getElementById('sizeL').onclick=function(){ setSize(22,this); };
+  document.getElementById('eraser').onclick=function(){
+    mode=(mode==='eraser')?'brush':'eraser';
+    this.classList.toggle('on',mode==='eraser');
+    document.getElementById('stampTool').classList.remove('on');
+    document.getElementById('stampRow').classList.remove('show');
+  };
+  document.getElementById('stampTool').onclick=function(){
+    mode=(mode==='stamp')?'brush':'stamp';
+    this.classList.toggle('on',mode==='stamp');
+    document.getElementById('stampRow').classList.toggle('show',mode==='stamp');
+    document.getElementById('eraser').classList.remove('on');
+  };
+  document.getElementById('undoBtn').onclick=function(){
+    var img=undoStack.pop();
+    if(img){ ctx.putImageData(img,0,0); }
+  };
+  document.getElementById('clearBtn').onclick=function(){
+    pushUndo();
+    ctx.clearRect(0,0,cv.width,cv.height);
+  };
+  var ideaI=0;
+  document.getElementById('ideaBtn').onclick=function(){
+    ideaI=(ideaI+1)%IDEAS.length;
+    document.getElementById('ideaText').textContent=IDEAS[ideaI];
+  };
+  document.getElementById('doneBtn').onclick=function(){
+    var pr=PRAISE[Math.floor(Math.random()*PRAISE.length)];
+    document.getElementById('praiseTitle').textContent=pr[0];
+    document.getElementById('praiseText').textContent=pr[1];
+    document.getElementById('praise').classList.add('show');
+    awardSeeds(firstDone?15:2, "Made art in Color Quest");
+    firstDone=false;
+  };
+  document.getElementById('keepBtn').onclick=function(){
+    document.getElementById('praise').classList.remove('show');
+  };
+  window.addEventListener('resize',resize);
+  resize();
+})();
+</script>
+</body>
+</html>

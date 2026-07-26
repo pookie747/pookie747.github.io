@@ -203,19 +203,23 @@ a:hover { color:#D9714F; }
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;highlightSparkMatch&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Content&quot;}}">
 class Component extends DCLogic {
-  categoryList = ['All', 'Money & Life Skills', 'Talking It Out', 'Find Your Spark', 'Feelings', 'Slow & Steady'];
+  categoryList = ['All', 'Spark Games', 'Money & Life Skills', 'Talking It Out', 'Find Your Spark', 'Feelings', 'Slow & Steady'];
   sparkMap = {
-    building: { title: 'Money Quest', label: 'Builder' },
-    helping: { title: 'TalkQuest', label: 'Helper' },
-    art: { title: 'Feelings Forest', label: 'Artist' },
-    exploring: { title: 'Patience Pond', label: 'Explorer' }
+    building: { title: 'Block Builder', label: 'Builder' },
+    helping: { title: 'Kindness Quest', label: 'Helper' },
+    art: { title: 'Color Quest', label: 'Artist' },
+    exploring: { title: 'Trail Seeker', label: 'Explorer' }
   };
   games = [
-    { href: 'https://pookiegames.net/money-quest.html', hasBadge: true, badge: 'Popular', badgeBg: 'var(--sage-deep)', iconBg: 'var(--butter)', emoji: '🍋', category: 'Money & Life Skills', catColor: 'var(--butter-deep)', title: 'Money Quest', desc: 'Run your own lemonade-stand fortune. Earn coins, build streaks, and watch your jar grow with real interest.', cta: 'Play now →', ctaColor: 'var(--sage-deep)' },
-    { href: 'https://pookiegames.net/talkquest.html', hasBadge: false, badge: '', badgeBg: '', iconBg: 'var(--sky)', emoji: '💬', category: 'Talking It Out', catColor: 'var(--sky-deep)', title: 'TalkQuest', desc: 'Practice the tricky conversations life throws at you. Choose your words and see where they lead.', cta: 'Play now →', ctaColor: 'var(--sage-deep)' },
-    { href: 'https://pookiegames.net/spark-catcher.html', hasBadge: false, badge: '', badgeBg: '', iconBg: 'var(--lavender)', emoji: '✨', category: 'Find Your Spark', catColor: 'var(--lavender-deep)', title: 'Spark Catcher', desc: 'Tap what sparks joy and discover what lights you up — building, art, helping, or exploring.', cta: 'Play now →', ctaColor: 'var(--sage-deep)' },
+    { href: './money-quest.html', hasBadge: true, badge: 'Popular', badgeBg: 'var(--sage-deep)', iconBg: 'var(--butter)', emoji: '🍋', category: 'Money & Life Skills', catColor: 'var(--butter-deep)', title: 'Money Quest', desc: 'Run your own lemonade-stand fortune. Earn coins, build streaks, and watch your jar grow with real interest.', cta: 'Play now →', ctaColor: 'var(--sage-deep)' },
+    { href: './talkquest.html', hasBadge: false, badge: '', badgeBg: '', iconBg: 'var(--sky)', emoji: '💬', category: 'Talking It Out', catColor: 'var(--sky-deep)', title: 'TalkQuest', desc: 'Practice the tricky conversations life throws at you. Choose your words and see where they lead.', cta: 'Play now →', ctaColor: 'var(--sage-deep)' },
+    { href: './spark-catcher.html', hasBadge: false, badge: '', badgeBg: '', iconBg: 'var(--lavender)', emoji: '✨', category: 'Find Your Spark', catColor: 'var(--lavender-deep)', title: 'Spark Catcher', desc: 'Tap what sparks joy and discover what lights you up — building, art, helping, or exploring.', cta: 'Play now →', ctaColor: 'var(--sage-deep)' },
     { href: './feelings-forest.html', hasBadge: true, badge: 'New', badgeBg: 'var(--coral-deep)', iconBg: 'var(--coral)', emoji: '🦊', category: 'Feelings', catColor: 'var(--coral-deep)', title: 'Feelings Forest', desc: 'Meet woodland friends going through big feelings — help them name what they feel and find their calm.', cta: 'Play now →', ctaColor: 'var(--sage-deep)' },
-    { href: './patience-pond.html', hasBadge: true, badge: 'New', badgeBg: 'var(--sage-deep)', iconBg: 'var(--sage-pale)', emoji: '🐢', category: 'Slow & Steady', catColor: 'var(--sage-deep)', title: 'Patience Pond', desc: 'Cross a quiet pond one calm hop at a time, waiting for the ripples to settle before you leap.', cta: 'Play now →', ctaColor: 'var(--sage-deep)' }
+    { href: './patience-pond.html', hasBadge: true, badge: 'New', badgeBg: 'var(--sage-deep)', iconBg: 'var(--sage-pale)', emoji: '🐢', category: 'Slow & Steady', catColor: 'var(--sage-deep)', title: 'Patience Pond', desc: 'Cross a quiet pond one calm hop at a time, waiting for the ripples to settle before you leap.', cta: 'Play now →', ctaColor: 'var(--sage-deep)' },
+    { href: './block-builder.html', hasBadge: true, badge: 'New', badgeBg: 'var(--butter-deep)', iconBg: '#F1DCC8', emoji: '🧱', category: 'Spark Games', catColor: '#C97B3D', title: 'Block Builder', desc: 'Steer falling block pieces and stack them into towers, castles — anything you dream up.', cta: 'Play now →', ctaColor: 'var(--sage-deep)' },
+    { href: './color-quest.html', hasBadge: true, badge: 'New', badgeBg: '#8A63AD', iconBg: '#EBDFF5', emoji: '🎨', category: 'Spark Games', catColor: '#8A63AD', title: 'Color Quest', desc: 'A blank canvas, friendly colors, and stamps — paint whatever your heart is feeling today.', cta: 'Play now →', ctaColor: 'var(--sage-deep)' },
+    { href: './kindness-quest.html', hasBadge: true, badge: 'New', badgeBg: '#C2536E', iconBg: '#F8DDE4', emoji: '💗', category: 'Spark Games', catColor: '#C2536E', title: 'Kindness Quest', desc: 'Lend a hand around the neighborhood — every small kindness counts.', cta: 'Play now →', ctaColor: 'var(--sage-deep)' },
+    { href: './trail-seeker.html', hasBadge: true, badge: 'New', badgeBg: '#2E8A6E', iconBg: '#D9EEE6', emoji: '🐿️', category: 'Spark Games', catColor: '#2E8A6E', title: 'Trail Seeker', desc: 'Wander three wild places and spot the creatures and treasures hiding there.', cta: 'Play now →', ctaColor: 'var(--sage-deep)' }
   ];
   state = { seeds: 0, activeCategory: 'All', spark: null, dots: ['rgba(79,108,73,0.25)', 'rgba(79,108,73,0.25)', 'rgba(79,108,73,0.25)'] };
   componentDidMount() {

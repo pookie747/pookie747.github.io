@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kindness Quest 💗 — lend a hand around the neighborhood</title>
+<meta name="description" content="A warm game for kids: help neighbors cross the street, gather dropped apples, and carry heavy bags. Every small kindness counts." />
+<script src="./seeds.js"></script>
+<style>
+  :root{
+    --paper:#FBF6EC; --ink:#3A4438; --ink-soft:#6E7A67;
+    --rose:#E06B8B; --rose-deep:#B84A67; --line:#E6E0D2; --card:#FFFFFF; --sage-pale:#E4ECDC;
+  }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body{ margin:0; padding:0; }
+  body{ background:var(--paper); color:var(--ink);
+        font-family:ui-rounded,'SF Pro Rounded',system-ui,-apple-system,'Segoe UI',sans-serif; }
+  #seeds-bar{ position:sticky; top:0; z-index:9999; display:flex; align-items:center;
+        justify-content:space-between; padding:8px 14px; background:var(--paper); border-bottom:1px solid var(--line); }
+  #seeds-bar a, #seeds-bar .pill{ display:inline-flex; align-items:center; gap:7px; text-decoration:none;
+        color:#2C4A52; font-weight:700; font-size:15px; background:#E4EFE3; border:1px solid #CFE3D0;
+        padding:6px 14px; border-radius:999px; }
+  .wrap{ max-width:480px; margin:0 auto; padding:18px 16px 48px; }
+  .head{ text-align:center; margin-bottom:10px; }
+  .head h1{ font-size:26px; font-weight:800; margin:0 0 2px; }
+  .head p{ margin:0; font-size:13.5px; color:var(--ink-soft); }
+  .meter{ text-align:center; font-size:14px; font-weight:800; margin:10px 0;
+        background:var(--card); border:1.5px solid var(--line); border-radius:999px;
+        padding:7px; color:var(--ink-soft); }
+  #stage{ position:relative; min-height:340px; border-radius:20px; border:2px solid var(--line);
+        overflow:hidden; padding:22px 18px; }
+  .screen{ animation:pop .35s ease-out both; }
+  .who{ text-align:center; font-size:56px; margin-bottom:4px; }
+  .say{ max-width:320px; margin:0 auto 16px; background:var(--card); border:2px solid var(--line);
+        border-radius:16px; border-top-left-radius:4px; padding:12px 16px; font-size:15px; line-height:1.5; }
+  .act{ display:block; margin:10px auto 0; border:none; border-radius:14px; padding:14px 24px;
+        font-size:15.5px; font-weight:800; color:#fff; background:var(--rose);
+        box-shadow:0 4px 0 var(--rose-deep); cursor:pointer; font-family:inherit; }
+  .act:active{ transform:translateY(2px); box-shadow:0 2px 0 var(--rose-deep); }
+  .act[disabled]{ background:#CBB6BD; box-shadow:0 4px 0 #A8949B; cursor:default; }
+  .act.alt{ background:var(--card); color:var(--ink); border:2px solid var(--line); box-shadow:0 3px 0 var(--line); }
+  .look{ display:flex; gap:12px; justify-content:center; margin-top:10px; }
+  .look button{ flex:1; max-width:130px; font-size:26px; padding:16px; border-radius:16px; border:2px solid var(--line);
+        background:var(--card); cursor:pointer; box-shadow:0 3px 0 var(--line); font-family:inherit; }
+  .look button.ok{ background:var(--sage-pale); border-color:#7C9A72; }
+  .light{ text-align:center; font-size:42px; margin:8px 0 2px; }
+  .holdbar{ height:10px; max-width:240px; margin:12px auto 0; background:var(--card);
+        border:1.5px solid var(--line); border-radius:999px; overflow:hidden; }
+  .holdbar i{ display:block; height:100%; width:0%; background:var(--rose); border-radius:999px; }
+  .field{ position:relative; height:190px; margin-top:6px; }
+  .apple{ position:absolute; transform:translate(-50%,-50%); border:none; background:none;
+        font-size:34px; cursor:pointer; padding:6px; line-height:1; }
+  .apple.got{ animation:zip .4s ease-in both; }
+  @keyframes zip{ to{ transform:translate(-50%,-50%) scale(0); opacity:0; } }
+  .basket{ text-align:center; font-size:15px; font-weight:800; margin-top:4px; }
+  .bags{ display:flex; gap:10px; justify-content:center; margin-top:12px; }
+  .bag{ border:2px solid var(--line); background:var(--card); border-radius:16px; padding:14px 12px;
+        text-align:center; cursor:pointer; box-shadow:0 3px 0 var(--line); font-family:inherit;
+        font-size:13px; font-weight:700; color:var(--ink); }
+  .bag em{ display:block; font-style:normal; font-size:30px; margin-bottom:4px; }
+  .bag.taken{ opacity:.35; pointer-events:none; }
+  .note{ text-align:center; font-size:12.5px; color:var(--ink-soft); margin-top:10px; }
+  .thanks{ text-align:center; font-weight:800; color:var(--rose-deep); font-size:15px; margin-top:12px;
+        animation:pop .4s ease-out both; }
+  .final{ text-align:center; padding-top:14px; }
+  .final h2{ font-size:25px; font-weight:800; margin:6px 0; }
+  .final p{ color:var(--ink-soft); font-size:14.5px; line-height:1.55; margin:0 0 16px; }
+  .hearts{ font-size:30px; letter-spacing:4px; margin-bottom:6px; }
+  @keyframes pop{ 0%{ transform:scale(.85); opacity:0; } 100%{ transform:scale(1); opacity:1; } }
+  @media (prefers-reduced-motion: reduce){ .screen,.thanks{ animation:none !important; } }
+</style>
+</head>
+<body>
+  <div id="seeds-bar">
+    <a href="index.html">🏡 Home</a>
+    <span class="pill">🌱 <span id="seeds-num">0</span> seeds</span>
+  </div>
+
+  <div class="wrap">
+    <div class="head">
+      <h1>💗 Kindness Quest</h1>
+      <p>Three neighbors could use a hand today. Small kindnesses, big smiles.</p>
+    </div>
+    <div class="meter" id="meter">💗 0 / 3 kind deeds</div>
+    <div id="stage"></div>
+  </div>
+
+<script>
+(function(){
+  "use strict";
+  function awardSeeds(n, why){ try{ if(window.Seeds){ window.Seeds.award(n, why); toast(n); } }catch(e){} }
+  function updateBar(){ var el=document.getElementById('seeds-num');
+    if(el){ try{ el.textContent=(window.Seeds?window.Seeds.get():0); }catch(e){} } }
+  function toast(n){
+    var t=document.getElementById('seed-toast');
+    if(!t){ t=document.createElement('div'); t.id='seed-toast';
+      t.style.cssText="position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(120px);background:#3A4438;color:#fff;font-family:inherit;font-weight:700;padding:13px 22px;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.2);transition:transform .4s cubic-bezier(.22,1,.36,1);z-index:10000;font-size:16px;";
+      document.body.appendChild(t); }
+    t.textContent="🌱 +"+n+" seeds!";
+    requestAnimationFrame(function(){ t.style.transform="translateX(-50%) translateY(0)"; });
+    clearTimeout(t._h); t._h=setTimeout(function(){ t.style.transform="translateX(-50%) translateY(120px)"; },2200);
+    updateBar();
+  }
+  updateBar();
+  if(window.Seeds && window.Seeds.onChange) window.Seeds.onChange(updateBar);
+
+  var stage=document.getElementById('stage');
+  var hearts=0, firstRun=true;
+  function meter(){ document.getElementById('meter').textContent="💗 "+hearts+" / 3 kind deeds"; }
+  function heart(next){
+    hearts++; meter();
+    setTimeout(next,1400);
+  }
+
+  // ---------- deed 1: crosswalk ----------
+  function deed1(){
+    stage.style.background="linear-gradient(180deg,#DFF0F7 0%,#DFF0F7 55%,#C9CDD2 55%,#BFC4C9 100%)";
+    stage.innerHTML='<div class="screen">'+
+      '<div class="who">👵</div>'+
+      '<div class="say">Oh, hello dear. These streets feel so busy today… would you walk with me to the other side?</div>'+
+      '<button class="act" id="a1">Offer your arm 🤝</button></div>';
+    document.getElementById('a1').onclick=deed1_look;
+  }
+  function deed1_look(){
+    var left=false,right=false;
+    stage.innerHTML='<div class="screen">'+
+      '<div class="who">👵🧒</div>'+
+      '<div class="say">Before we cross, let\u2019s check the street together. Look both ways!</div>'+
+      '<div class="look">'+
+        '<button id="lookL">👀 ←</button>'+
+        '<button id="lookR">→ 👀</button>'+
+      '</div><p class="note">Tap both to look left and right</p></div>';
+    function check(){ if(left&&right) setTimeout(deed1_light,500); }
+    document.getElementById('lookL').onclick=function(){ left=true; this.classList.add('ok'); this.textContent="✓ clear!"; check(); };
+    document.getElementById('lookR').onclick=function(){ right=true; this.classList.add('ok'); this.textContent="clear! ✓"; check(); };
+  }
+  function deed1_light(){
+    stage.innerHTML='<div class="screen">'+
+      '<div class="light" id="light">🔴</div>'+
+      '<div class="say" style="text-align:center">Almost… we wait for the walking light. Patience keeps us safe.</div>'+
+      '<button class="act" id="walkBtn" disabled>Wait for it…</button>'+
+      '<div class="holdbar"><i id="hold"></i></div>'+
+      '<p class="note">When it turns green: press and HOLD to walk together</p></div>';
+    setTimeout(function(){
+      document.getElementById('light').textContent="🟢";
+      var b=document.getElementById('walkBtn');
+      b.disabled=false; b.textContent="Hold to walk together 🚶";
+      var prog=0, iv=null, bar=document.getElementById('hold');
+      function stop(){ if(iv){ clearInterval(iv); iv=null; } }
+      b.onpointerdown=function(e){ e.preventDefault();
+        iv=setInterval(function(){
+          prog+=4; bar.style.width=Math.min(prog,100)+"%";
+          if(prog>=100){ stop(); deed1_done(); }
+        },60);
+      };
+      b.onpointerup=stop; b.onpointerleave=stop; b.onpointercancel=stop;
+    },2200);
+  }
+  function deed1_done(){
+    stage.innerHTML='<div class="screen"><div class="who">👵</div>'+
+      '<div class="say">Safe and sound! Thank you, dear — you have a gentle way about you.</div>'+
+      '<div class="thanks">💗 Kind deed done!</div></div>';
+    heart(deed2);
+  }
+
+  // ---------- deed 2: dropped apples ----------
+  function deed2(){
+    stage.style.background="linear-gradient(180deg,#F7EFDD 0%,#F2E8D0 100%)";
+    var got=0;
+    stage.innerHTML='<div class="screen">'+
+      '<div class="who">🧓</div>'+
+      '<div class="say">Oh no — my apple bag split! They\u2019re rolling everywhere!</div>'+
+      '<div class="field" id="field"></div>'+
+      '<div class="basket" id="basket">🧺 0 / 5 apples gathered</div></div>';
+    var field=document.getElementById('field');
+    var spots=[[15,30],[70,20],[40,60],[85,70],[25,85]];
+    spots.forEach(function(s){
+      var b=document.createElement('button');
+      b.className='apple'; b.textContent='🍎';
+      b.style.left=s[0]+'%'; b.style.top=s[1]+'%';
+      b.setAttribute('aria-label','an apple');
+      b.onclick=function(){
+        b.classList.add('got'); b.onclick=null; got++;
+        document.getElementById('basket').textContent='🧺 '+got+' / 5 apples gathered';
+        if(got>=5) setTimeout(deed2_done,500);
+      };
+      field.appendChild(b);
+    });
+  }
+  function deed2_done(){
+    stage.innerHTML='<div class="screen"><div class="who">🧓</div>'+
+      '<div class="say">Every last apple — and not one bruise! You\u2019re quicker than I ever was. Take my thanks, friend.</div>'+
+      '<div class="thanks">💗 Kind deed done!</div></div>';
+    heart(deed3);
+  }
+
+  // ---------- deed 3: heavy bags ----------
+  function deed3(){
+    stage.style.background="linear-gradient(180deg,#E8EFF5 0%,#DFE8F0 100%)";
+    stage.innerHTML='<div class="screen">'+
+      '<div class="who">🧑‍🦳</div>'+
+      '<div class="say">These groceries are heavier than they looked at the store… my door is just up the hill.</div>'+
+      '<div class="bags">'+
+        '<button class="bag" data-w="heavy"><em>🛍️</em>Heavy bag</button>'+
+        '<button class="bag" data-w="heavy2"><em>🛍️</em>Heavy bag</button>'+
+        '<button class="bag" data-w="light"><em>🛍️</em>Light bag</button>'+
+      '</div>'+
+      '<p class="note">Pick TWO bags to carry — take the heavy ones if you can!</p></div>';
+    var carried=0, heavies=0;
+    stage.querySelectorAll('.bag').forEach(function(b){
+      b.onclick=function(){
+        b.classList.add('taken'); carried++;
+        if(b.getAttribute('data-w').indexOf('heavy')===0) heavies++;
+        if(carried>=2) setTimeout(function(){ deed3_walk(heavies); },450);
+      };
+    });
+  }
+  function deed3_walk(heavies){
+    var praise = heavies===2 ? "You took both heavy ones — what strong, kind arms!" :
+                 heavies===1 ? "You shared the load — teamwork makes the hill smaller!" :
+                 "Every bag helps — thank you for walking with me!";
+    stage.innerHTML='<div class="screen">'+
+      '<div class="who">🧑‍🦳🧒</div>'+
+      '<div class="say">'+praise+' Shall we?</div>'+
+      '<button class="act" id="walk2">Hold to walk up the hill 🏠</button>'+
+      '<div class="holdbar"><i id="hold2"></i></div></div>';
+    var prog=0, iv=null, bar=document.getElementById('hold2'), b=document.getElementById('walk2');
+    function stop(){ if(iv){ clearInterval(iv); iv=null; } }
+    b.onpointerdown=function(e){ e.preventDefault();
+      iv=setInterval(function(){
+        prog+=3; bar.style.width=Math.min(prog,100)+"%";
+        if(prog>=100){ stop(); deed3_done(); }
+      },60);
+    };
+    b.onpointerup=stop; b.onpointerleave=stop; b.onpointercancel=stop;
+  }
+  function deed3_done(){
+    stage.innerHTML='<div class="screen"><div class="who">🧑‍🦳</div>'+
+      '<div class="say">Home at last! You saved my arms AND my afternoon. You\u2019re welcome for lemonade any time.</div>'+
+      '<div class="thanks">💗 Kind deed done!</div></div>';
+    heart(finale);
+  }
+
+  // ---------- finale ----------
+  function finale(){
+    stage.style.background="linear-gradient(180deg,#FBEAE3 0%,#FBF6EC 100%)";
+    stage.innerHTML='<div class="screen final">'+
+      '<div class="hearts">💗💗💗</div>'+
+      '<h2>Kindness Hero!</h2>'+
+      '<p>Three neighbors are smiling because of you.<br>Kindness is quiet, but it travels far.</p>'+
+      '<button class="act" id="waveBtn">Wave goodbye 👋</button></div>';
+    document.getElementById('waveBtn').onclick=function(){
+      awardSeeds(firstRun?20:2,"Helped the neighborhood in Kindness Quest");
+      firstRun=false;
+      this.outerHTML='<button class="act alt" id="againBtn">Help out again</button>';
+      document.getElementById('againBtn').onclick=function(){ hearts=0; meter(); deed1(); };
+    };
+  }
+
+  deed1();
+})();
+</script>
+</body>
+</html>

@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Spark Catcher ✨ — find what lights you up</title>
 <meta name="description" content="A quick, joyful game that helps kids discover what they love — building, art, helping, or exploring." />
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
-<script src="seeds.js"></script>
+
+<script src="./seeds.js"></script>
 <style>
   :root{
     --paper:#FBF7EF; --sky:#DCEAF0; --sky-deep:#C7DEE6;
@@ -18,14 +18,14 @@
   }
   *{ box-sizing:border-box; }
   html,body{ margin:0; padding:0; }
-  body{ font-family:'Nunito',sans-serif; color:var(--ink);
+  body{ font-family:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,"Segoe UI",sans-serif; color:var(--ink);
         background:linear-gradient(180deg,var(--sky),var(--paper) 75%); min-height:100vh; }
-  .display{ font-family:'Baloo 2',sans-serif; }
+  .display{ font-family:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,sans-serif;font-weight:700; }
 
   /* shared seeds bar */
   #seeds-bar{ position:sticky; top:0; z-index:9999; display:flex; align-items:center;
         justify-content:space-between; padding:8px 14px; background:var(--paper);
-        border-bottom:1px solid var(--line); font-family:'Baloo 2',sans-serif; }
+        border-bottom:1px solid var(--line); font-family:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,sans-serif;font-weight:700; }
   #seeds-bar a, #seeds-bar .pill{ display:inline-flex; align-items:center; gap:7px;
         text-decoration:none; color:var(--ink); font-weight:600; font-size:15px;
         background:var(--sage-soft); border:1px solid var(--sage-line);
@@ -38,7 +38,7 @@
   .intro .big{ font-size:64px; margin-bottom:6px; }
   .intro h1{ font-size:clamp(30px,6vw,42px); margin:0 0 10px; }
   .intro p{ color:var(--ink-soft); font-size:17px; line-height:1.6; max-width:420px; margin:0 auto 26px; }
-  .btn{ font-family:'Baloo 2',sans-serif; font-weight:600; font-size:18px; border:none;
+  .btn{ font-family:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,sans-serif;font-weight:700; font-weight:600; font-size:18px; border:none;
         color:#fff; padding:15px 30px; border-radius:18px; cursor:pointer; transition:transform .15s; }
   .btn:active{ transform:translateY(1px); }
   .btn-sage{ background:var(--sage); box-shadow:0 4px 0 var(--sage); box-shadow:0 4px 0 #7FA489; }
@@ -46,7 +46,7 @@
 
   /* play */
   .play-head{ text-align:center; margin-bottom:14px; }
-  .play-head h2{ font-family:'Baloo 2',sans-serif; font-size:22px; margin:0 0 4px; }
+  .play-head h2{ font-family:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,sans-serif;font-weight:700; font-size:22px; margin:0 0 4px; }
   .play-head p{ color:var(--ink-soft); margin:0; font-size:15px; }
   .progress{ height:8px; background:var(--sage-soft); border-radius:999px; overflow:hidden; margin:14px 0 26px; }
   .progress > div{ height:100%; background:var(--sage); border-radius:999px; transition:width .3s; }
@@ -57,10 +57,10 @@
         animation:pop .35s ease-out both; }
   @keyframes pop{ 0%{ transform:scale(.7); opacity:0;} 70%{ transform:scale(1.05);} 100%{ transform:scale(1); opacity:1;} }
   .spark-card .emoji{ font-size:80px; line-height:1; margin-bottom:14px; display:block; }
-  .spark-card .label{ font-family:'Baloo 2',sans-serif; font-size:24px; }
+  .spark-card .label{ font-family:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,sans-serif;font-weight:700; font-size:24px; }
 
   .choice-row{ display:flex; gap:14px; width:100%; max-width:360px; }
-  .choice-row button{ flex:1; font-family:'Baloo 2',sans-serif; font-weight:600; font-size:17px;
+  .choice-row button{ flex:1; font-family:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,sans-serif;font-weight:700; font-weight:600; font-size:17px;
         border:none; border-radius:18px; padding:16px; cursor:pointer; transition:transform .12s; }
   .choice-row button:active{ transform:scale(.96); }
   .yes{ background:var(--sage); color:#fff; box-shadow:0 4px 0 #7FA489; }
@@ -69,16 +69,16 @@
   /* result */
   .result{ text-align:center; padding-top:10px; animation:pop .4s ease-out both; }
   .result .crown{ font-size:70px; margin-bottom:6px; }
-  .result h2{ font-family:'Baloo 2',sans-serif; font-size:34px; margin:0 0 4px; }
-  .result .tag{ display:inline-block; font-family:'Baloo 2',sans-serif; font-weight:600;
+  .result h2{ font-family:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,sans-serif;font-weight:700; font-size:34px; margin:0 0 4px; }
+  .result .tag{ display:inline-block; font-family:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,sans-serif;font-weight:700; font-weight:600;
         padding:6px 16px; border-radius:999px; color:#fff; margin-bottom:16px; font-size:15px; }
   .result .blurb{ color:var(--ink-soft); font-size:17px; line-height:1.6; max-width:420px;
         margin:0 auto 22px; }
   .result-card{ background:var(--card); border:2px solid var(--line); border-radius:22px;
         padding:22px; margin:0 auto 16px; max-width:420px; text-align:left; box-shadow:0 10px 28px rgba(44,74,82,.07); }
-  .result-card h3{ font-family:'Baloo 2',sans-serif; font-size:18px; margin:0 0 8px; }
+  .result-card h3{ font-family:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,sans-serif;font-weight:700; font-size:18px; margin:0 0 8px; }
   .result-card p{ color:var(--ink-soft); margin:0 0 14px; line-height:1.55; font-size:15px; }
-  .result-card .gamebtn{ display:inline-flex; align-items:center; gap:8px; font-family:'Baloo 2',sans-serif;
+  .result-card .gamebtn{ display:inline-flex; align-items:center; gap:8px; font-family:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,sans-serif;font-weight:700;
         font-weight:600; font-size:15px; padding:11px 18px; border-radius:14px; border:none; cursor:pointer; color:#fff; }
   .soon{ display:inline-block; font-size:13px; font-weight:700; color:var(--ink-soft);
         background:var(--sage-soft); border:1px solid var(--sage-line); padding:8px 14px; border-radius:999px; }
@@ -103,7 +103,7 @@
     function showToast(n){
       var t=document.getElementById('seed-toast');
       if(!t){ t=document.createElement('div'); t.id='seed-toast';
-        t.style.cssText="position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(120px);background:#2C4A52;color:#fff;font-family:'Baloo 2',sans-serif;font-weight:600;padding:13px 22px;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.2);transition:transform .4s cubic-bezier(.22,1,.36,1);z-index:10000;font-size:16px;";
+        t.style.cssText="position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(120px);background:#2C4A52;color:#fff;font-family:ui-rounded,'SF Pro Rounded',system-ui,-apple-system,sans-serif;font-weight:600;padding:13px 22px;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.2);transition:transform .4s cubic-bezier(.22,1,.36,1);z-index:10000;font-size:16px;";
         document.body.appendChild(t); }
       t.textContent="🌱 +"+n+" seeds!";
       requestAnimationFrame(function(){ t.style.transform="translateX(-50%) translateY(0)"; });
@@ -117,16 +117,16 @@
     var SPARKS = {
       builder:  { name:"Builder",  emoji:"🔨", color:"var(--builder)",
         blurb:"You love making things exist that weren't there before — forts, machines, towers, ideas. You see a pile of stuff and imagine what it could become.",
-        game:{ name:"Block Builder", desc:"Snap blocks together and earn seeds for the structures you create.", ready:false } },
+        key:"building", game:{ name:"Block Builder", desc:"Steer falling block pieces and stack them into towers, castles — anything you dream up.", ready:true, file:"block-builder.html" } },
       artist:   { name:"Artist",   emoji:"🎨", color:"var(--artist)",
         blurb:"You see the world in colours, sounds, and stories. You love making things beautiful and showing people how you feel.",
-        game:{ name:"Color Quest", desc:"Paint, pattern, and create — earn seeds for your masterpieces.", ready:false } },
+        key:"art", game:{ name:"Color Quest", desc:"A blank canvas, friendly colors, and stamps — paint whatever your heart is feeling today.", ready:true, file:"color-quest.html" } },
       helper:   { name:"Helper",   emoji:"🤝", color:"var(--helper)",
         blurb:"You notice when someone needs a hand, and helping makes you happy. Kindness is your superpower.",
-        game:{ name:"Kindness Quest", desc:"Solve everyday problems by helping others — and grow your seeds.", ready:false } },
+        key:"helping", game:{ name:"Kindness Quest", desc:"Lend a hand around the neighborhood — every small kindness counts.", ready:true, file:"kindness-quest.html" } },
       explorer: { name:"Explorer", emoji:"🗺️", color:"var(--explorer)",
         blurb:"You're curious about everything — new places, how things work, what's around the next corner. Adventure is your middle name.",
-        game:{ name:"Trail Seeker", desc:"Discover hidden places and earn seeds for every discovery.", ready:false } }
+        key:"exploring", game:{ name:"Trail Seeker", desc:"Wander three wild places and spot the creatures and treasures hiding there.", ready:true, file:"trail-seeker.html" } }
     };
 
     // ---- the deck: each card sparks toward one type ----
@@ -209,6 +209,8 @@
 
       // award seeds once per discovery session
       awardSeeds(20, "Discovered a spark in Spark Catcher");
+      // remember the spark so the Play page can highlight the matching game
+      try { localStorage.setItem("lc_spark", s.key); } catch(e){}
 
       var gameBlock = s.game.ready
         ? '<button class="gamebtn" style="background:'+s.color+'" onclick="location.href=\''+s.game.file+'\'">Play '+s.game.name+' →</button>'
